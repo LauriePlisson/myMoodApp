@@ -25,11 +25,16 @@ const TabNavigator = ({ navigation }) => {
         },
         tabBarActiveTintColor: "blue",
         headerTitle: "MyMood",
-        headerTransparent: true,
+        // headerTransparent: true,
+        headerTitleStyle: { fontSize: 35, marginBottom: 15, color: "#B4A6AB" },
+        headerStyle: { height: 115 },
         headerRight: () => {
           return (
-            <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
-              <Settings size={24} />
+            <TouchableOpacity
+              style={{ marginRight: 30, marginBottom: 30 }}
+              onPress={() => navigation.navigate("Settings")}
+            >
+              <Settings size={24} color={"#A48A97"} />
             </TouchableOpacity>
           );
         },
