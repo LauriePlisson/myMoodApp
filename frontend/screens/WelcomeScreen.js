@@ -1,8 +1,9 @@
 import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function WelcomeScreen({ navigation }) {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text>WelcomeScreen</Text>
       <TouchableOpacity
         onPress={() => {
@@ -11,13 +12,16 @@ export default function WelcomeScreen({ navigation }) {
       >
         <Text>Go To Home</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "blue",
   },
 });
