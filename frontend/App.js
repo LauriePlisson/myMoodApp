@@ -23,9 +23,12 @@ const TabNavigator = ({ navigation }) => {
             return <History size={24} color={color} />;
           }
         },
-        tabBarActiveTintColor: "blue",
+        tabBarInactiveTintColor: "#B4A6AB",
+        tabBarActiveTintColor: "#A48A97",
+        tabBarStyle: { height: 100 },
+        tabBarLabelStyle: { marginBottom: 10 },
+        tabBarIconStyle: { marginTop: 15 },
         headerTitle: "MyMood",
-        // headerTransparent: true,
         headerTitleStyle: { fontSize: 35, marginBottom: 15, color: "#B4A6AB" },
         headerStyle: { height: 115 },
         headerRight: () => {
@@ -34,7 +37,7 @@ const TabNavigator = ({ navigation }) => {
               style={{ marginRight: 30, marginBottom: 30 }}
               onPress={() => navigation.navigate("Settings")}
             >
-              <Settings size={24} color={"#A48A97"} />
+              <Settings size={24} color={"#B4A6AB"} />
             </TouchableOpacity>
           );
         },
@@ -59,7 +62,19 @@ export default function App() {
         <Stack.Screen
           name="Settings"
           component={SettingsScreen}
-          options={{ headerShown: true, headerBackVisible: true }}
+          options={{
+            headerShown: true,
+            headerBackVisible: true,
+            headerTintColor: "#B4A6AB",
+            headerBackTitleVisible: false,
+            title: "MyMOOD",
+            headerTitleStyle: {
+              fontSize: 25,
+              marginBottom: 15,
+              color: "#B4A6AB",
+            },
+            // headerStyle: { height: "50" },
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>

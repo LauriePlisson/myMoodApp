@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   bouton: {
-    backgroundColor: "#B4A6AB",
+    backgroundColor: "#d8becbff",
     width: 120,
     height: 65,
     alignItems: "center",
