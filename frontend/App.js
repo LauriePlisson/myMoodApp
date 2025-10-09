@@ -7,7 +7,7 @@ import HistoryScreen from "./screens/HistoryScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Settings } from "lucide-react-native";
+import { Settings, SmilePlus, History } from "lucide-react-native";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -15,8 +15,16 @@ const Tab = createBottomTabNavigator();
 const TabNavigator = ({ navigation }) => {
   return (
     <Tab.Navigator
-      screenOptions={{
-        title: "MyMOOD",
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color, size }) => {
+          if (route.name === "Home") {
+            return <SmilePlus size={24} color={color} />;
+          } else if (route.name === "History") {
+            return <History size={24} color={color} />;
+          }
+        },
+        tabBarActiveTintColor: "blue",
+        headerTitle: "MyMood",
         headerTransparent: true,
         headerRight: () => {
           return (
@@ -25,7 +33,7 @@ const TabNavigator = ({ navigation }) => {
             </TouchableOpacity>
           );
         },
-      }}
+      })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="History" component={HistoryScreen} />
