@@ -13,20 +13,20 @@ export const protect = async (req, res, next) => {
     }
 
     if (!token) {
-      return res.status(401).json({ message: "Non autorisé, token manquant" });
+      return res.status(401).json({ error: "Non autorisé, token manquant" });
     }
 
     const verified = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await User.findById(verified.id).select("-password");
     if (!user) {
-      return res.status(401).json({ message: "Utilisateur non trouvé" });
+      return res.status(401).json({ error: "Utilisateur non trouvé" });
     }
 
     req.user = user;
 
     next();
   } catch (error) {
-    res.status(401).json({ message: "Non autorisé, token invalide" });
+    res.status(401).json({ error: "Non autorisé, token invalide" });
   }
 };

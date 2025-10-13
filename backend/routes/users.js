@@ -33,13 +33,13 @@ router.post("/auth/register", async (req, res) => {
 
     const token = generateToken(newUser._id);
 
-    res.status(201).json({
+    return res.status(201).json({
       result: true,
       message: "Utilisateur créé avec succès",
       token,
     });
   } catch (error) {
-    res.status(500).json({ error: "Erreur serveur" });
+    return res.status(500).json({ error: "Erreur serveur" });
   }
 });
 
@@ -66,12 +66,12 @@ router.post("/auth/login", async (req, res) => {
 
     const token = generateToken(user._id);
 
-    res.status(200).json({
+    return res.status(200).json({
       result: true,
       user: { username: user.username, token },
     });
   } catch (error) {
-    res.status(500).json({ error: "Erreur serveur" });
+    return res.status(500).json({ error: "Erreur serveur" });
   }
 });
 
@@ -80,9 +80,11 @@ router.delete("/delete", protect, async (req, res) => {
     const userId = req.user._id;
     await Mood.deleteMany({ user: userId });
     await User.findByIdAndDelete(userId);
-    res.status(200).json({ result: true, message: "utilisateur supprimé" });
+    return res
+      .status(200)
+      .json({ result: true, message: "utilisateur supprimé" });
   } catch (error) {
-    res.status(500).json({ error: "Erreur serveur" });
+    return res.status(500).json({ error: "Erreur serveur" });
   }
 });
 
