@@ -10,12 +10,17 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 
 export default function HomeScreen({ navigation }) {
-  const [note, setNote] = useState("");
+  const [note, setNote] = useState("05");
+  const [ajoutCom, setAjoutCom] = useState(false);
   const formattedNote = note.padStart(2, "0");
   const user = useSelector((state) => state.user.value);
 
   const handleValider = () => {
     setNote(formattedNote);
+  };
+
+  const handleAjouter = () => {
+    console.log("ajouter un commentaire");
   };
 
   return (
@@ -35,6 +40,34 @@ export default function HomeScreen({ navigation }) {
           />
         </View>
       </View>
+      {ajoutCom && (
+        <>
+          <TouchableOpacity
+            style={styles.exit}
+            onPress={() => setAjoutCom(false)}
+          >
+            <Text style={{ fontWeight: "bold" }}>X</Text>
+          </TouchableOpacity>
+          <TextInput
+            style={styles.inputCom}
+            placeholder="Ajoute un commentaire..."
+          ></TextInput>
+        </>
+      )}
+      <TouchableOpacity
+        style={styles.boutCom}
+        onPress={() => {
+          if (!ajoutCom) {
+            setAjoutCom(true);
+          } else {
+            handleAjouter();
+          }
+        }}
+      >
+        <Text style={styles.valider}>
+          {!ajoutCom ? "Ajoute un commentaire" : "Ajouter"}
+        </Text>
+      </TouchableOpacity>
       <TouchableOpacity
         style={styles.bouton}
         onPress={() => {
@@ -77,6 +110,26 @@ const styles = StyleSheet.create({
   },
   digit: {
     fontSize: 50,
+  },
+  exit: {
+    marginLeft: 300,
+    paddingBottom: 10,
+    width: 50,
+    height: 30,
+    justifyContent: "flex-end",
+    alignItems: "center",
+  },
+  inputCom: {
+    height: 50,
+    width: 300,
+    backgroundColor: "white",
+    borderRadius: 10,
+    paddingLeft: 10,
+  },
+  boutCom: {
+    borderBottomWidth: 0.5,
+    borderBottomColor: "#696773",
+    marginBottom: 15,
   },
   bouton: {
     backgroundColor: "#d8becbff",
