@@ -43,12 +43,27 @@ router.get("/", protect, async (req, res) => {
   }
 });
 
+router.get("/:id", protect, async (req, res) => {
+  try {
+    const moodId = req.params.id;
+    const mood = await Mood.findOne({ _id: moodId, userId: req.user._id });
+    if (!mood)
+      return res.status(404).json({ result: false, error: "Mood introuvable" });
+    return res.status(200).json({ result: true, mood: mood });
+  } catch (error) {
+    console.error("erreur", error);
+    return res.status(500).json({ error: "Erreur serveur" });
+  }
+});
+
 router.put("/:id", protect, async (req, res) => {
   try {
     const { moodValue, note } = req.body;
     const moodId = req.params.id;
 
     const mood = await Mood.findOne({ _id: moodId, userId: req.user._id });
+    if (!mood)
+      return res.status(404).json({ result: false, error: "Mood introuvable" });
 
     if (moodValue !== undefined) mood.moodValue = moodValue;
     if (note !== undefined) mood.note = note;
@@ -62,6 +77,71 @@ router.put("/:id", protect, async (req, res) => {
   } catch (error) {
     console.error("erreur", error);
     return res.status(500).json({ error: "Erreur serveur" });
+  }
+});
+
+router.delete("/:id", protect, async (req, res) => {
+  try {
+    const moodId = req.params.id;
+    const mood = await Mood.findOne({ _id: moodId, userId: req.user._id });
+    if (!mood)
+      return res.status(404).json({ result: false, error: "Mood introuvable" });
+
+    await Mood.deleteOne({
+      _id: moodId,
+      userId: req.user._id,
+    });
+    const moods = await Mood.find({ userId: req.user._id });
+    return res.status(200).json({
+      result: true,
+      message: "Mood supprimé",
+      moods: moods,
+    });
+  } catch (error) {
+    console.error("erreur", error);
+    return res.status(500).json({ error: "Erreur serveur" });
+  }
+});
+
+router.get("/period", protect, async (req, res) => {
+  try {
+    const { start, end } = req.query;
+
+    if (!start || !end) {
+      return res.status(400).json({
+        result: false,
+        error:
+          "Les paramètres 'start' et 'end' sont requis (format YYYY-MM-DD)",
+      });
+    }
+
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    if (isNaN(startDate) || isNaN(endDate)) {
+      return res.status(400).json({
+        result: false,
+        error: "Les dates fournies ne sont pas valides",
+      });
+    }
+
+    endDate.setHours(23, 59, 59, 999);
+
+    const moods = await Mood.find({
+      userId: req.user._id,
+      date: { $gte: startDate, $lte: endDate },
+    }).sort({ date: 1 });
+    if (!moods) return res.status(404).json("Pas de moods enregistrés");
+
+    return res.status(200).json({
+      result: true,
+      count: moods.length,
+      message: "Moods récupérés avec succès",
+      moods,
+    });
+  } catch (error) {
+    console.error("Erreur route GET /moods?start=&end= =>", error);
+    return res.status(500).json({ result: false, error: "Erreur serveur" });
   }
 });
 
