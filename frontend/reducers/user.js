@@ -22,8 +22,11 @@ export const userSlice = createSlice({
       state.value.token = "";
       state.value.isLoggedIn = false;
     },
+    changeUsername: (state, action) => {
+      state.value.username = action.payload;
+    },
   },
 });
 
-export const { logIn, logOut } = userSlice.actions;
+export const { logIn, logOut, changeUsername } = userSlice.actions;
 export default userSlice.reducer;

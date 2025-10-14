@@ -10,17 +10,56 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { logOut } from "../reducers/user";
+import { logOut, changeUsername } from "../reducers/user";
 
 export default function SettingsScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [openFrom, setOpenFrom] = useState("");
+  const [succesMessage, setSuccesMessage] = useState("");
   const [error, setError] = useState("");
   const [editUsername, setEditUsername] = useState(false);
   const [editPassword, setEditPassword] = useState(false);
+  const [newUsername, setNewUsername] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [errorEdit, setErrorEdit] = useState("");
   const dispatch = useDispatch();
   const API_URL = process.env.EXPO_PUBLIC_API_URL;
   const user = useSelector((state) => state.user.value);
+
+  const handleEdit = async () => {
+    const body = {
+      username: newUsername,
+      password: oldPassword,
+      newPassword: newPassword,
+    };
+    const res = await fetch(`${API_URL}/users/update`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+
+    if (data.error) {
+      setErrorEdit(data.error);
+      setTimeout(() => setErrorEdit(""), 5000);
+    }
+    if (data.result) {
+      if (newUsername !== "") {
+        dispatch(changeUsername(newUsername));
+      }
+      setSuccesMessage("Changement enregistré");
+      setTimeout(() => setSuccesMessage(""), 3000);
+      setEditPassword(false);
+      setEditUsername(false);
+      setNewUsername("");
+      setNewPassword("");
+      setOldPassword("");
+    }
+  };
 
   const handleLogOut = () => {
     dispatch(logOut());
@@ -51,6 +90,10 @@ export default function SettingsScreen({ navigation }) {
     }
     if (openFrom === "Delete") {
       handleDelete();
+    }
+    if (openFrom === "Edit") {
+      handleEdit();
+      setModalVisible(false);
     }
   };
 
@@ -85,81 +128,150 @@ export default function SettingsScreen({ navigation }) {
           </View>
         </View>
       </Modal>
-      <Text style={styles.settings}>Settings</Text>
-      {editUsername && <TextInput style={styles.input}></TextInput>}
-      <TouchableOpacity
-        style={[
-          styles.bouton,
-          { borderTopEndRadius: 10, borderTopStartRadius: 10 },
-        ]}
-        onPress={() => setEditUsername(!editUsername)}
-      >
-        <Text>{!editUsername ? "Change Username" : "Valider"}</Text>
-      </TouchableOpacity>
-      {editPassword && (
-        <>
-          <TextInput style={styles.input}></TextInput>
-          <TextInput
+      <View style={styles.text}>
+        <Text style={styles.settings}>Settings</Text>
+        <Text style={{ color: "#A48A97", fontWeight: 125 }}>
+          {succesMessage}
+        </Text>
+      </View>
+      <View style={styles.reglages}>
+        <View style={styles.infoUser}>
+          {editUsername && (
+            <>
+              <TouchableOpacity
+                onPress={() => {
+                  setEditUsername(false);
+                  setNewUsername("");
+                }}
+                style={styles.exit}
+              >
+                <Text style={{ fontWeight: "bold" }}>X</Text>
+              </TouchableOpacity>
+              <TextInput
+                style={styles.input}
+                placeholder={user.username}
+                value={newUsername}
+                onChangeText={(value) => setNewUsername(value)}
+              ></TextInput>
+
+              <Text>{errorEdit}</Text>
+            </>
+          )}
+          <TouchableOpacity
             style={[
-              styles.input,
-              { borderTopStartRadius: 0, borderTopEndRadius: 0 },
+              styles.bouton,
+              { borderBottomColor: "#A48A97", borderBottomWidth: 0.5 },
             ]}
-          ></TextInput>
-        </>
-      )}
-      <TouchableOpacity
-        style={styles.bouton}
-        onPress={() => setEditPassword(!editPassword)}
-      >
-        <Text>{!editPassword ? "Change Password" : "Valider"}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[
-          styles.bouton,
-          {
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          },
-        ]}
-      >
-        <Text>Notifications</Text>
-        <Switch></Switch>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[
-          styles.bouton,
-          {
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          },
-        ]}
-      >
-        <Text>Dark Mode</Text>
-        <Switch></Switch>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.bouton}
-        onPress={() => {
-          setModalVisible(true);
-          setOpenFrom("LogOut");
-        }}
-      >
-        <Text>Log Out</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[
-          styles.bouton,
-          { borderBottomEndRadius: 10, borderBottomStartRadius: 10 },
-        ]}
-        onPress={() => {
-          setModalVisible(true);
-          setOpenFrom("Delete");
-        }}
-      >
-        <Text>Delete Account</Text>
-      </TouchableOpacity>
+            onPress={() => {
+              if (!editUsername) {
+                setEditUsername(true);
+              } else {
+                setModalVisible(true);
+                setOpenFrom("Edit");
+              }
+            }}
+          >
+            <Text>{!editUsername ? "Change Username" : "Valider"}</Text>
+          </TouchableOpacity>
+          {editPassword && (
+            <>
+              <TouchableOpacity
+                onPress={() => {
+                  setEditPassword(false);
+                  setNewPassword("");
+                  setOldPassword("");
+                }}
+                style={styles.exit}
+              >
+                <Text style={{ fontWeight: "bold" }}>X</Text>
+              </TouchableOpacity>
+              <TextInput
+                style={styles.input}
+                placeholder="Password"
+                value={oldPassword}
+                onChangeText={(value) => setOldPassword(value)}
+                secureTextEntry={true}
+              ></TextInput>
+              <TextInput
+                style={[styles.input]}
+                placeholder="New Password"
+                value={newPassword}
+                onChangeText={(value) => setNewPassword(value)}
+                secureTextEntry={true}
+              ></TextInput>
+              <Text>{errorEdit}</Text>
+            </>
+          )}
+          <TouchableOpacity
+            style={styles.bouton}
+            onPress={() => {
+              if (!editPassword) {
+                setEditPassword(true);
+              } else {
+                setModalVisible(true);
+                setOpenFrom("Edit");
+              }
+            }}
+          >
+            <Text>{!editPassword ? "Change Password" : "Valider"}</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.mode}>
+          <TouchableOpacity
+            style={[
+              styles.bouton,
+              {
+                borderBottomColor: "#A48A97",
+                borderBottomWidth: 0.5,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingRight: 15,
+              },
+            ]}
+          >
+            <Text>Notifications</Text>
+            <Switch style={{ marginTop: 10 }}></Switch>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.bouton,
+              {
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingRight: 15,
+              },
+            ]}
+          >
+            <Text>Dark Mode</Text>
+            <Switch style={{ marginTop: 10 }}></Switch>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.quitte}>
+          <TouchableOpacity
+            style={[
+              styles.bouton,
+              { borderBottomColor: "#A48A97", borderBottomWidth: 0.5 },
+            ]}
+            onPress={() => {
+              setModalVisible(true);
+              setOpenFrom("LogOut");
+            }}
+          >
+            <Text>Log Out</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.bouton]}
+            onPress={() => {
+              setModalVisible(true);
+              setOpenFrom("Delete");
+            }}
+          >
+            <Text>Delete Account</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
       <Text>{error}</Text>
     </SafeAreaView>
   );
@@ -171,26 +283,66 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
   },
+  text: {
+    marginBottom: 10,
+    alignItems: "center",
+    gap: 15,
+  },
   settings: {
     fontSize: 25,
-    marginBottom: 25,
+
+    color: "#696773",
+  },
+
+  reglages: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 15,
+  },
+  infoUser: {
+    width: "80%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#d8becbff",
+    borderRadius: 10,
+  },
+  exit: {
+    marginLeft: 240,
+    marginTop: 10,
+    marginBottom: 0,
+    width: 45,
+    height: 25,
+    alignItems: "flex-end",
+    justifyContent: "center",
+  },
+  mode: {
+    width: "80%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#d8becbff",
+    borderRadius: 10,
+  },
+  quitte: {
+    width: "80%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#d8becbff",
+    borderRadius: 10,
   },
   bouton: {
-    width: "80%",
+    width: "100%",
     height: 50,
-    backgroundColor: "#d8becbff",
+    backgroundColor: "transparent",
     justifyContent: "center",
     paddingLeft: 15,
-    borderBottomColor: "#A48A97",
-    borderBottomWidth: 0.5,
   },
   input: {
-    backgroundColor: "#fceaf0ff",
+    paddingLeft: 10,
+    backgroundColor: "#e8cedbff",
     width: "80%",
-    height: 30,
+    height: 40,
     borderBottomWidth: 0.2,
-    borderTopStartRadius: 8,
-    borderTopEndRadius: 8,
   },
   modalOverlay: {
     flex: 1,
