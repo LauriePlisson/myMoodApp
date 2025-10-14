@@ -4,16 +4,22 @@ import {
   TouchableOpacity,
   StyleSheet,
   TextInput,
+  Switch,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { logIn } from "../reducers/user";
 
 export default function WelcomeScreen({ navigation }) {
+  const [isDark, setIsdark] = useState(false);
   const [isLogIn, setIsLogIn] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [error, setError] = useState("");
+
+  const dispatch = useDispatch();
 
   const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
@@ -32,11 +38,15 @@ export default function WelcomeScreen({ navigation }) {
         body: JSON.stringify(dataUser),
       });
       const data = await res.json();
-      console.log(data);
-      if (data.error) setError(data.error);
+      // console.log(data);
+      if (data.error) {
+        setError(data.error);
+      }
       if (data.result) {
-        console.log("ok");
-        // navigation.navigate("TabNavigator");
+        dispatch(
+          logIn({ username: data.user.username, token: data.user.token })
+        );
+        navigation.navigate("TabNavigator");
       }
     }
     if (!isLogIn) {
@@ -47,31 +57,58 @@ export default function WelcomeScreen({ navigation }) {
         body: JSON.stringify(dataUser),
       });
       const data = await res.json();
-      console.log(data);
-      if (data.error) setError(data.error);
+      // console.log(data);
+      if (data.error) {
+        setError(data.error);
+      }
       if (data.result) {
-        console.log("ok");
-        // navigation.navigate("TabNavigator");
+        dispatch(
+          logIn({ username: data.user.username, token: data.user.token })
+        );
+        navigation.navigate("TabNavigator");
       }
     }
   };
 
+  const toggleSwitch = () => setIsdark((previousState) => !previousState);
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={[styles.cadre, !isLogIn && styles.cadreSignUp]}>
-        <Text style={styles.welcome}>Welcome to MyMood</Text>
-        <Text>{isLogIn ? "Connexion" : "Création de compte"}</Text>
+    <SafeAreaView
+      style={[styles.container, isDark && { backgroundColor: "#121212" }]}
+    >
+      <View style={styles.dark}>
+        <Text style={isDark && { color: "white" }}>DarkMode</Text>
+        <Switch
+          trackColor={{ false: "#d8becbff", true: "#767577" }}
+          thumbColor={!isDark ? "#fceaf0ff" : "#f4f3f4"}
+          onValueChange={toggleSwitch}
+          value={isDark}
+        />
+      </View>
+      <View
+        style={[
+          styles.cadre,
+          !isLogIn && styles.cadreSignUp,
+          isDark && { backgroundColor: "#1e1e1e" },
+        ]}
+      >
+        <Text style={[styles.welcome, isDark && { color: "white" }]}>
+          Welcome to MyMood
+        </Text>
+        <Text style={isDark && { color: "white" }}>
+          {isLogIn ? "Connexion" : "Création de compte"}
+        </Text>
         <View style={styles.inputs}>
           {!isLogIn && (
             <TextInput
-              style={[styles.input]}
+              style={[styles.input, isDark && styles.inputDark]}
               placeholder="username"
               value={username}
               onChangeText={(value) => setUsername(value)}
             />
           )}
           <TextInput
-            style={styles.input}
+            style={[styles.input, isDark && styles.inputDark]}
             placeholder="email"
             value={email}
             onChangeText={(value) => setEmail(value)}
@@ -79,7 +116,7 @@ export default function WelcomeScreen({ navigation }) {
           />
 
           <TextInput
-            style={styles.input}
+            style={[styles.input, isDark && styles.inputDark]}
             placeholder="pasword"
             value={password}
             onChangeText={(value) => setPassword(value)}
@@ -88,14 +125,14 @@ export default function WelcomeScreen({ navigation }) {
         </View>
         <Text style={styles.erreur}>{error}</Text>
         <TouchableOpacity onPress={() => setIsLogIn(!isLogIn)}>
-          <Text style={styles.text}>
+          <Text style={[styles.text, isDark && { color: "white" }]}>
             {isLogIn
               ? "Pas encore de compte ? Inscris-toi"
               : "Déjà un compte ? Connecte-toi"}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.bouton, styles.logIn]}
+          style={[styles.bouton, styles.logIn, isDark && styles.boutonDark]}
           onPress={() => {
             handleSummit();
           }}
@@ -149,8 +186,9 @@ const styles = StyleSheet.create({
     margin: 5,
     borderRadius: 8,
   },
-  hiddenInput: {
-    opacity: 0,
+  inputDark: {
+    backgroundColor: "#d3ceced8",
+    borderColor: "#b8b8b8d8",
   },
   erreur: {
     color: "red",
@@ -170,10 +208,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  boutonDark: {
+    backgroundColor: "#d3ceced8",
+  },
   logIn: {
     backgroundColor: "#ceafbeff",
   },
   signUp: {
     backgroundColor: "#fceaf0d8",
+  },
+  dark: {
+    flexDirection: "row",
+    alignItems: "center",
+    position: "absolute",
+    top: 60,
+    left: 250,
   },
 });

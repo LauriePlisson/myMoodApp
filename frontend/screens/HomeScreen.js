@@ -7,10 +7,12 @@ import {
 } from "react-native";
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useSelector } from "react-redux";
 
 export default function HomeScreen({ navigation }) {
-  const [note, setNote] = useState("8");
+  const [note, setNote] = useState("");
   const formattedNote = note.padStart(2, "0");
+  const user = useSelector((state) => state.user.value);
 
   const handleValider = () => {
     setNote(formattedNote);
@@ -18,7 +20,7 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.bienvenue}>Bienvenue [name]</Text>
+      <Text style={styles.bienvenue}>Bienvenue {user.username}</Text>
       <Text style={styles.text}>​✨​Note ta journée​✨​​</Text>
       <View style={styles.counterContainer}>
         <View style={styles.panel}>
@@ -72,6 +74,9 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
+  },
+  digit: {
+    fontSize: 50,
   },
   bouton: {
     backgroundColor: "#d8becbff",
