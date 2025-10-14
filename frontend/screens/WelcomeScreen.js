@@ -5,6 +5,11 @@ import {
   StyleSheet,
   TextInput,
   Switch,
+  KeyboardAvoidingView,
+  Keyboard,
+  Platform,
+  TouchableWithoutFeedback,
+  ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState, useEffect } from "react";
@@ -38,7 +43,6 @@ export default function WelcomeScreen({ navigation }) {
         body: JSON.stringify(dataUser),
       });
       const data = await res.json();
-      // console.log(data);
       if (data.error) {
         setError(data.error);
       }
@@ -47,6 +51,7 @@ export default function WelcomeScreen({ navigation }) {
           logIn({ username: data.user.username, token: data.user.token })
         );
         navigation.navigate("TabNavigator");
+        resetField();
       }
     }
     if (!isLogIn) {
@@ -66,80 +71,137 @@ export default function WelcomeScreen({ navigation }) {
           logIn({ username: data.user.username, token: data.user.token })
         );
         navigation.navigate("TabNavigator");
+        resetField();
       }
     }
   };
 
+  const resetField = () => {
+    setEmail("");
+    setPassword("");
+    setUsername("");
+  };
   const toggleSwitch = () => setIsdark((previousState) => !previousState);
 
   return (
     <SafeAreaView
       style={[styles.container, isDark && { backgroundColor: "#121212" }]}
     >
-      <View style={styles.dark}>
+      {/* <View style={styles.dark}>
         <Text style={isDark && { color: "white" }}>DarkMode</Text>
         <Switch
           trackColor={{ false: "#d8becbff", true: "#767577" }}
-          thumbColor={!isDark ? "#fceaf0ff" : "#f4f3f4"}
+          thumbColor={!isDark ? "#e4cbd4ff" : "#f4f3f4"}
           onValueChange={toggleSwitch}
           value={isDark}
         />
-      </View>
-      <View
-        style={[
-          styles.cadre,
-          !isLogIn && styles.cadreSignUp,
-          isDark && { backgroundColor: "#1e1e1e" },
-        ]}
+      </View> */}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <Text style={[styles.welcome, isDark && { color: "white" }]}>
-          Welcome to MyMood
-        </Text>
-        <Text style={isDark && { color: "white" }}>
-          {isLogIn ? "Connexion" : "Création de compte"}
-        </Text>
-        <View style={styles.inputs}>
-          {!isLogIn && (
-            <TextInput
-              style={[styles.input, isDark && styles.inputDark]}
-              placeholder="username"
-              value={username}
-              onChangeText={(value) => setUsername(value)}
-            />
-          )}
-          <TextInput
-            style={[styles.input, isDark && styles.inputDark]}
-            placeholder="email"
-            value={email}
-            onChangeText={(value) => setEmail(value)}
-            keyboardType="email-address"
-          />
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View
+            style={[
+              styles.cadre,
+              !isLogIn && styles.cadreSignUp,
+              isDark && { backgroundColor: "#1e1e1e" },
+            ]}
+          >
+            <View style={styles.titre}>
+              <Text style={[styles.welcome, isDark && { color: "white" }]}>
+                Welcome to{" "}
+              </Text>
+              <Text
+                style={[styles.welcome, { color: "#A48A97" /*"#fceaf0e1"*/ }]}
+              >
+                MyMood
+              </Text>
+            </View>
+            <Text
+              style={[
+                { color: "#c18d9eff" /*"#fceaf0ff"*/ },
+                isDark && { color: "white" },
+              ]}
+            >
+              {isLogIn ? "Connexion" : "Création de compte"}
+            </Text>
+            <View style={styles.inputs}>
+              {!isLogIn && (
+                <TextInput
+                  style={[styles.input, isDark && styles.inputDark]}
+                  placeholder="username"
+                  value={username}
+                  onChangeText={(value) => setUsername(value)}
+                />
+              )}
+              <TextInput
+                style={[styles.input, isDark && styles.inputDark]}
+                placeholder="email"
+                value={email}
+                onChangeText={(value) => setEmail(value)}
+                keyboardType="email-address"
+              />
 
-          <TextInput
-            style={[styles.input, isDark && styles.inputDark]}
-            placeholder="pasword"
-            value={password}
-            onChangeText={(value) => setPassword(value)}
-            secureTextEntry={true}
-          />
-        </View>
-        <Text style={styles.erreur}>{error}</Text>
-        <TouchableOpacity onPress={() => setIsLogIn(!isLogIn)}>
-          <Text style={[styles.text, isDark && { color: "white" }]}>
-            {isLogIn
-              ? "Pas encore de compte ? Inscris-toi"
-              : "Déjà un compte ? Connecte-toi"}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.bouton, styles.logIn, isDark && styles.boutonDark]}
-          onPress={() => {
-            handleSummit();
-          }}
-        >
-          <Text>{isLogIn ? "Log In" : "Sign Up"}</Text>
-        </TouchableOpacity>
-      </View>
+              <TextInput
+                style={[styles.input, isDark && styles.inputDark]}
+                placeholder="pasword"
+                value={password}
+                onChangeText={(value) => setPassword(value)}
+                secureTextEntry={true}
+              />
+            </View>
+            <Text style={styles.erreur}>{error}</Text>
+            <TouchableOpacity
+              onPress={() => {
+                setIsLogIn(!isLogIn);
+                resetField();
+              }}
+            >
+              <Text style={[styles.text, isDark && { color: "white" }]}>
+                {isLogIn ? (
+                  <>
+                    <Text style={{ color: "#403e4aff" }}>
+                      Pas encore de compte?{" "}
+                    </Text>
+                    <Text
+                      style={{
+                        color: "#c18d9eff",
+                        textDecorationLine: "underline",
+                        textDecorationStyle: "solid",
+                      }}
+                    >
+                      Inscris-toi
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    <Text style={{ color: "#403e4aff" }}>Déjà un compte? </Text>
+                    <Text
+                      style={{
+                        color: "#c18d9eff",
+                        textDecorationLine: "underline",
+                        textDecorationStyle: "solid",
+                      }}
+                    >
+                      Connecte-toi
+                    </Text>
+                  </>
+                )}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.bouton, styles.logIn, isDark && styles.boutonDark]}
+              onPress={() => {
+                handleSummit();
+              }}
+            >
+              <Text style={{ color: "#fceaf0ff" }}>
+                {isLogIn ? "Log In" : "Sign Up"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -150,24 +212,26 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fceaf0ff",
-    // gap: 15,
+    // backgroundColor: "#fceaf0ff",
   },
   cadre: {
     borderRadius: 20,
-    width: "80%",
-    height: "45%",
-    justifyContent: "flex-start",
+    width: 300,
+    height: 350,
+    justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#d8becbff",
-    paddingTop: 30,
   },
   cadreSignUp: {
-    height: "50%",
+    height: 400,
+  },
+  titre: {
+    flexDirection: "row",
   },
   welcome: {
     fontSize: 25,
     marginBottom: 10,
+    color: "#403e4aff",
   },
   inputs: {
     marginTop: 10,
@@ -182,7 +246,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     borderWidth: 1,
     borderColor: "#ceafbeff",
-    backgroundColor: "#fceaf0d8",
+    backgroundColor: "#fceaf0e9",
     margin: 5,
     borderRadius: 8,
   },
