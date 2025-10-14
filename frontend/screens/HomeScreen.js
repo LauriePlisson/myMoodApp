@@ -8,6 +8,7 @@ import {
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
+import { Check, X, Sparkles } from "lucide-react-native";
 
 export default function HomeScreen({ navigation }) {
   const [note, setNote] = useState("05");
@@ -26,7 +27,11 @@ export default function HomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.bienvenue}>Bienvenue {user.username}</Text>
-      <Text style={styles.text}>​✨​Note ta journée​✨​​</Text>
+      <View style={{ flexDirection: "row" }}>
+        <Sparkles color={"#d8becbff"} />
+        <Text style={styles.text}>​​Note ta journée​​​</Text>
+        <Sparkles color={"#d8becbff"} />
+      </View>
       <View style={styles.counterContainer}>
         <View style={styles.panel}>
           <TextInput
@@ -40,34 +45,42 @@ export default function HomeScreen({ navigation }) {
           />
         </View>
       </View>
-      {ajoutCom && (
-        <>
+      {!ajoutCom ? (
+        <View style={styles.sectionCom}>
           <TouchableOpacity
-            style={styles.exit}
-            onPress={() => setAjoutCom(false)}
+            style={styles.boutCom}
+            onPress={() => {
+              if (!ajoutCom) {
+                setAjoutCom(true);
+              } else {
+                handleAjouter();
+              }
+            }}
           >
-            <Text style={{ fontWeight: "bold" }}>X</Text>
+            <Text style={styles.valider}>
+              {!ajoutCom ? "Ajoute un commentaire" : "Ajouter"}
+            </Text>
           </TouchableOpacity>
-          <TextInput
-            style={styles.inputCom}
-            placeholder="Ajoute un commentaire..."
-          ></TextInput>
-        </>
+        </View>
+      ) : (
+        <View style={styles.sectionCom}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              width: "100%",
+              gap: 15,
+            }}
+          >
+            <TextInput
+              style={[styles.valider, { borderBottomWidth: 0.2 }]}
+              placeholder="Ajoute un commentaire..."
+            />
+            <Check />
+            <X onPress={() => setAjoutCom(false)} />
+          </View>
+        </View>
       )}
-      <TouchableOpacity
-        style={styles.boutCom}
-        onPress={() => {
-          if (!ajoutCom) {
-            setAjoutCom(true);
-          } else {
-            handleAjouter();
-          }
-        }}
-      >
-        <Text style={styles.valider}>
-          {!ajoutCom ? "Ajoute un commentaire" : "Ajouter"}
-        </Text>
-      </TouchableOpacity>
       <TouchableOpacity
         style={styles.bouton}
         onPress={() => {
@@ -129,7 +142,7 @@ const styles = StyleSheet.create({
   boutCom: {
     borderBottomWidth: 0.5,
     borderBottomColor: "#696773",
-    marginBottom: 15,
+    marginBottom: 10,
   },
   bouton: {
     backgroundColor: "#d8becbff",
@@ -143,5 +156,8 @@ const styles = StyleSheet.create({
     color: "rgba(44, 43, 49, 1)",
     fontSize: 25,
     fontWeight: 100,
+  },
+  sectionCom: {
+    height: 75,
   },
 });
