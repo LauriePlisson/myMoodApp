@@ -1,4 +1,12 @@
-import { Text, View, TouchableOpacity, StyleSheet, Modal } from "react-native";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Modal,
+  TextInput,
+  Switch,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +16,8 @@ export default function SettingsScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [openFrom, setOpenFrom] = useState("");
   const [error, setError] = useState("");
+  const [editUsername, setEditUsername] = useState(false);
+  const [editPassword, setEditPassword] = useState(false);
   const dispatch = useDispatch();
   const API_URL = process.env.EXPO_PUBLIC_API_URL;
   const user = useSelector((state) => state.user.value);
@@ -75,7 +85,60 @@ export default function SettingsScreen({ navigation }) {
           </View>
         </View>
       </Modal>
-      <Text>SettingsScreen</Text>
+      <Text style={styles.settings}>Settings</Text>
+      {editUsername && <TextInput style={styles.input}></TextInput>}
+      <TouchableOpacity
+        style={[
+          styles.bouton,
+          { borderTopEndRadius: 10, borderTopStartRadius: 10 },
+        ]}
+        onPress={() => setEditUsername(!editUsername)}
+      >
+        <Text>{!editUsername ? "Change Username" : "Valider"}</Text>
+      </TouchableOpacity>
+      {editPassword && (
+        <>
+          <TextInput style={styles.input}></TextInput>
+          <TextInput
+            style={[
+              styles.input,
+              { borderTopStartRadius: 0, borderTopEndRadius: 0 },
+            ]}
+          ></TextInput>
+        </>
+      )}
+      <TouchableOpacity
+        style={styles.bouton}
+        onPress={() => setEditPassword(!editPassword)}
+      >
+        <Text>{!editPassword ? "Change Password" : "Valider"}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[
+          styles.bouton,
+          {
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          },
+        ]}
+      >
+        <Text>Notifications</Text>
+        <Switch></Switch>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[
+          styles.bouton,
+          {
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          },
+        ]}
+      >
+        <Text>Dark Mode</Text>
+        <Switch></Switch>
+      </TouchableOpacity>
       <TouchableOpacity
         style={styles.bouton}
         onPress={() => {
@@ -105,17 +168,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
+  },
+  settings: {
+    fontSize: 25,
+    marginBottom: 25,
   },
   bouton: {
     width: "80%",
-    height: 30,
+    height: 50,
     backgroundColor: "#d8becbff",
     justifyContent: "center",
     paddingLeft: 15,
     borderBottomColor: "#A48A97",
     borderBottomWidth: 0.5,
+  },
+  input: {
+    backgroundColor: "#fceaf0ff",
+    width: "80%",
+    height: 30,
+    borderBottomWidth: 0.2,
+    borderTopStartRadius: 8,
+    borderTopEndRadius: 8,
   },
   modalOverlay: {
     flex: 1,
