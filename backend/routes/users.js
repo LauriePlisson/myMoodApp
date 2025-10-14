@@ -36,7 +36,7 @@ router.post("/auth/register", async (req, res) => {
     return res.status(201).json({
       result: true,
       message: "Utilisateur créé avec succès",
-      token,
+      user: { username: newUser.username, token },
     });
   } catch (error) {
     return res.status(500).json({ error: "Erreur serveur" });
@@ -83,6 +83,39 @@ router.delete("/delete", protect, async (req, res) => {
     return res
       .status(200)
       .json({ result: true, message: "utilisateur supprimé" });
+  } catch (error) {
+    return res.status(500).json({ error: "Erreur serveur" });
+  }
+});
+
+router.put("/update", protect, async (req, res) => {
+  try {
+    const { username, password, newPassword } = req.body;
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ result: false, error: "Utilisateur introuvable" });
+    }
+
+    if (username) {
+      if (username.lengt === 0) {
+        return res.status(400).json({ result: false, error: "Username vide" });
+      }
+      user.username = username;
+    }
+
+    if (password && newPassword) {
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) {
+        return res.status(401).json({ error: "Mot de passe actuel incorrect" });
+      }
+      user.password = await bcrypt.hash(newPassword, 10);
+    }
+
+    await user.save();
+    res.status(200).json({ result: true, message: "Profil mis à jour" });
   } catch (error) {
     return res.status(500).json({ error: "Erreur serveur" });
   }
