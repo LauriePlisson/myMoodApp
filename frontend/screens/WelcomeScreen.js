@@ -16,6 +16,7 @@ export default function WelcomeScreen({ navigation }) {
   const [error, setError] = useState("");
 
   const API_URL = process.env.EXPO_PUBLIC_API_URL;
+
   useEffect(() => {
     if (!error) return;
     const timer = setTimeout(() => setError(""), 3000);
