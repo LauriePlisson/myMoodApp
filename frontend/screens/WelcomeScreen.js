@@ -112,14 +112,17 @@ export default function WelcomeScreen({ navigation }) {
                 Welcome to{" "}
               </Text>
               <Text
-                style={[styles.welcome, { color: "#A48A97" /*"#fceaf0e1"*/ }]}
+                style={[
+                  styles.welcome,
+                  { color: "#A48A97", fontWeight: "500" /*"#fceaf0e1"*/ },
+                ]}
               >
                 MyMood
               </Text>
             </View>
             <Text
               style={[
-                { color: "#c18d9eff" /*"#fceaf0ff"*/ },
+                { color: "#c18d9eff", fontWeight: "600" /*"#fceaf0ff"*/ },
                 isDark && { color: "white" },
               ]}
             >
@@ -160,7 +163,7 @@ export default function WelcomeScreen({ navigation }) {
               <Text style={[styles.text, isDark && { color: "white" }]}>
                 {isLogIn ? (
                   <>
-                    <Text style={{ color: "#403e4aff" }}>
+                    <Text style={{ color: "#403e4aff", fontStyle: "italic" }}>
                       Pas encore de compte?{" "}
                     </Text>
                     <Text
@@ -175,7 +178,9 @@ export default function WelcomeScreen({ navigation }) {
                   </>
                 ) : (
                   <>
-                    <Text style={{ color: "#403e4aff" }}>Déjà un compte? </Text>
+                    <Text style={{ color: "#403e4aff", fontStyle: "italic" }}>
+                      Déjà un compte?{" "}
+                    </Text>
                     <Text
                       style={{
                         color: "#c18d9eff",
@@ -212,7 +217,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    // backgroundColor: "#fceaf0ff",
+    // backgroundColor: "rgba(231, 229, 242, 1)" /*"#fceaf0ff"*/,
   },
   cadre: {
     borderRadius: 20,
@@ -232,6 +237,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     marginBottom: 10,
     color: "#403e4aff",
+    fontWeight: "300",
   },
   inputs: {
     marginTop: 10,
@@ -246,7 +252,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     borderWidth: 1,
     borderColor: "#ceafbeff",
-    backgroundColor: "#fceaf0e9",
+    backgroundColor: "#fbe7ede9" /* "rgba(226, 223, 240, 1)"*/,
     margin: 5,
     borderRadius: 8,
   },
