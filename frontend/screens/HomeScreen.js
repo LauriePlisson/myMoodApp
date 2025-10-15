@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import { Check, X, Sparkles } from "lucide-react-native";
 
 export default function HomeScreen({ navigation }) {
+  const [editingMood, setEditingMood] = useState(false);
   const [moodValue, setMoodValue] = useState("05");
   const [moodOfTheDay, setMoodOfTheDay] = useState(null);
   const [succesMessage, setSuccesMessage] = useState("");
@@ -49,9 +50,11 @@ export default function HomeScreen({ navigation }) {
   useFocusEffect(
     useCallback(() => {
       if (moodOfTheDay) {
-        setMoodValue(moodOfTheDay.moodValue.toString());
-        setNote(moodOfTheDay.note || "");
+        updateMoodStates(moodOfTheDay);
+        setEditingMood(false);
       } else {
+        setMoodOfTheDay(null);
+        setEditingMood(true);
         setMoodValue("05");
         setNote("");
       }
@@ -60,7 +63,12 @@ export default function HomeScreen({ navigation }) {
   );
 
   const handleValider = () => {
-    saveMood();
+    if (!editingMood) {
+      setEditingMood(true);
+    } else {
+      saveMood();
+      setEditingMood(false);
+    }
   };
 
   const saveMood = async () => {
@@ -84,10 +92,21 @@ export default function HomeScreen({ navigation }) {
         ? setSuccesMessage("Mood modifié avec succès")
         : setSuccesMessage("Mood du jour enregistré");
       setTimeout(() => setSuccesMessage(""), 4000);
-      setMoodOfTheDay(data.mood);
-      setMoodValue(data.mood.moodValue.toString());
-      setNote(data.mood.note || "");
+      updateMoodStates(data.mood);
     }
+  };
+
+  const updateMoodStates = (mood) => {
+    setMoodOfTheDay(mood);
+    setMoodValue(mood.moodValue.toString());
+    setNote(mood.note || "");
+    setEditingMood(false);
+  };
+
+  const textHome = () => {
+    if (editingMood && moodOfTheDay) return "Modifie ton Mood";
+    if (moodOfTheDay && !editingMood) return "Ton Mood du jour";
+    if (!moodOfTheDay) return "Ajoute ton Mood";
   };
 
   return (
@@ -97,9 +116,7 @@ export default function HomeScreen({ navigation }) {
           <Text style={styles.bienvenue}>Bienvenue {user.username}</Text>
           <View style={{ flexDirection: "row" }}>
             <Sparkles color={"#d8becbff"} />
-            <Text style={styles.text}>
-              ​{!moodOfTheDay ? "​Note ta journée​" : "Modifie ta note"}​​
-            </Text>
+            <Text style={styles.text}>​{textHome()}</Text>
             <Sparkles color={"#d8becbff"} />
           </View>
           <Text>{succesMessage}</Text>
@@ -110,61 +127,68 @@ export default function HomeScreen({ navigation }) {
               {Number(moodValue).toString().padStart(2, "0")}
             </Text>
           </View>
-          <Slider
-            style={[styles.slider]}
-            minimumValue={0}
-            maximumValue={10}
-            step={1}
-            value={Number(moodValue)}
-            onValueChange={(value) => setMoodValue(value.toString())}
-            minimumTrackTintColor="#d8becbff"
-            maximumTrackTintColor="#f7e4eeff"
-            thumbTintColor="#d8becbff"
-          />
-        </View>
-        {!ajoutCom ? (
-          <View style={styles.sectionCom}>
-            <TouchableOpacity
-              style={styles.boutCom}
-              onPress={() => {
-                setAjoutCom(true);
-              }}
-            >
-              <Text style={styles.valider}>
-                {!note ? "Ajoute un commentaire" : `${note}`}
-              </Text>
-            </TouchableOpacity>
+          <View pointerEvents={editingMood ? "auto" : "none"}>
+            <Slider
+              style={[styles.slider]}
+              minimumValue={0}
+              maximumValue={10}
+              step={1}
+              value={Number(moodValue)}
+              onValueChange={(value) => setMoodValue(value.toString())}
+              minimumTrackTintColor={editingMood ? "#d8becbff" : "#d8becbba"}
+              maximumTrackTintColor={editingMood ? "#f7e4eeff" : "#d8becb2b"}
+              thumbTintColor={editingMood ? "#d8becbff" : "#dad0d5a0"}
+            />
           </View>
-        ) : (
-          <View style={styles.sectionCom}>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                width: "100%",
-                gap: 15,
-              }}
-            >
-              <TextInput
-                style={[styles.valider, { borderBottomWidth: 0.2, width: 250 }]}
-                placeholder="Ajoute un commentaire..."
-                value={note}
-                onChangeText={(value) => setNote(value)}
-              />
-              <TouchableOpacity onPress={() => setAjoutCom(false)}>
-                <Check />
-              </TouchableOpacity>
+        </View>
+        <View pointerEvents={editingMood ? "auto" : "none"}>
+          {!ajoutCom ? (
+            <View style={styles.sectionCom}>
               <TouchableOpacity
+                style={styles.boutCom}
                 onPress={() => {
-                  setAjoutCom(false);
-                  setNote("");
+                  setAjoutCom(true);
                 }}
               >
-                <X />
+                <Text style={styles.valider}>
+                  {!note ? "Ajoute un commentaire" : `${note}`}
+                </Text>
               </TouchableOpacity>
             </View>
-          </View>
-        )}
+          ) : (
+            <View style={styles.sectionCom}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  width: "100%",
+                  gap: 15,
+                }}
+              >
+                <TextInput
+                  style={[
+                    styles.valider,
+                    { borderBottomWidth: 0.2, width: 250 },
+                  ]}
+                  placeholder="Ajoute un commentaire..."
+                  value={note}
+                  onChangeText={(value) => setNote(value)}
+                />
+                <TouchableOpacity onPress={() => setAjoutCom(false)}>
+                  <Check />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setAjoutCom(false);
+                    setNote("");
+                  }}
+                >
+                  <X />
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+        </View>
         <TouchableOpacity
           style={styles.bouton}
           onPress={() => {
@@ -172,7 +196,7 @@ export default function HomeScreen({ navigation }) {
           }}
         >
           <Text style={styles.valider}>
-            {!moodOfTheDay ? "Valider" : "Modifier"}
+            {!moodOfTheDay || editingMood ? "Valider" : "Modifier"}
           </Text>
         </TouchableOpacity>
       </SafeAreaView>
@@ -185,13 +209,15 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    // backgroundColor: "#CDD5D1",
+    // backgroundColor: "#efefefff",
   },
   containerText: {
     alignItems: "center",
-    marginBottom: 30,
+    marginBottom: 20,
   },
   bienvenue: {
+    fontSize: 30,
+    fontWeight: 100,
     color: "#A48A97",
   },
   text: {
@@ -200,14 +226,13 @@ const styles = StyleSheet.create({
     color: "#696773",
   },
   counterContainer: {
-    marginBottom: 50,
+    marginBottom: 40,
     justifyContent: "center",
     alignItems: "center",
   },
   panel: {
     width: 150,
     height: 150,
-    marginHorizontal: 6,
     backgroundColor: "#fff",
     borderRadius: 16,
     alignItems: "center",
@@ -227,13 +252,6 @@ const styles = StyleSheet.create({
     height: 30,
     justifyContent: "flex-end",
     alignItems: "center",
-  },
-  inputCom: {
-    height: 50,
-    width: 300,
-    backgroundColor: "white",
-    borderRadius: 10,
-    paddingLeft: 10,
   },
   boutCom: {
     borderBottomWidth: 0.5,

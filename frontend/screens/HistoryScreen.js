@@ -1,7 +1,38 @@
 import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
+import MoodCalendar from "../components/MoodCalendar";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useSelector } from "react-redux";
 
 export default function HistoryScreen() {
+  const [moodsData, setMoodsData] = useState([]);
+  const [selectedMood, setSelectedMood] = useState({});
+  const user = useSelector((state) => state.user.value);
+  const API_URL = process.env.EXPO_PUBLIC_API_URL;
+
+  useEffect(() => {
+    const recupMoods = async () => {
+      const res = await fetch(`${API_URL}/moods/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      const data = await res.json();
+      // console.log(data);
+      setMoodsData(data.moods);
+    };
+    recupMoods();
+  }, []);
+
+  const handleDaySelect = (dateString) => {
+    const mood = dataMoods.find(
+      (m) => new Date(m.date).toISOString().split("T")[0] === dateString
+    );
+    setSelectedMood(mood || null);
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>HistoryScreen</Text>
@@ -15,7 +46,7 @@ export default function HistoryScreen() {
           </TouchableOpacity>
         </View>
         <View style={styles.display}>
-          <Text>coucou</Text>
+          <MoodCalendar moods={moodsData} onDaySelect={handleDaySelect} />
         </View>
       </View>
     </View>
