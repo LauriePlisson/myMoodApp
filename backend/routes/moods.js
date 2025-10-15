@@ -11,6 +11,23 @@ router.post("/", protect, async (req, res) => {
     if (!verif)
       return res.status(400).json({ error: "Tu dois donner une note" });
 
+    const userId = req.user._id;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const existingMood = await Mood.findOne({
+      userId,
+      date: { $gte: today, $lt: tomorrow },
+    });
+    if (existingMood) {
+      return res.status(409).json({
+        result: false,
+        error: "Tu as déjà enregistré ton mood pour aujourd'hui",
+      });
+    }
+
     const newMood = new Mood({
       userId: req.user._id,
       moodValue: req.body.moodValue,
@@ -37,6 +54,41 @@ router.get("/", protect, async (req, res) => {
         error: "Aucun mood trouvé pour cet utilisateur.",
       });
     return res.status(200).json({ result: true, moods: moods });
+  } catch (error) {
+    console.error("erreur", error);
+    return res.status(500).json({ error: "Erreur serveur" });
+  }
+});
+
+router.get("/today", protect, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const moodToday = await Mood.findOne({
+      userId,
+      date: { $gte: today, $lt: tomorrow },
+    });
+
+    if (moodToday) {
+      return res
+        .status(200)
+        .json({
+          result: true,
+          message: "Mood déjà existant pour aujourd'hui",
+          mood: moodToday,
+        });
+    } else {
+      return res
+        .status(200)
+        .json({
+          result: false,
+          message: "Pas de mood enregistré pour aujourd'hui",
+        });
+    }
   } catch (error) {
     console.error("erreur", error);
     return res.status(500).json({ error: "Erreur serveur" });
