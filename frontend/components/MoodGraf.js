@@ -1,6 +1,5 @@
 // import { LineChart } from "react-native-gifted-charts";
 import { View, Text, StyleSheet } from "react-native";
-import { VictoryChart, VictoryLine, VictoryAxis } from "victory-native";
 
 export default function MoodGraf({ data, onDaySelect }) {
   return (

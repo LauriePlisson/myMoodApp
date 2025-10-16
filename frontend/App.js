@@ -3,8 +3,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
-import "react-native-gesture-handler";
-import "react-native-reanimated";
 import user from "./reducers/user";
 import WelcomeScreen from "./screens/WelcomeScreen";
 import HomeScreen from "./screens/HomeScreen";
