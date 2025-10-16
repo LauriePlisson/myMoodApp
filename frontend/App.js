@@ -3,6 +3,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
+import "react-native-gesture-handler";
+import "react-native-reanimated";
 import user from "./reducers/user";
 import WelcomeScreen from "./screens/WelcomeScreen";
 import HomeScreen from "./screens/HomeScreen";
@@ -31,12 +33,8 @@ const TabNavigator = ({ navigation }) => {
         },
         tabBarInactiveTintColor: "#B4A6AB",
         tabBarActiveTintColor: "#A48A97",
-        tabBarStyle: { height: 100 },
-        tabBarLabelStyle: { marginBottom: 10 },
-        tabBarIconStyle: { marginTop: 15 },
         headerTitle: "MyMood",
-        headerTitleStyle: { fontSize: 35, marginBottom: 15, color: "#B4A6AB" },
-        headerStyle: { height: 115 },
+        headerTitleStyle: { fontSize: 35, paddingBottom: 10, color: "#B4A6AB" },
         headerRight: () => {
           return (
             <TouchableOpacity

@@ -84,129 +84,124 @@ export default function WelcomeScreen({ navigation }) {
   const toggleSwitch = () => setIsdark((previousState) => !previousState);
 
   return (
-    <SafeAreaView
-      style={[styles.container, isDark && { backgroundColor: "#121212" }]}
-    >
-      {/* <View style={styles.dark}>
-        <Text style={isDark && { color: "white" }}>DarkMode</Text>
-        <Switch
-          trackColor={{ false: "#d8becbff", true: "#767577" }}
-          thumbColor={!isDark ? "#e4cbd4ff" : "#f4f3f4"}
-          onValueChange={toggleSwitch}
-          value={isDark}
-        />
-      </View> */}
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View
-            style={[
-              styles.cadre,
-              !isLogIn && styles.cadreSignUp,
-              isDark && { backgroundColor: "#1e1e1e" },
-            ]}
+    <SafeAreaView style={[styles.container]}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
           >
-            <View style={styles.titre}>
-              <Text style={[styles.welcome, isDark && { color: "white" }]}>
-                Welcome to{" "}
-              </Text>
-              <Text
-                style={[
-                  styles.welcome,
-                  { color: "#A48A97", fontWeight: "500" /*"#fceaf0e1"*/ },
-                ]}
-              >
-                MyMood
-              </Text>
-            </View>
-            <Text
+            <View
               style={[
-                { color: "#c18d9eff", fontWeight: "600" /*"#fceaf0ff"*/ },
-                isDark && { color: "white" },
+                styles.cadre,
+                !isLogIn && styles.cadreSignUp,
+                isDark && { backgroundColor: "#1e1e1e" },
               ]}
             >
-              {isLogIn ? "Connexion" : "Création de compte"}
-            </Text>
-            <View style={styles.inputs}>
-              {!isLogIn && (
+              <View style={styles.titre}>
+                <Text style={[styles.welcome, isDark && { color: "white" }]}>
+                  Welcome to{" "}
+                </Text>
+                <Text
+                  style={[
+                    styles.welcome,
+                    { color: "#A48A97", fontWeight: "500" /*"#fceaf0e1"*/ },
+                  ]}
+                >
+                  MyMood
+                </Text>
+              </View>
+              <Text
+                style={[
+                  { color: "#c18d9eff", fontWeight: "600" /*"#fceaf0ff"*/ },
+                  isDark && { color: "white" },
+                ]}
+              >
+                {isLogIn ? "Connexion" : "Création de compte"}
+              </Text>
+              <View style={styles.inputs}>
+                {!isLogIn && (
+                  <TextInput
+                    style={[styles.input, isDark && styles.inputDark]}
+                    placeholder="username"
+                    value={username}
+                    onChangeText={(value) => setUsername(value)}
+                  />
+                )}
                 <TextInput
                   style={[styles.input, isDark && styles.inputDark]}
-                  placeholder="username"
-                  value={username}
-                  onChangeText={(value) => setUsername(value)}
+                  placeholder="email"
+                  value={email}
+                  onChangeText={(value) => setEmail(value)}
+                  keyboardType="email-address"
                 />
-              )}
-              <TextInput
-                style={[styles.input, isDark && styles.inputDark]}
-                placeholder="email"
-                value={email}
-                onChangeText={(value) => setEmail(value)}
-                keyboardType="email-address"
-              />
 
-              <TextInput
-                style={[styles.input, isDark && styles.inputDark]}
-                placeholder="pasword"
-                value={password}
-                onChangeText={(value) => setPassword(value)}
-                secureTextEntry={true}
-              />
+                <TextInput
+                  style={[styles.input, isDark && styles.inputDark]}
+                  placeholder="pasword"
+                  value={password}
+                  onChangeText={(value) => setPassword(value)}
+                  secureTextEntry={true}
+                />
+              </View>
+              <Text style={styles.erreur}>{error}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setIsLogIn(!isLogIn);
+                  resetField();
+                }}
+              >
+                <Text style={[styles.text, isDark && { color: "white" }]}>
+                  {isLogIn ? (
+                    <>
+                      <Text style={{ color: "#403e4aff", fontStyle: "italic" }}>
+                        Pas encore de compte?{" "}
+                      </Text>
+                      <Text
+                        style={{
+                          color: "#c18d9eff",
+                          textDecorationLine: "underline",
+                          textDecorationStyle: "solid",
+                        }}
+                      >
+                        Inscris-toi
+                      </Text>
+                    </>
+                  ) : (
+                    <>
+                      <Text style={{ color: "#403e4aff", fontStyle: "italic" }}>
+                        Déjà un compte?{" "}
+                      </Text>
+                      <Text
+                        style={{
+                          color: "#c18d9eff",
+                          textDecorationLine: "underline",
+                          textDecorationStyle: "solid",
+                        }}
+                      >
+                        Connecte-toi
+                      </Text>
+                    </>
+                  )}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.bouton,
+                  styles.logIn,
+                  isDark && styles.boutonDark,
+                ]}
+                onPress={() => {
+                  handleSummit();
+                }}
+              >
+                <Text style={{ color: "#fceaf0ff" }}>
+                  {isLogIn ? "Log In" : "Sign Up"}
+                </Text>
+              </TouchableOpacity>
             </View>
-            <Text style={styles.erreur}>{error}</Text>
-            <TouchableOpacity
-              onPress={() => {
-                setIsLogIn(!isLogIn);
-                resetField();
-              }}
-            >
-              <Text style={[styles.text, isDark && { color: "white" }]}>
-                {isLogIn ? (
-                  <>
-                    <Text style={{ color: "#403e4aff", fontStyle: "italic" }}>
-                      Pas encore de compte?{" "}
-                    </Text>
-                    <Text
-                      style={{
-                        color: "#c18d9eff",
-                        textDecorationLine: "underline",
-                        textDecorationStyle: "solid",
-                      }}
-                    >
-                      Inscris-toi
-                    </Text>
-                  </>
-                ) : (
-                  <>
-                    <Text style={{ color: "#403e4aff", fontStyle: "italic" }}>
-                      Déjà un compte?{" "}
-                    </Text>
-                    <Text
-                      style={{
-                        color: "#c18d9eff",
-                        textDecorationLine: "underline",
-                        textDecorationStyle: "solid",
-                      }}
-                    >
-                      Connecte-toi
-                    </Text>
-                  </>
-                )}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.bouton, styles.logIn, isDark && styles.boutonDark]}
-              onPress={() => {
-                handleSummit();
-              }}
-            >
-              <Text style={{ color: "#fceaf0ff" }}>
-                {isLogIn ? "Log In" : "Sign Up"}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+          </KeyboardAvoidingView>
+        </View>
+      </TouchableWithoutFeedback>
     </SafeAreaView>
   );
 }
@@ -252,13 +247,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     borderWidth: 1,
     borderColor: "#ceafbeff",
-    backgroundColor: "#fbe7ede9" /* "rgba(226, 223, 240, 1)"*/,
+    backgroundColor: "#faecf0e9" /* "rgba(226, 223, 240, 1)"*/,
     margin: 5,
     borderRadius: 8,
-  },
-  inputDark: {
-    backgroundColor: "#d3ceced8",
-    borderColor: "#b8b8b8d8",
   },
   erreur: {
     color: "red",
@@ -278,20 +269,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  boutonDark: {
-    backgroundColor: "#d3ceced8",
-  },
+
   logIn: {
     backgroundColor: "#ceafbeff",
-  },
-  signUp: {
-    backgroundColor: "#fceaf0d8",
-  },
-  dark: {
-    flexDirection: "row",
-    alignItems: "center",
-    position: "absolute",
-    top: 60,
-    left: 250,
   },
 });

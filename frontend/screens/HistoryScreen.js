@@ -43,20 +43,20 @@ export default function HistoryScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>HistoryScreen</Text>
+      <Text style={styles.title}>Tes Moods</Text>
       <View style={styles.centre}>
         <View style={styles.options}>
           <TouchableOpacity
             style={styles.option}
             onPress={() => setViewCalendar(true)}
           >
-            <Text>Calendrier</Text>
+            <Text style={styles.textOption}>Calendrier</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.option}
             onPress={() => setViewCalendar(false)}
           >
-            <Text>Graphique</Text>
+            <Text style={styles.textOption}>Graphique</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.display}>
@@ -79,13 +79,14 @@ const styles = StyleSheet.create({
   },
   title: {
     marginTop: 35,
-    fontSize: 25,
+    fontSize: 40,
+    color: "#696773",
   },
   centre: {
     width: "95%",
     height: "70%",
     gap: 2,
-    marginTop: 30,
+    marginTop: 25,
   },
   options: {
     flexDirection: "row",
@@ -97,15 +98,15 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     backgroundColor: "white",
     borderRadius: 8,
-    width: 90,
-    height: 35,
+    width: 100,
+    height: 40,
     justifyContent: "center",
     alignItems: "center",
   },
+  textOption: {
+    fontSize: 17,
+  },
   display: {
-    // backgroundColor: "#d8becbff",
-    // width: "95%",
-    // borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
   },

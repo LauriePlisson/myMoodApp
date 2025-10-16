@@ -36,18 +36,19 @@ export default function MoodCalendar({ moods, onDaySelect }) {
 
   // Choisir une couleur selon la valeur du mood
   function getColorFromMoodValue(value) {
+    if (!value) return "black";
     if (value <= 2) return "#d0094cff";
-    if (value <= 5) return "#rgba(185, 154, 114, 1)";
-    if (value <= 7) return "#rgba(154, 185, 114, 1)";
+    if (value < 5) return "#rgba(185, 154, 114, 1)";
+    if (value < 7) return "#rgba(143, 148, 3, 1)";
     return "#09d066ff";
   }
 
   function getColorBackgroundFromMoodValue(value) {
     if (!value) return "white";
     if (value <= 2) return "rgba(208, 9, 75, 0.42)";
-    if (value <= 5) return "#rgba(185, 154, 114, 0.42)";
-    if (value <= 7) return "#rgba(154, 185, 114, 0.42)";
-    return "rgba(9, 208, 102, 0.42)";
+    if (value < 5) return "#rgba(237, 155, 48, 0.42)";
+    if (value < 7) return "#rgba(216, 239, 67, 0.42)";
+    return "rgba(22, 240, 124, 0.42)";
   }
   const handleDaySelect = (dateString) => {
     const selectedDate = new Date(dateString);
@@ -122,7 +123,7 @@ export default function MoodCalendar({ moods, onDaySelect }) {
           todayTextColor: "#c10db5ff",
           textSectionTitleColor: "#fceaf0ff",
           monthTextColor: "white",
-          // selectedDayBackgroundColor: "#4a132fff",
+          selectedDayBackgroundColor: "#4a132fff",
           arrowColor: "#fceaf0ff",
         }}
       />
@@ -131,26 +132,38 @@ export default function MoodCalendar({ moods, onDaySelect }) {
           style={[
             styles.carte,
             {
-              backgroundColor: getColorBackgroundFromMoodValue(
+              borderColor: getColorBackgroundFromMoodValue(
                 selectedMood.moodValue
               ),
             },
           ]}
         >
           <View style={[styles.topCarte]}>
-            <Text>
-              Mood du:{" "}
-              {new Date(selectedMood.date).toLocaleDateString("fr-FR", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
-            </Text>
+            <View style={{ flexDirection: "row", gap: 5 }}>
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: getColorFromMoodValue(selectedMood.moodValue),
+                }}
+              >
+                Mood du:{" "}
+              </Text>
+              <Text style={{ fontSize: 15 }}>
+                {new Date(selectedMood.date).toLocaleDateString("fr-FR", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "2-digit",
+                })}
+              </Text>
+            </View>
             <TouchableOpacity
               style={styles.exit}
               onPress={() => setDisplayMood(false)}
             >
-              <X size={20} />
+              <X
+                size={20}
+                color={getColorFromMoodValue(selectedMood.moodValue)}
+              />
             </TouchableOpacity>
           </View>
           {selectedMood.future ? (
@@ -163,12 +176,27 @@ export default function MoodCalendar({ moods, onDaySelect }) {
             <>
               <View style={styles.moodInfo}>
                 <View style={{ flexDirection: "row" }}>
-                  <Text>Note: </Text>
-                  <Text>{selectedMood.moodValue}</Text>
+                  <Text
+                    style={[
+                      styles.moodValue,
+                      { color: getColorFromMoodValue(selectedMood.moodValue) },
+                    ]}
+                  >
+                    {String(selectedMood.moodValue).padStart(2, "0")}
+                  </Text>
                 </View>
-                <View style={{ flexDirection: "row" }}>
-                  <Text>Commentaire: </Text>
-                  <Text>{selectedMood.note}</Text>
+                <View style={styles.com}>
+                  <Text style={{ fontSize: 15, fontStyle: "italic" }}>
+                    Comm:{" "}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 20,
+                    }}
+                  >
+                    {selectedMood.note ? selectedMood.note : "Vide"}
+                  </Text>
+                  <Text style={{ opacity: 0 }}>Comm: </Text>
                 </View>
               </View>
             </>
@@ -196,23 +224,20 @@ const styles = StyleSheet.create({
   },
   carte: {
     backgroundColor: "white",
-    borderColor: "white",
-    borderWidth: 0.5,
+    borderWidth: 2,
     width: 350,
     height: 100,
     borderRadius: 8,
-    paddingLeft: 7,
+    paddingHorizontal: 7,
   },
   topCarte: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginTop: 15,
-    // marginLeft: 5,
+    marginTop: 10,
   },
   exit: {
-    // borderWidth: 1,
-    height: 30,
+    // height: 30,
     width: 50,
     justifyContent: "flex-start",
     alignItems: "center",
@@ -220,5 +245,15 @@ const styles = StyleSheet.create({
   moodInfo: {
     // flexDirection: "row",
     alignItems: "center",
+  },
+  moodValue: {
+    fontSize: 25,
+    marginBottom: 5,
+  },
+  com: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
   },
 });

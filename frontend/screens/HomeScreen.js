@@ -4,7 +4,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   TextInput,
-  KeyboardAvoidingView,
   Platform,
   Keyboard,
   TouchableWithoutFeedback,
@@ -29,19 +28,23 @@ export default function HomeScreen({ navigation }) {
 
   useEffect(() => {
     const fetchToday = async () => {
-      const res = await fetch(`${API_URL}/moods/today`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
-      const data = await res.json();
+      try {
+        const res = await fetch(`${API_URL}/moods/today`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+        const data = await res.json();
 
-      if (data.result && data.mood) {
-        setMoodOfTheDay(data.mood);
-        setMoodValue(data.mood.moodValue.toString());
-        setNote(data.mood.note || "");
+        if (data.result && data.mood) {
+          setMoodOfTheDay(data.mood);
+          setMoodValue(data.mood.moodValue.toString());
+          setNote(data.mood.note || "");
+        }
+      } catch (err) {
+        console.error(err);
       }
     };
     fetchToday();
@@ -63,12 +66,8 @@ export default function HomeScreen({ navigation }) {
   );
 
   const handleValider = () => {
-    if (!editingMood) {
-      setEditingMood(true);
-    } else {
-      saveMood();
-      setEditingMood(false);
-    }
+    saveMood();
+    setEditingMood(false);
   };
 
   const saveMood = async () => {
@@ -111,7 +110,7 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <View style={styles.containerText}>
           <Text style={styles.bienvenue}>Bienvenue {user.username}</Text>
           <View style={{ flexDirection: "row" }}>
@@ -142,7 +141,7 @@ export default function HomeScreen({ navigation }) {
           </View>
         </View>
         <View pointerEvents={editingMood ? "auto" : "none"}>
-          {!ajoutCom ? (
+          {!ajoutCom || !editingMood ? (
             <View style={styles.sectionCom}>
               <TouchableOpacity
                 style={styles.boutCom}
@@ -189,29 +188,46 @@ export default function HomeScreen({ navigation }) {
             </View>
           )}
         </View>
-        <TouchableOpacity
-          style={styles.bouton}
-          onPress={() => {
-            handleValider();
-          }}
-        >
-          <Text style={styles.valider}>
-            {!moodOfTheDay || editingMood ? "Valider" : "Modifier"}
-          </Text>
-        </TouchableOpacity>
-      </SafeAreaView>
+
+        {editingMood && (
+          <TouchableOpacity
+            style={styles.bouton}
+            onPress={() => {
+              handleValider();
+            }}
+          >
+            <Text style={styles.valider}>
+              {!moodOfTheDay ? "Valider" : "Modifier"}
+            </Text>
+          </TouchableOpacity>
+        )}
+        {moodOfTheDay && (
+          <TouchableOpacity
+            onPress={() => {
+              setEditingMood(!editingMood);
+              setAjoutCom(false);
+            }}
+          >
+            <Text style={styles.modif}>
+              {!editingMood ? "Modifier ton Mood?" : "Annuler la modification"}
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
     </TouchableWithoutFeedback>
   );
 }
+// }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    // backgroundColor: "#efefefff",
+    backgroundColor: "#efefefff",
   },
   containerText: {
+    marginTop: 30,
     alignItems: "center",
     marginBottom: 20,
   },
@@ -245,6 +261,9 @@ const styles = StyleSheet.create({
     width: 200,
     height: 40,
   },
+  sectionCom: {
+    height: 60,
+  },
   exit: {
     marginLeft: 300,
     paddingBottom: 10,
@@ -256,7 +275,6 @@ const styles = StyleSheet.create({
   boutCom: {
     borderBottomWidth: 0.5,
     borderBottomColor: "#696773",
-    marginBottom: 10,
   },
   bouton: {
     backgroundColor: "#d8becbff",
@@ -265,13 +283,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 20,
+    marginBottom: 15,
+    marginTop: 0,
   },
   valider: {
     color: "rgba(44, 43, 49, 1)",
     fontSize: 25,
     fontWeight: 100,
   },
-  sectionCom: {
-    height: 75,
+  modif: {
+    color: "#d8becbff",
+    fontWeight: "400",
+    // fontStyle: "italic",
   },
 });
