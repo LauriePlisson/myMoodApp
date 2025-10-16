@@ -6,6 +6,7 @@ import MoodGraf from "../components/MoodGraf";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import { Dimensions } from "react-native";
+import MoodGraftest from "../components/MoodGraftest";
 
 export default function HistoryScreen() {
   const [moodsData, setMoodsData] = useState([]);
@@ -77,6 +78,7 @@ export default function HistoryScreen() {
                 </TouchableOpacity>
               </View>
               <MoodGraf moods={data} />
+              {/* <MoodGraftest moods={data} /> */}
             </>
           )}
         </View>
