@@ -77,8 +77,8 @@ export default function HistoryScreen() {
                   <Text>Année</Text>
                 </TouchableOpacity>
               </View>
-              <MoodGraf moods={data} />
-              {/* <MoodGraftest moods={data} /> */}
+              {/* <MoodGraf moods={data} /> */}
+              <MoodGraftest moods={data} />
             </>
           )}
         </View>
