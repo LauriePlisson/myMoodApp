@@ -24,8 +24,13 @@ export default function MoodGrafGifted({ moods }) {
       dataPointLabelComponent: mood ? null : () => <></>, // évite le rendu d’un label vide
     };
   });
-  const chartWidth = screenWidth - 32;
-  const spacing = chartWidth / (data.length - 1); // répartir exactement
+
+  let lastIndex = data.length - 1;
+  while (lastIndex >= 0 && data[lastIndex].value === null) {
+    lastIndex--;
+  }
+
+  const trimmedData = data.slice(0, lastIndex + 1);
 
   return (
     <View
@@ -33,19 +38,21 @@ export default function MoodGrafGifted({ moods }) {
         alignItems: "center",
         justifyContent: "center",
         paddingVertical: 10,
+        width: 370,
+        height: 270,
         backgroundColor: "white",
         borderRadius: 15,
       }}
     >
+      <Text style={{ marginVertical: 5, marginTop: 20, fontSize: 15 }}>
+        [Octobre]
+      </Text>
       <LineChart
-        data={data}
-        // width={screenWidth - 32}
+        data={trimmedData}
         height={220}
-        width={chartWidth}
-        spacing={spacing}
-        // spacing={(screenWidth - 32) / 31} // répartir les points exactement
+        width={290}
+        spacing={10}
         initialSpacing={0}
-        // hideRules
         rulesColor={"#F095C3"}
         hideYAxisText={false}
         hideDataPoints={false}
@@ -55,14 +62,15 @@ export default function MoodGrafGifted({ moods }) {
         yAxisTextStyle={{ color: "#F095C3" }}
         yAxisColor="#D8BECB"
         xAxisColor="#D8BECB"
+        minValue={0}
         maxValue={10}
         noOfSections={10}
         color="#D8BECB"
-        curved={false} // passe à true si tu veux une courbe lissée
+        curved={true} // passe à true si tu veux une courbe lissée
         thickness={2}
         areaChart // 🔥 active le remplissage sous la courbe
         startFillColor="rgba(237, 132, 184, 0.3)" // début du dégradé
-        endFillColor="rgba(216, 190, 203, 0.0)" // fin du dégradé (transparent)
+        endFillColor="rgba(216, 190, 190, 0)" // fin du dégradé (transparent)
         startOpacity={0.4} // (optionnel) contrôle la transparence de départ
         endOpacity={0.1} // (optionnel) contrôle la transparence à la fin
         dataPointsRadius={5} // 🔹 arrondi du point (petit cercle)
