@@ -13,7 +13,7 @@ export default function HistoryScreen() {
   const [moodsDataFiltered, setMoodsDataFiltered] = useState([]);
   const [viewCalendar, setViewCalendar] = useState(true);
   const [selectedMood, setSelectedMood] = useState({});
-  const [period, setPeriod] = useState("mois"); // "semaine" | "mois" | "année"
+  const [period, setPeriod] = useState("mois");
   const [selectedDate, setSelectedDate] = useState(new Date()); // date de référence
   const user = useSelector((state) => state.user.value);
   const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -139,6 +139,7 @@ export default function HistoryScreen() {
                 moods={dataForChart}
                 period={period}
                 selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
               />
             </>
           )}

@@ -3,10 +3,15 @@ import { View, Text, Dimensions, TouchableOpacity } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
 
-export default function MoodGrafGifted({ moods, period, selectedDate }) {
+export default function MoodGrafGifted({
+  moods,
+  period,
+  selectedDate,
+  setSelectedDate,
+}) {
   let length;
   let getIndex;
-  console.log(selectedDate.getMonth());
+
   if (period === "semaine") {
     length = 7;
     getIndex = (m) => parseInt(m.label, 6) - 1;
@@ -71,6 +76,21 @@ export default function MoodGrafGifted({ moods, period, selectedDate }) {
     } au ${endOfWeek.getDate()}/${endOfWeek.getMonth() + 1}`;
   }
 
+  const handleChevronLeft = () => {
+    if (period === "mois") {
+      const prevMonth = new Date(selectedDate);
+      prevMonth.setMonth(selectedDate.getMonth() - 1);
+      setSelectedDate(prevMonth);
+    }
+  };
+
+  const handleChronRight = () => {
+    if (period === "mois") {
+      const nextMonth = new Date(selectedDate);
+      nextMonth.setMonth(selectedDate.getMonth() + 1);
+      setSelectedDate(nextMonth);
+    }
+  };
   return (
     <View
       style={{
@@ -93,11 +113,11 @@ export default function MoodGrafGifted({ moods, period, selectedDate }) {
           marginTop: 20,
         }}
       >
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => handleChevronLeft()}>
           <ChevronLeft />
         </TouchableOpacity>
         <Text style={{ fontSize: 15 }}>{displayPeriod}</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => handleChronRight()}>
           <ChevronRight />
         </TouchableOpacity>
       </View>
