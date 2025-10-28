@@ -9,39 +9,87 @@ import { Dimensions } from "react-native";
 import MoodGraftest from "../components/MoodGraftest";
 
 export default function HistoryScreen() {
-  const [moodsData, setMoodsData] = useState([]);
+  const [moodsSelectedYear, setMoodsSelectedYear] = useState([]);
+  const [moodsDataFiltered, setMoodsDataFiltered] = useState([]);
   const [viewCalendar, setViewCalendar] = useState(true);
   const [selectedMood, setSelectedMood] = useState({});
+  const [period, setPeriod] = useState("mois"); // "semaine" | "mois" | "année"
+  const [selectedDate, setSelectedDate] = useState(new Date()); // date de référence
   const user = useSelector((state) => state.user.value);
   const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
   useEffect(() => {
-    const recupMoods = async () => {
-      const res = await fetch(`${API_URL}/moods/`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
+    const recupMoodsbyYear = async () => {
+      const currentYear = new Date().getFullYear();
+      const start = `${currentYear}-01-01`;
+      const end = `${currentYear}-12-31`;
+      const res = await fetch(
+        `${API_URL}/moods/period?start=${start}&end=${end}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
       const data = await res.json();
-      setMoodsData(data.moods);
+      setMoodsSelectedYear(data.moods);
     };
-    recupMoods();
+    recupMoodsbyYear();
   }, [viewCalendar]);
 
-  const handleDaySelect = (dateString) => {
-    const mood = dataMoods.find(
-      (m) => new Date(m.date).toISOString().split("T")[0] === dateString
-    );
-    setSelectedMood(mood || null);
-  };
+  const filtrage = moodsSelectedYear
+    .filter((mood) => {
+      const selectedYear = selectedDate.getFullYear();
+      const selectedMonth = selectedDate.getMonth();
+      const dayOfWeek = selectedDate.getDay();
+      const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+      const monday = new Date(selectedDate);
+      monday.setDate(selectedDate.getDate() - diffToMonday);
+      const sunday = new Date(monday);
+      sunday.setDate(monday.getDate() + 6);
 
-  //A MODIFIER POUR QUE QUAND ON APPUIE SUR UN BOUTON CA FILTRE PAR MOIS OU AN
-  const data = [];
-  moodsData.forEach((mood) => {
-    data.push({ value: mood.moodValue, label: mood.date });
-  });
+      const moodDate = new Date(mood.date);
+      const moodMonth = moodDate.getMonth();
+      const moodYear = moodDate.getFullYear();
+
+      if (period === "mois") {
+        return moodMonth === selectedMonth && moodYear === selectedYear;
+      }
+      if (period === "annee") {
+        return moodYear === selectedYear;
+      }
+      if (period === "semaine") {
+        return moodDate >= monday && moodDate <= sunday;
+      }
+    })
+    .map((mood) => ({ value: mood.moodValue, label: mood.date }));
+
+  let dataForChart = [];
+
+  if (period === "annee") {
+    const groupedByMonth = {};
+
+    filtrage.forEach((mood) => {
+      const date = new Date(mood.label);
+      const month = date.getMonth();
+      if (!groupedByMonth[month]) groupedByMonth[month] = [];
+      groupedByMonth[month].push(mood.value);
+    });
+
+    dataForChart = Object.entries(groupedByMonth).map(([month, values]) => {
+      const moyenne = Math.round(
+        values.reduce((acc, val) => acc + val, 0) / values.length
+      );
+      return { label: month, value: moyenne };
+    });
+  } else {
+    dataForChart = filtrage.map((m) => ({
+      label: new Date(m.label).getDate().toString(),
+      value: m.value,
+    }));
+  }
 
   return (
     <View style={styles.container}>
@@ -63,22 +111,35 @@ export default function HistoryScreen() {
         </View>
         <View style={styles.display}>
           {viewCalendar ? (
-            <MoodCalendar moods={moodsData} onDaySelect={handleDaySelect} />
+            <MoodCalendar moods={moodsSelectedYear} />
           ) : (
             <>
               <View style={styles.filtres}>
-                <TouchableOpacity style={styles.filtre}>
+                <TouchableOpacity
+                  style={styles.filtre}
+                  onPress={() => setPeriod("semaine")}
+                >
                   <Text>Semaine</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.filtre}>
+                <TouchableOpacity
+                  style={styles.filtre}
+                  onPress={() => setPeriod("mois")}
+                >
                   <Text>Mois</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.filtre}>
+                <TouchableOpacity
+                  style={styles.filtre}
+                  onPress={() => setPeriod("annee")}
+                >
                   <Text>Année</Text>
                 </TouchableOpacity>
               </View>
               {/* <MoodGraf moods={data} /> */}
-              <MoodGraftest moods={data} />
+              <MoodGraftest
+                moods={dataForChart}
+                period={period}
+                selectedDate={selectedDate}
+              />
             </>
           )}
         </View>

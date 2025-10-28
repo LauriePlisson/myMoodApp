@@ -1,36 +1,75 @@
 import React from "react";
-import { View, Text, Dimensions } from "react-native";
+import { View, Text, Dimensions, TouchableOpacity } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
+import { ChevronLeft, ChevronRight } from "lucide-react-native";
 
-export default function MoodGrafGifted({ moods }) {
-  const screenWidth = Dimensions.get("window").width;
+export default function MoodGrafGifted({ moods, period, selectedDate }) {
+  let length;
+  let getIndex;
+  console.log(selectedDate.getMonth());
+  if (period === "semaine") {
+    length = 7;
+    getIndex = (m) => parseInt(m.label, 6) - 1;
+  } else if (period === "mois") {
+    length = 31;
+    getIndex = (m) => parseInt(m.label, 10) - 1;
+  } else if (period === "annee") {
+    length = 12;
+    getIndex = (m) => m.label;
+  } else {
+    length = 31;
+    getIndex = (m) => m.label;
+  }
 
-  // Formater les dates (on récupère le jour du mois)
-  const formatDate = (dateString) => new Date(dateString).getDate();
+  const data = Array.from({ length }, (_, i) => ({
+    value: null,
+    label: "",
+    onPress: () => {},
+    dataPointLabelComponent: () => <></>,
+  }));
 
-  // Transformer tes données
-  const data = Array.from({ length: 31 }, (_, i) => {
-    const day = i + 1;
-    const mood = moods.find((m) => formatDate(m.label) === day);
-
-    return {
-      value: mood ? mood.value : null, // null => pas de point visible
-      label: "", // pas de label sur l'axe X
-      onPress: () => {
-        if (mood) {
-          console.log(`Jour ${day}: valeur ${mood.value}`);
-        }
-      },
-      dataPointLabelComponent: mood ? null : () => <></>, // évite le rendu d’un label vide
-    };
+  moods.forEach((mood) => {
+    const index = getIndex(mood);
+    if (index >= 0 && index < length) {
+      data[index] = {
+        value: mood.value,
+        label: "", // tu peux mettre le jour/mois si tu veux
+        onPress: () => console.log(`Index ${index}: valeur ${mood.value}`),
+        dataPointLabelComponent: () => <></>,
+      };
+    }
   });
 
   let lastIndex = data.length - 1;
   while (lastIndex >= 0 && data[lastIndex].value === null) {
     lastIndex--;
   }
-
+  let firstDataIndex = data.findIndex((d) => d.value !== null);
+  for (let i = 0; i < firstDataIndex; i++) {
+    data[i].value = 0; // commence à zéro
+  }
   const trimmedData = data.slice(0, lastIndex + 1);
+  const chartWidth = 290;
+  const spacing = chartWidth / (data.length - 1);
+
+  let displayPeriod = "";
+  if (period === "annee") {
+    displayPeriod = selectedDate.getFullYear();
+  } else if (period === "mois") {
+    const monthName = selectedDate.toLocaleString("fr-FR", { month: "long" });
+    const monthNameCapitalized =
+      monthName.charAt(0).toUpperCase() + monthName.slice(1);
+    displayPeriod = `${monthNameCapitalized} ${selectedDate.getFullYear()}`;
+  } else if (period === "semaine") {
+    const dayOfWeek = selectedDate.getDay();
+    const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    selectedDate.setDate(selectedDate.getDate() - diffToMonday);
+    const endOfWeek = new Date(selectedDate);
+    endOfWeek.setDate(selectedDate.getDate() + 6);
+    displayPeriod = `Du ${selectedDate.getDate()}/${
+      selectedDate.getMonth() + 1
+    } au ${endOfWeek.getDate()}/${endOfWeek.getMonth() + 1}`;
+  }
 
   return (
     <View
@@ -44,22 +83,37 @@ export default function MoodGrafGifted({ moods }) {
         borderRadius: 15,
       }}
     >
-      <Text style={{ marginVertical: 5, marginTop: 20, fontSize: 15 }}>
-        [Octobre]
-      </Text>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 15,
+          marginVertical: 5,
+          marginTop: 20,
+        }}
+      >
+        <TouchableOpacity>
+          <ChevronLeft />
+        </TouchableOpacity>
+        <Text style={{ fontSize: 15 }}>{displayPeriod}</Text>
+        <TouchableOpacity>
+          <ChevronRight />
+        </TouchableOpacity>
+      </View>
       <LineChart
         data={trimmedData}
         height={220}
-        width={290}
-        spacing={10}
+        width={chartWidth}
+        spacing={spacing}
         initialSpacing={0}
         rulesColor={"#F095C3"}
         hideYAxisText={false}
         hideDataPoints={false}
         showVerticalLines={false}
-        yAxisThickness={3}
-        xAxisThickness={3}
-        yAxisTextStyle={{ color: "#F095C3" }}
+        yAxisThickness={2}
+        xAxisThickness={2}
+        yAxisTextStyle={{ color: "#F095C3", fontSize: 12 }}
         yAxisColor="#D8BECB"
         xAxisColor="#D8BECB"
         minValue={0}
