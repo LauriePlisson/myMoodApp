@@ -74,20 +74,16 @@ router.get("/today", protect, async (req, res) => {
     });
 
     if (moodToday) {
-      return res
-        .status(200)
-        .json({
-          result: true,
-          message: "Mood déjà existant pour aujourd'hui",
-          mood: moodToday,
-        });
+      return res.status(200).json({
+        result: true,
+        message: "Mood déjà existant pour aujourd'hui",
+        mood: moodToday,
+      });
     } else {
-      return res
-        .status(200)
-        .json({
-          result: false,
-          message: "Pas de mood enregistré pour aujourd'hui",
-        });
+      return res.status(200).json({
+        result: false,
+        message: "Pas de mood enregistré pour aujourd'hui",
+      });
     }
   } catch (error) {
     console.error("erreur", error);
@@ -95,18 +91,18 @@ router.get("/today", protect, async (req, res) => {
   }
 });
 
-router.get("/:id", protect, async (req, res) => {
-  try {
-    const moodId = req.params.id;
-    const mood = await Mood.findOne({ _id: moodId, userId: req.user._id });
-    if (!mood)
-      return res.status(404).json({ result: false, error: "Mood introuvable" });
-    return res.status(200).json({ result: true, mood: mood });
-  } catch (error) {
-    console.error("erreur", error);
-    return res.status(500).json({ error: "Erreur serveur" });
-  }
-});
+// router.get("/:id", protect, async (req, res) => {
+//   try {
+//     const moodId = req.params.id;
+//     const mood = await Mood.findOne({ _id: moodId, userId: req.user._id });
+//     if (!mood)
+//       return res.status(404).json({ result: false, error: "Mood introuvable" });
+//     return res.status(200).json({ result: true, mood: mood });
+//   } catch (error) {
+//     console.error("erreur", error);
+//     return res.status(500).json({ error: "Erreur serveur" });
+//   }
+// });
 
 router.put("/:id", protect, async (req, res) => {
   try {
