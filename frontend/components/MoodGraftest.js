@@ -82,13 +82,33 @@ export default function MoodGrafGifted({
       prevMonth.setMonth(selectedDate.getMonth() - 1);
       setSelectedDate(prevMonth);
     }
+    if (period === "semaine") {
+      const prevWeek = new Date(selectedDate);
+      prevWeek.setDate(prevWeek.getDate() - 7);
+      setSelectedDate(prevWeek);
+    }
+    if (period === "year") {
+      const prevYear = new Date(selectedDate);
+      prevYear.setFullYear(prevYear.getFullYear() - 1);
+      setSelectedDate(prevYear);
+    }
   };
 
-  const handleChronRight = () => {
+  const handleChevronRight = () => {
     if (period === "mois") {
       const nextMonth = new Date(selectedDate);
       nextMonth.setMonth(selectedDate.getMonth() + 1);
       setSelectedDate(nextMonth);
+    }
+    if (period === "semaine") {
+      const nextWeek = new Date(selectedDate);
+      nextWeek.setDate(nextWeek.getDate() + 7);
+      setSelectedDate(nextWeek);
+    }
+    if (period === "year") {
+      const nextYear = new Date(selectedDate);
+      nextYear.setFullYear(nextYear.getFullYear() + 1);
+      setSelectedDate(nextYear);
     }
   };
   return (
@@ -117,7 +137,7 @@ export default function MoodGrafGifted({
           <ChevronLeft />
         </TouchableOpacity>
         <Text style={{ fontSize: 15 }}>{displayPeriod}</Text>
-        <TouchableOpacity onPress={() => handleChronRight()}>
+        <TouchableOpacity onPress={() => handleChevronRight()}>
           <ChevronRight />
         </TouchableOpacity>
       </View>
@@ -140,7 +160,7 @@ export default function MoodGrafGifted({
         maxValue={10}
         noOfSections={10}
         color="#D8BECB"
-        curved={true} // passe à true si tu veux une courbe lissée
+        curved={false}
         thickness={2}
         areaChart // 🔥 active le remplissage sous la courbe
         startFillColor="rgba(237, 132, 184, 0.3)" // début du dégradé

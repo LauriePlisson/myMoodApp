@@ -11,6 +11,7 @@ import SettingsScreen from "./screens/SettingsScreen";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Settings, SmilePlus, History } from "lucide-react-native";
+import { ThemeProvider } from "./context/ThemeContext";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -54,33 +55,35 @@ const TabNavigator = ({ navigation }) => {
 export default function App() {
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen
-            name="Welcome"
-            component={WelcomeScreen}
-            options={{ headerShow: false }}
-          />
-          <Stack.Screen name="TabNavigator" component={TabNavigator} />
-          <Stack.Screen
-            name="Settings"
-            component={SettingsScreen}
-            options={{
-              headerShown: true,
-              headerBackVisible: true,
-              headerTintColor: "#B4A6AB",
-              headerBackTitleVisible: false,
-              title: "MyMOOD",
-              headerTitleStyle: {
-                fontSize: 25,
-                marginBottom: 15,
-                color: "#B4A6AB",
-              },
-              // headerStyle: { height: "50" },
-            }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <ThemeProvider>
+        <NavigationContainer>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen
+              name="Welcome"
+              component={WelcomeScreen}
+              options={{ headerShow: false }}
+            />
+            <Stack.Screen name="TabNavigator" component={TabNavigator} />
+            <Stack.Screen
+              name="Settings"
+              component={SettingsScreen}
+              options={{
+                headerShown: true,
+                headerBackVisible: true,
+                headerTintColor: "#B4A6AB",
+                headerBackTitleVisible: false,
+                title: "MyMOOD",
+                headerTitleStyle: {
+                  fontSize: 25,
+                  marginBottom: 15,
+                  color: "#B4A6AB",
+                },
+                // headerStyle: { height: "50" },
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </ThemeProvider>
     </Provider>
   );
 }

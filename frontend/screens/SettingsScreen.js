@@ -12,6 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logOut, changeUsername } from "../reducers/user";
+import { useTheme } from "../context/ThemeContext";
 
 export default function SettingsScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -24,9 +25,13 @@ export default function SettingsScreen({ navigation }) {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [errorEdit, setErrorEdit] = useState("");
+  const { theme, toggleTheme } = useTheme();
   const dispatch = useDispatch();
   const API_URL = process.env.EXPO_PUBLIC_API_URL;
   const user = useSelector((state) => state.user.value);
+
+  const { colors } = useTheme();
+  const s = styles(colors);
 
   const handleEdit = async () => {
     const body = {
@@ -105,7 +110,7 @@ export default function SettingsScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={s.container}>
       <Modal
         animationType="fade"
         transparent={true}
@@ -115,34 +120,34 @@ export default function SettingsScreen({ navigation }) {
           setModalVisible(!modalVisible);
         }}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
+        <View style={s.modalOverlay}>
+          <View style={s.modalContent}>
             <Text>Es tu sure?</Text>
-            <View style={styles.boutonsModale}>
+            <View style={s.boutonsModale}>
               <TouchableOpacity
-                style={[styles.boutonModale, { backgroundColor: "#fceaf0ff" }]}
+                style={[s.boutonModale, { backgroundColor: "#fceaf0ff" }]}
                 onPress={() => handlePressOui()}
               >
-                <Text style={styles.textStyle}>Oui</Text>
+                <Text style={s.textStyle}>Oui</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.boutonModale, { backgroundColor: "#d8becbff" }]}
+                style={[s.boutonModale, { backgroundColor: "#d8becbff" }]}
                 onPress={() => setModalVisible(false)}
               >
-                <Text style={styles.textStyle}>Non</Text>
+                <Text style={s.textStyle}>Non</Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </Modal>
-      <View style={styles.text}>
-        <Text style={styles.settings}>Settings</Text>
+      <View style={s.text}>
+        <Text style={s.settings}>Réglages</Text>
         <Text style={{ color: "#A48A97", fontWeight: 125 }}>
           {succesMessage}
         </Text>
       </View>
-      <View style={styles.reglages}>
-        <View style={styles.infoUser}>
+      <View style={s.reglages}>
+        <View style={s.infoUser}>
           {editUsername && (
             <>
               <TouchableOpacity
@@ -150,12 +155,15 @@ export default function SettingsScreen({ navigation }) {
                   setEditUsername(false);
                   setNewUsername("");
                 }}
-                style={styles.exit}
+                style={s.exit}
               >
-                <Text style={{ fontWeight: "bold" }}>X</Text>
+                <Text style={{ fontWeight: "bold", color: colors.subtext }}>
+                  X
+                </Text>
               </TouchableOpacity>
               <TextInput
-                style={styles.input}
+                style={s.input}
+                placeholderTextColor={colors.subtext}
                 placeholder={user.username}
                 value={newUsername}
                 onChangeText={(value) => setNewUsername(value)}
@@ -166,7 +174,7 @@ export default function SettingsScreen({ navigation }) {
           )}
           <TouchableOpacity
             style={[
-              styles.bouton,
+              s.bouton,
               { borderBottomColor: "#A48A97", borderBottomWidth: 0.5 },
             ]}
             onPress={() => {
@@ -178,7 +186,9 @@ export default function SettingsScreen({ navigation }) {
               }
             }}
           >
-            <Text>{!editUsername ? "Change Username" : "Valider"}</Text>
+            <Text style={s.subtext}>
+              {!editUsername ? "Change Username" : "Valider"}
+            </Text>
           </TouchableOpacity>
           {editPassword && (
             <>
@@ -188,20 +198,24 @@ export default function SettingsScreen({ navigation }) {
                   setNewPassword("");
                   setOldPassword("");
                 }}
-                style={styles.exit}
+                style={s.exit}
               >
-                <Text style={{ fontWeight: "bold" }}>X</Text>
+                <Text style={{ fontWeight: "bold", color: colors.subtext }}>
+                  X
+                </Text>
               </TouchableOpacity>
               <TextInput
-                style={styles.input}
+                style={[s.input, { marginBottom: 5 }]}
                 placeholder="Password"
                 value={oldPassword}
+                placeholderTextColor={colors.subtext}
                 onChangeText={(value) => setOldPassword(value)}
                 secureTextEntry={true}
               ></TextInput>
               <TextInput
-                style={[styles.input]}
+                style={[s.input]}
                 placeholder="New Password"
+                placeholderTextColor={colors.subtext}
                 value={newPassword}
                 onChangeText={(value) => setNewPassword(value)}
                 secureTextEntry={true}
@@ -210,7 +224,7 @@ export default function SettingsScreen({ navigation }) {
             </>
           )}
           <TouchableOpacity
-            style={styles.bouton}
+            style={s.bouton}
             onPress={() => {
               if (!editPassword) {
                 setEditPassword(true);
@@ -220,13 +234,15 @@ export default function SettingsScreen({ navigation }) {
               }
             }}
           >
-            <Text>{!editPassword ? "Change Password" : "Valider"}</Text>
+            <Text style={s.subtext}>
+              {!editPassword ? "Change Password" : "Valider"}
+            </Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.mode}>
+        <View style={s.mode}>
           <TouchableOpacity
             style={[
-              styles.bouton,
+              s.bouton,
               {
                 borderBottomColor: "#A48A97",
                 borderBottomWidth: 0.5,
@@ -237,12 +253,12 @@ export default function SettingsScreen({ navigation }) {
               },
             ]}
           >
-            <Text>Notifications</Text>
+            <Text style={s.subtext}>Notifications</Text>
             <Switch style={{ marginTop: 10 }}></Switch>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
-              styles.bouton,
+              s.bouton,
               {
                 flexDirection: "row",
                 justifyContent: "space-between",
@@ -251,14 +267,20 @@ export default function SettingsScreen({ navigation }) {
               },
             ]}
           >
-            <Text>Dark Mode</Text>
-            <Switch style={{ marginTop: 10 }}></Switch>
+            <Text style={s.subtext}>Dark Mode</Text>
+            <Switch
+              onValueChange={toggleTheme}
+              value={theme === "dark"}
+              style={{ marginTop: 10 }}
+              trackColor={{ false: "#767577", true: "#2e3034ff" }}
+              thumbColor={theme === "dark" ? "#A48A97" : "#f4f3f4"}
+            ></Switch>
           </TouchableOpacity>
         </View>
-        <View style={styles.quitte}>
+        <View style={s.quitte}>
           <TouchableOpacity
             style={[
-              styles.bouton,
+              s.bouton,
               { borderBottomColor: "#A48A97", borderBottomWidth: 0.5 },
             ]}
             onPress={() => {
@@ -266,16 +288,16 @@ export default function SettingsScreen({ navigation }) {
               setOpenFrom("LogOut");
             }}
           >
-            <Text>Log Out</Text>
+            <Text style={s.subtext}>Log Out</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.bouton]}
+            style={[s.bouton]}
             onPress={() => {
               setModalVisible(true);
               setOpenFrom("Delete");
             }}
           >
-            <Text>Delete Account</Text>
+            <Text style={s.subtext}>Delete Account</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -283,97 +305,107 @@ export default function SettingsScreen({ navigation }) {
     </SafeAreaView>
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "center",
-  },
-  text: {
-    marginBottom: 10,
-    alignItems: "center",
-    gap: 15,
-  },
-  settings: {
-    fontSize: 25,
-
-    color: "#696773",
-  },
-
-  reglages: {
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 15,
-  },
-  infoUser: {
-    width: "80%",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#d8becbff",
-    borderRadius: 10,
-  },
-  exit: {
-    marginLeft: 240,
-    marginTop: 10,
-    marginBottom: 0,
-    width: 45,
-    height: 25,
-    alignItems: "flex-end",
-    justifyContent: "center",
-  },
-  mode: {
-    width: "80%",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#d8becbff",
-    borderRadius: 10,
-  },
-  quitte: {
-    width: "80%",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#d8becbff",
-    borderRadius: 10,
-  },
-  bouton: {
-    width: "100%",
-    height: 50,
-    backgroundColor: "transparent",
-    justifyContent: "center",
-    paddingLeft: 15,
-  },
-  input: {
-    paddingLeft: 10,
-    backgroundColor: "#e8cedbff",
-    width: "80%",
-    height: 40,
-    borderBottomWidth: 0.2,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)", // fond semi-transparent
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalContent: {
-    width: 300,
-    padding: 20,
-    backgroundColor: "#ffffffea",
-    borderRadius: 12,
-    alignItems: "center", // centre le contenu à l'intérieur du cadre
-  },
-  boutonsModale: {
-    marginTop: 15,
-    flexDirection: "row",
-    gap: 15,
-  },
-  boutonModale: {
-    width: 50,
-    height: 30,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+const styles = (colors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      flexDirection: "column",
+      justifyContent: "flex-start",
+      alignItems: "center",
+      backgroundColor: colors.background,
+    },
+    text: {
+      marginBottom: 10,
+      alignItems: "center",
+      gap: 15,
+    },
+    subtext: {
+      color: colors.subtext,
+      fontSize: 17,
+      fontWeight: "400",
+      letterSpacing: 0.3,
+    },
+    settings: {
+      fontSize: 25,
+      color: colors.text,
+    },
+    reglages: {
+      width: "100%",
+      justifyContent: "center",
+      alignItems: "center",
+      gap: 20,
+    },
+    infoUser: {
+      width: "80%",
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: colors.backgroundSettingsCards,
+      borderRadius: 10,
+      height: "auto",
+    },
+    exit: {
+      marginLeft: 240,
+      marginTop: 10,
+      marginBottom: 0,
+      width: 45,
+      height: 25,
+      alignItems: "flex-end",
+      justifyContent: "center",
+    },
+    mode: {
+      width: "80%",
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: colors.backgroundSettingsCards,
+      borderRadius: 10,
+      height: 110,
+    },
+    quitte: {
+      width: "80%",
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: colors.backgroundSettingsCards,
+      borderRadius: 10,
+      height: 110,
+    },
+    bouton: {
+      width: "100%",
+      height: 50,
+      backgroundColor: "transparent",
+      justifyContent: "center",
+      paddingLeft: 15,
+    },
+    input: {
+      paddingLeft: 10,
+      backgroundColor: colors.input,
+      borderRadius: 15,
+      width: "80%",
+      height: 40,
+      borderBottomWidth: 0.2,
+    },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: "rgba(0,0,0,0.5)",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    modalContent: {
+      width: 300,
+      padding: 20,
+      backgroundColor: "#ffffffea",
+      borderRadius: 12,
+      alignItems: "center", // centre le contenu à l'intérieur du cadre
+    },
+    boutonsModale: {
+      marginTop: 15,
+      flexDirection: "row",
+      gap: 15,
+    },
+    boutonModale: {
+      width: 50,
+      height: 30,
+      borderRadius: 10,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+  });
