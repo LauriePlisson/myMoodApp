@@ -113,7 +113,10 @@ export default function HomeScreen({ navigation }) {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <TouchableWithoutFeedback
+      onPress={Keyboard.dismiss}
+      style={{ backgroundColor: colors.background }}
+    >
       <View style={s.container}>
         <View style={s.containerText}>
           <Text style={s.bienvenue}>Bienvenue {user.username}</Text>

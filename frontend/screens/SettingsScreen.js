@@ -327,7 +327,7 @@ const styles = (colors) =>
     },
     settings: {
       fontSize: 25,
-      color: colors.text,
+      color: colors.accent,
     },
     reglages: {
       width: "100%",

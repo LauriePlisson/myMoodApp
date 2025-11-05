@@ -92,13 +92,7 @@ export default function WelcomeScreen({ navigation }) {
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
           >
-            <View
-              style={[
-                s.cadre,
-                !isLogIn && s.cadreSignUp,
-                isDark && { backgroundColor: "#1e1e1e" },
-              ]}
-            >
+            <View style={[s.cadre, !isLogIn && s.cadreSignUp]}>
               <View style={s.titre}>
                 <Text style={[s.welcome]}>Welcome to </Text>
                 <Text
@@ -110,7 +104,6 @@ export default function WelcomeScreen({ navigation }) {
               <Text
                 style={[
                   { color: "#c18d9eff", fontWeight: "600" /*"#fceaf0ff"*/ },
-                  isDark && { color: "white" },
                 ]}
               >
                 {isLogIn ? "Connexion" : "Création de compte"}

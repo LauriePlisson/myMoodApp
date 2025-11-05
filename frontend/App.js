@@ -12,6 +12,8 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Settings, SmilePlus, History } from "lucide-react-native";
 import { ThemeProvider } from "./context/ThemeContext";
+import { useTheme } from "./context/ThemeContext";
+import ThemedSettingsStack from "./components/ThemedSettingsStack";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -20,6 +22,8 @@ const store = configureStore({
 });
 
 const TabNavigator = ({ navigation }) => {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -32,8 +36,17 @@ const TabNavigator = ({ navigation }) => {
         },
         tabBarInactiveTintColor: "#B4A6AB",
         tabBarActiveTintColor: "#A48A97",
+        tabBarStyle: {
+          backgroundColor: isDark ? "#211f22ff" : "#edeaefff",
+          borderTopColor: isDark ? "#3a3a3c" : "#ddd",
+        },
+        headerStyle: {
+          backgroundColor: isDark ? "#211f22ff" : "#edeaefff",
+          // borderBottomColor: isDark ? "#3a3a3c" : "#ddd",
+        },
         headerTitle: "MyMood",
         headerTitleStyle: { fontSize: 35, paddingBottom: 10, color: "#B4A6AB" },
+
         headerRight: () => {
           return (
             <TouchableOpacity
@@ -64,23 +77,7 @@ export default function App() {
               options={{ headerShow: false }}
             />
             <Stack.Screen name="TabNavigator" component={TabNavigator} />
-            <Stack.Screen
-              name="Settings"
-              component={SettingsScreen}
-              options={{
-                headerShown: true,
-                headerBackVisible: true,
-                headerTintColor: "#B4A6AB",
-                headerBackTitleVisible: false,
-                title: "MyMOOD",
-                headerTitleStyle: {
-                  fontSize: 25,
-                  marginBottom: 15,
-                  color: "#B4A6AB",
-                },
-                // headerStyle: { height: "50" },
-              }}
-            />
+            <Stack.Screen name="Settings" component={ThemedSettingsStack} />
           </Stack.Navigator>
         </NavigationContainer>
       </ThemeProvider>
