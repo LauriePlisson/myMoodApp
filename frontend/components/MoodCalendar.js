@@ -3,10 +3,12 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import { X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
+import { useMemo } from "react";
 
 export default function MoodCalendar({ moods, onDaySelect }) {
   const [displayMood, setDisplayMood] = useState(false);
   const [selectedMood, setSelectedMood] = useState({});
+  const { theme } = useTheme();
   const { colors } = useTheme();
   const s = styles(colors);
 
@@ -111,6 +113,22 @@ export default function MoodCalendar({ moods, onDaySelect }) {
   };
   LocaleConfig.defaultLocale = "fr";
 
+  const calendarTheme = useMemo(
+    () => ({
+      backgroundColor: colors.background,
+      calendarBackground: colors.calendarBackground,
+      textSectionTitleColor: "white",
+      dayTextColor: colors.text,
+      textDisabledColor: colors.otherdays,
+      monthTextColor: colors.accent,
+      arrowColor: colors.accent,
+      todayTextColor: colors.accent,
+      selectedDayBackgroundColor: colors.primary,
+      selectedDayTextColor: colors.primary,
+    }),
+    [theme]
+  );
+
   return (
     <View style={s.container}>
       <Calendar
@@ -121,19 +139,12 @@ export default function MoodCalendar({ moods, onDaySelect }) {
           setDisplayMood(true);
         }}
         style={s.calendar}
-        theme={{
-          borderRadius: 8,
-          todayTextColor: "#c10db5ff",
-          textSectionTitleColor: "#fceaf0ff",
-          monthTextColor: "white",
-          selectedDayBackgroundColor: "#4a132fff",
-          arrowColor: "#fceaf0ff",
-        }}
+        theme={calendarTheme}
       />
       {displayMood && (
         <View
           style={[
-            styles.carte,
+            s.carte,
             {
               borderColor: getColorBackgroundFromMoodValue(
                 selectedMood.moodValue
@@ -141,7 +152,7 @@ export default function MoodCalendar({ moods, onDaySelect }) {
             },
           ]}
         >
-          <View style={[styles.topCarte]}>
+          <View style={[s.topCarte]}>
             <View style={{ flexDirection: "row", gap: 5 }}>
               <Text
                 style={{
@@ -151,7 +162,7 @@ export default function MoodCalendar({ moods, onDaySelect }) {
               >
                 Mood du:{" "}
               </Text>
-              <Text style={{ fontSize: 15 }}>
+              <Text style={{ fontSize: 15, color: colors.text }}>
                 {new Date(selectedMood.date).toLocaleDateString("fr-FR", {
                   day: "2-digit",
                   month: "2-digit",
@@ -160,7 +171,7 @@ export default function MoodCalendar({ moods, onDaySelect }) {
               </Text>
             </View>
             <TouchableOpacity
-              style={styles.exit}
+              style={s.exit}
               onPress={() => setDisplayMood(false)}
             >
               <X
@@ -170,31 +181,40 @@ export default function MoodCalendar({ moods, onDaySelect }) {
             </TouchableOpacity>
           </View>
           {selectedMood.future ? (
-            <Text style={{ marginTop: 10 }}>
+            <Text style={{ marginTop: 10, color: colors.text }}>
               Ce jour n’est pas encore arrivé 🕒
             </Text>
           ) : selectedMood.noMood ? (
-            <Text style={{ marginTop: 10 }}>Pas de mood pour ce jour 😶</Text>
+            <Text style={{ marginTop: 10, color: colors.text }}>
+              Pas de mood pour ce jour 😶
+            </Text>
           ) : (
             <>
-              <View style={styles.moodInfo}>
+              <View style={s.moodInfo}>
                 <View style={{ flexDirection: "row" }}>
                   <Text
                     style={[
-                      styles.moodValue,
+                      s.moodValue,
                       { color: getColorFromMoodValue(selectedMood.moodValue) },
                     ]}
                   >
                     {String(selectedMood.moodValue).padStart(2, "0")}
                   </Text>
                 </View>
-                <View style={styles.com}>
-                  <Text style={{ fontSize: 15, fontStyle: "italic" }}>
+                <View style={s.com}>
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      fontStyle: "italic",
+                      color: colors.text,
+                    }}
+                  >
                     Comm:{" "}
                   </Text>
                   <Text
                     style={{
                       fontSize: 20,
+                      color: colors.text,
                     }}
                   >
                     {selectedMood.note ? selectedMood.note : "Vide"}
@@ -227,7 +247,7 @@ const styles = (colors) =>
       width: 350,
     },
     carte: {
-      backgroundColor: "white",
+      backgroundColor: colors.moodCard,
       borderWidth: 2,
       width: 350,
       height: 100,

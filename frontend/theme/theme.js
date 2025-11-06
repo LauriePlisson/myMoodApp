@@ -11,21 +11,13 @@ export const lightTheme = {
     input: "#faecf0e9",
     bouton: "#ceafbeff",
     borderInputColor: "#ceafbeff",
-    numberPanel: "#fff",
+    panel: "#fff",
     number: "black",
-  },
-  // tokens utilitaires (optionnel)
-  spacing: {
-    xs: 4,
-    sm: 8,
-    md: 16,
-    lg: 24,
-    xl: 32,
-  },
-  radius: {
-    sm: 6,
-    md: 12,
-    lg: 20,
+    moodCard: "#fff",
+    calendarBackground: "#fff",
+    otherdays: "#ceafbeff",
+    textOption: "#c18d9eff",
+    optionBouton: "#fff",
   },
 };
 
@@ -42,24 +34,16 @@ export const darkTheme = {
     bouton: "#ae97a2ff",
     borderInputColor: "#917e87ff",
     accent: "#c18d9eff",
-    numberPanel: "#211f22ff",
+    panel: "#211f22ff",
     number: "#c18d9eff",
-  },
-  spacing: {
-    xs: 4,
-    sm: 8,
-    md: 16,
-    lg: 24,
-    xl: 32,
-  },
-  radius: {
-    sm: 6,
-    md: 12,
-    lg: 20,
+    moodCard: "#39353ed8",
+    calendarBackground: "#121314ff",
+    otherdays: "#605e6aff",
+    textOption: "#f4b9cec6",
+    optionBouton: "#39353ed8",
   },
 };
 
-// util export pratique
 export const themes = {
   light: lightTheme,
   dark: darkTheme,

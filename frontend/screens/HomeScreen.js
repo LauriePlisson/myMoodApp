@@ -255,7 +255,7 @@ const styles = (colors) =>
     panel: {
       width: 150,
       height: 150,
-      backgroundColor: colors.numberPanel,
+      backgroundColor: colors.panel,
       borderRadius: 16,
       alignItems: "center",
       justifyContent: "center",

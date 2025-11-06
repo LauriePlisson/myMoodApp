@@ -94,6 +94,19 @@ export default function HistoryScreen() {
     }));
   }
 
+  let styleMois = {};
+  if (period === "mois") {
+    styleMois = { color: colors.accent };
+  }
+  let styleSemaine = {};
+  if (period === "semaine") {
+    styleSemaine = { color: colors.accent };
+  }
+  let styleAnnee = {};
+  if (period === "annee") {
+    styleAnnee = { color: colors.accent };
+  }
+
   return (
     <View style={s.container}>
       <Text style={s.title}>Tes Moods</Text>
@@ -103,13 +116,31 @@ export default function HistoryScreen() {
             style={s.option}
             onPress={() => setViewCalendar(true)}
           >
-            <Text style={s.textOption}>Calendrier</Text>
+            <Text
+              style={[
+                s.textOption,
+                viewCalendar
+                  ? { color: colors.textOption }
+                  : { color: colors.secondary },
+              ]}
+            >
+              Calendrier
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={s.option}
             onPress={() => setViewCalendar(false)}
           >
-            <Text style={s.textOption}>Graphique</Text>
+            <Text
+              style={[
+                s.textOption,
+                !viewCalendar
+                  ? { color: colors.textOption }
+                  : { color: colors.secondary },
+              ]}
+            >
+              Graphique
+            </Text>
           </TouchableOpacity>
         </View>
         <View style={s.display}>
@@ -119,22 +150,22 @@ export default function HistoryScreen() {
             <>
               <View style={s.filtres}>
                 <TouchableOpacity
-                  style={s.filtre}
+                  style={[s.filtre]}
                   onPress={() => setPeriod("semaine")}
                 >
-                  <Text>Semaine</Text>
+                  <Text style={styleSemaine}>Semaine</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={s.filtre}
                   onPress={() => setPeriod("mois")}
                 >
-                  <Text>Mois</Text>
+                  <Text style={styleMois}>Mois</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={s.filtre}
                   onPress={() => setPeriod("annee")}
                 >
-                  <Text>Année</Text>
+                  <Text style={styleAnnee}>Année</Text>
                 </TouchableOpacity>
               </View>
               {/* <MoodGraf moods={data} /> */}
@@ -180,7 +211,7 @@ const styles = (colors) =>
     option: {
       textAlign: "centre",
       marginLeft: 5,
-      backgroundColor: "white",
+      backgroundColor: colors.optionBouton,
       borderRadius: 8,
       width: 100,
       height: 40,
@@ -189,6 +220,7 @@ const styles = (colors) =>
     },
     textOption: {
       fontSize: 17,
+      color: colors.textOption,
     },
     display: {
       justifyContent: "center",
@@ -205,7 +237,7 @@ const styles = (colors) =>
     filtre: {
       textAlign: "centre",
       marginLeft: 5,
-      backgroundColor: "white",
+      backgroundColor: colors.optionBouton,
       borderRadius: 8,
       width: 80,
       height: 30,
