@@ -2,10 +2,13 @@ import { Calendar, LocaleConfig } from "react-native-calendars";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import { X } from "lucide-react-native";
+import { useTheme } from "../context/ThemeContext";
 
 export default function MoodCalendar({ moods, onDaySelect }) {
   const [displayMood, setDisplayMood] = useState(false);
   const [selectedMood, setSelectedMood] = useState({});
+  const { colors } = useTheme();
+  const s = styles(colors);
 
   function formatLocalDate(dateString) {
     const date = new Date(dateString);
@@ -109,7 +112,7 @@ export default function MoodCalendar({ moods, onDaySelect }) {
   LocaleConfig.defaultLocale = "fr";
 
   return (
-    <View style={styles.container}>
+    <View style={s.container}>
       <Calendar
         markingType={"custom"}
         markedDates={markedDates}
@@ -117,7 +120,7 @@ export default function MoodCalendar({ moods, onDaySelect }) {
           handleDaySelect(day.dateString);
           setDisplayMood(true);
         }}
-        style={styles.calendar}
+        style={s.calendar}
         theme={{
           borderRadius: 8,
           todayTextColor: "#c10db5ff",
@@ -207,53 +210,54 @@ export default function MoodCalendar({ moods, onDaySelect }) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    height: "100%",
-    width: "100%",
-    marginTop: 30,
-    gap: 15,
-    justifyContent: "flex-start",
-    alignItems: "center",
-  },
-  calendar: {
-    borderRadius: 8,
-    backgroundColor: "#d8becbff",
-    paddingBottom: 5,
-    width: 350,
-  },
-  carte: {
-    backgroundColor: "white",
-    borderWidth: 2,
-    width: 350,
-    height: 100,
-    borderRadius: 8,
-    paddingHorizontal: 7,
-  },
-  topCarte: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 10,
-  },
-  exit: {
-    // height: 30,
-    width: 50,
-    justifyContent: "flex-start",
-    alignItems: "center",
-  },
-  moodInfo: {
-    // flexDirection: "row",
-    alignItems: "center",
-  },
-  moodValue: {
-    fontSize: 25,
-    marginBottom: 5,
-  },
-  com: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-  },
-});
+const styles = (colors) =>
+  StyleSheet.create({
+    container: {
+      height: "100%",
+      width: "100%",
+      marginTop: 30,
+      gap: 15,
+      justifyContent: "flex-start",
+      alignItems: "center",
+    },
+    calendar: {
+      borderRadius: 8,
+      backgroundColor: colors.card,
+      paddingBottom: 5,
+      width: 350,
+    },
+    carte: {
+      backgroundColor: "white",
+      borderWidth: 2,
+      width: 350,
+      height: 100,
+      borderRadius: 8,
+      paddingHorizontal: 7,
+    },
+    topCarte: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginTop: 10,
+    },
+    exit: {
+      // height: 30,
+      width: 50,
+      justifyContent: "flex-start",
+      alignItems: "center",
+    },
+    moodInfo: {
+      // flexDirection: "row",
+      alignItems: "center",
+    },
+    moodValue: {
+      fontSize: 25,
+      marginBottom: 5,
+    },
+    com: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      width: "100%",
+    },
+  });

@@ -8,10 +8,11 @@ export const lightTheme = {
     primary: "#A48A97",
     secondary: "#403e4aff",
     accent: "#c18d9eff",
-    backgroundSettingsCards: "#d8becbff",
     input: "#faecf0e9",
     bouton: "#ceafbeff",
     borderInputColor: "#ceafbeff",
+    numberPanel: "#fff",
+    number: "black",
   },
   // tokens utilitaires (optionnel)
   spacing: {
@@ -37,11 +38,12 @@ export const darkTheme = {
     subtext: "#836876ff",
     primary: "#725d68ff",
     secondary: "#605e6aff",
-    backgroundSettingsCards: "#211f22ff",
     input: "#39353ed8",
     bouton: "#ae97a2ff",
     borderInputColor: "#917e87ff",
     accent: "#c18d9eff",
+    numberPanel: "#211f22ff",
+    number: "#c18d9eff",
   },
   spacing: {
     xs: 4,

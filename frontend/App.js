@@ -42,7 +42,9 @@ const TabNavigator = ({ navigation }) => {
         },
         headerStyle: {
           backgroundColor: isDark ? "#211f22ff" : "#edeaefff",
-          // borderBottomColor: isDark ? "#3a3a3c" : "#ddd",
+          shadowColor: "transparent",
+          elevation: 0,
+          borderBottomWidth: 0,
         },
         headerTitle: "MyMood",
         headerTitleStyle: { fontSize: 35, paddingBottom: 10, color: "#B4A6AB" },

@@ -120,12 +120,10 @@ export default function HomeScreen({ navigation }) {
       <View style={s.container}>
         <View style={s.containerText}>
           <Text style={s.bienvenue}>Bienvenue {user.username}</Text>
-          <View style={{ flexDirection: "row" }}>
-            <Sparkles color={"#d8becbff"} />
-            <Text style={s.text}>​{textHome()}</Text>
-            <Sparkles color={"#d8becbff"} />
-          </View>
-          <Text>{succesMessage}</Text>
+
+          <Text style={s.text}>​{textHome()}</Text>
+
+          <Text style={{ color: colors.accent }}>{succesMessage}</Text>
         </View>
         <View style={s.counterContainer}>
           <View style={s.panel}>
@@ -133,19 +131,21 @@ export default function HomeScreen({ navigation }) {
               {Number(moodValue).toString().padStart(2, "0")}
             </Text>
           </View>
-          <View pointerEvents={editingMood ? "auto" : "none"}>
-            <Slider
-              style={[s.slider]}
-              minimumValue={0}
-              maximumValue={10}
-              step={1}
-              value={Number(moodValue)}
-              onValueChange={(value) => setMoodValue(value.toString())}
-              minimumTrackTintColor={editingMood ? "#d8becbff" : "#d8becbba"}
-              maximumTrackTintColor={editingMood ? "#f7e4eeff" : "#d8becb2b"}
-              thumbTintColor={editingMood ? "#d8becbff" : "#dad0d5a0"}
-            />
-          </View>
+          {editingMood && (
+            <View>
+              <Slider
+                style={[s.slider]}
+                minimumValue={0}
+                maximumValue={10}
+                step={1}
+                value={Number(moodValue)}
+                onValueChange={(value) => setMoodValue(value.toString())}
+                minimumTrackTintColor={colors.accent}
+                maximumTrackTintColor={colors.card}
+                thumbTintColor={colors.accent}
+              />
+            </View>
+          )}
         </View>
         <View pointerEvents={editingMood ? "auto" : "none"}>
           {!ajoutCom || !editingMood ? (
@@ -156,8 +156,8 @@ export default function HomeScreen({ navigation }) {
                   setAjoutCom(true);
                 }}
               >
-                <Text style={s.valider}>
-                  {!note ? "Ajoute un commentaire" : `${note}`}
+                <Text style={s.input}>
+                  {!note ? "Ajoute un commentaire" : `Commentaire : ${note}`}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -172,13 +172,14 @@ export default function HomeScreen({ navigation }) {
                 }}
               >
                 <TextInput
-                  style={[s.valider, { borderBottomWidth: 0.2, width: 250 }]}
+                  style={[s.input, { borderBottomWidth: 0.2, width: 250 }]}
                   placeholder="Ajoute un commentaire..."
+                  placeholderTextColor={colors.subtext}
                   value={note}
                   onChangeText={(value) => setNote(value)}
                 />
                 <TouchableOpacity onPress={() => setAjoutCom(false)}>
-                  <Check />
+                  <Check style={{ color: colors.text }} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
@@ -186,7 +187,7 @@ export default function HomeScreen({ navigation }) {
                     setNote("");
                   }}
                 >
-                  <X />
+                  <X style={{ color: colors.text }} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -254,13 +255,14 @@ const styles = (colors) =>
     panel: {
       width: 150,
       height: 150,
-      backgroundColor: "#fff",
+      backgroundColor: colors.numberPanel,
       borderRadius: 16,
       alignItems: "center",
       justifyContent: "center",
     },
     digit: {
       fontSize: 50,
+      color: colors.number,
     },
     slider: {
       width: 200,
@@ -269,20 +271,17 @@ const styles = (colors) =>
     sectionCom: {
       height: 60,
     },
-    exit: {
-      marginLeft: 300,
-      paddingBottom: 10,
-      width: 50,
-      height: 30,
-      justifyContent: "flex-end",
-      alignItems: "center",
-    },
     boutCom: {
       borderBottomWidth: 0.5,
       borderBottomColor: "#696773",
     },
+    input: {
+      color: colors.text,
+      fontSize: 25,
+      fontWeight: 100,
+    },
     bouton: {
-      backgroundColor: "#d8becbff",
+      backgroundColor: colors.bouton,
       width: 120,
       height: 65,
       alignItems: "center",
@@ -292,13 +291,12 @@ const styles = (colors) =>
       marginTop: 0,
     },
     valider: {
-      color: "rgba(44, 43, 49, 1)",
+      color: colors.secondary,
       fontSize: 25,
       fontWeight: 100,
     },
     modif: {
-      color: "#d8becbff",
+      color: colors.accent,
       fontWeight: "400",
-      // fontStyle: "italic",
     },
   });
