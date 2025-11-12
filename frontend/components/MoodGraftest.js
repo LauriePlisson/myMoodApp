@@ -1,7 +1,14 @@
 import React from "react";
-import { View, Text, Dimensions, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Dimensions,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { LineChart } from "react-native-gifted-charts";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
+import { useTheme } from "../context/ThemeContext";
 
 export default function MoodGrafGifted({
   moods,
@@ -11,6 +18,9 @@ export default function MoodGrafGifted({
 }) {
   let length;
   let getIndex;
+  const { theme } = useTheme();
+  const { colors } = useTheme();
+  const s = styles(colors);
 
   if (period === "semaine") {
     length = 7;
@@ -112,33 +122,16 @@ export default function MoodGrafGifted({
     }
   };
   return (
-    <View
-      style={{
-        alignItems: "center",
-        justifyContent: "center",
-        paddingVertical: 10,
-        width: 370,
-        height: 270,
-        backgroundColor: "white",
-        borderRadius: 15,
-      }}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 15,
-          marginVertical: 5,
-          marginTop: 20,
-        }}
-      >
+    <View style={s.container}>
+      <View style={s.grafInfo}>
         <TouchableOpacity onPress={() => handleChevronLeft()}>
-          <ChevronLeft />
+          <ChevronLeft color={colors.grafText} />
         </TouchableOpacity>
-        <Text style={{ fontSize: 15 }}>{displayPeriod}</Text>
+        <Text style={{ fontSize: 15, color: colors.grafText }}>
+          {displayPeriod}
+        </Text>
         <TouchableOpacity onPress={() => handleChevronRight()}>
-          <ChevronRight />
+          <ChevronRight color={colors.grafText} />
         </TouchableOpacity>
       </View>
       <LineChart
@@ -147,13 +140,13 @@ export default function MoodGrafGifted({
         width={chartWidth}
         spacing={spacing}
         initialSpacing={0}
-        rulesColor={"#F095C3"}
+        rulesColor={colors.grafRules}
         hideYAxisText={false}
         hideDataPoints={false}
         showVerticalLines={false}
         yAxisThickness={2}
         xAxisThickness={2}
-        yAxisTextStyle={{ color: "#F095C3", fontSize: 12 }}
+        yAxisTextStyle={{ color: colors.grafRules, fontSize: 12 }}
         yAxisColor="#D8BECB"
         xAxisColor="#D8BECB"
         minValue={0}
@@ -168,7 +161,8 @@ export default function MoodGrafGifted({
         startOpacity={0.4} // (optionnel) contrôle la transparence de départ
         endOpacity={0.1} // (optionnel) contrôle la transparence à la fin
         dataPointsRadius={5} // 🔹 arrondi du point (petit cercle)
-        dataPointsColor="#F095C3"
+        dataPointsColor={colors.grafRules}
+        // backgroundColor={colors.background}
         // animateOnDataChange
         // animationDuration={800}
         // pointerConfig={{
@@ -200,3 +194,24 @@ export default function MoodGrafGifted({
     </View>
   );
 }
+
+const styles = (colors) =>
+  StyleSheet.create({
+    container: {
+      alignItems: "center",
+      justifyContent: "center",
+      paddingVertical: 10,
+      width: 370,
+      height: 300,
+      backgroundColor: colors.grafBackColor,
+      borderRadius: 15,
+    },
+    grafInfo: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 15,
+      marginVertical: 5,
+      marginTop: 20,
+    },
+  });

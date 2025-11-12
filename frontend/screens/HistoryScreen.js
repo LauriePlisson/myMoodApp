@@ -97,14 +97,20 @@ export default function HistoryScreen() {
   let styleMois = {};
   if (period === "mois") {
     styleMois = { color: colors.accent };
+  } else {
+    styleMois = { color: colors.secondary };
   }
   let styleSemaine = {};
   if (period === "semaine") {
     styleSemaine = { color: colors.accent };
+  } else {
+    styleSemaine = { color: colors.secondary };
   }
   let styleAnnee = {};
   if (period === "annee") {
     styleAnnee = { color: colors.accent };
+  } else {
+    styleAnnee = { color: colors.secondary };
   }
 
   return (

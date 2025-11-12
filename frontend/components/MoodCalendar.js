@@ -1,6 +1,7 @@
 import { Calendar, LocaleConfig } from "react-native-calendars";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import { useState, useCallback } from "react";
 import { X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
 import { useMemo } from "react";
@@ -8,6 +9,7 @@ import { useMemo } from "react";
 export default function MoodCalendar({ moods, onDaySelect }) {
   const [displayMood, setDisplayMood] = useState(false);
   const [selectedMood, setSelectedMood] = useState({});
+  const [refreshKey, setRefreshKey] = useState(0);
   const { theme } = useTheme();
   const { colors } = useTheme();
   const s = styles(colors);
@@ -27,8 +29,6 @@ export default function MoodCalendar({ moods, onDaySelect }) {
           backgroundColor: getColorBackgroundFromMoodValue(mood.moodValue),
           borderRadius: 30,
           borderColor: getColorFromMoodValue(mood.moodValue),
-          // width: 30,
-          // height: 30,
           justifyContent: "center",
           alignItems: "center",
         },
@@ -113,6 +113,12 @@ export default function MoodCalendar({ moods, onDaySelect }) {
   };
   LocaleConfig.defaultLocale = "fr";
 
+  useFocusEffect(
+    useCallback(() => {
+      setRefreshKey((prev) => prev + 1);
+    }, [])
+  );
+
   const calendarTheme = useMemo(
     () => ({
       backgroundColor: colors.background,
@@ -132,6 +138,7 @@ export default function MoodCalendar({ moods, onDaySelect }) {
   return (
     <View style={s.container}>
       <Calendar
+        key={refreshKey}
         markingType={"custom"}
         markedDates={markedDates}
         onDayPress={(day) => {
@@ -201,26 +208,34 @@ export default function MoodCalendar({ moods, onDaySelect }) {
                     {String(selectedMood.moodValue).padStart(2, "0")}
                   </Text>
                 </View>
-                <View style={s.com}>
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      fontStyle: "italic",
-                      color: colors.text,
-                    }}
+                {selectedMood.note ? (
+                  <View style={s.com}>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        fontStyle: "italic",
+                        color: colors.text,
+                      }}
+                    >
+                      Comm:{" "}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 20,
+                        color: colors.text,
+                      }}
+                    >
+                      {selectedMood.note}
+                    </Text>
+                    <Text style={{ opacity: 0 }}>Comm: </Text>
+                  </View>
+                ) : (
+                  <View
+                    style={{ alignItems: "center", justifyContent: "center" }}
                   >
-                    Comm:{" "}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 20,
-                      color: colors.text,
-                    }}
-                  >
-                    {selectedMood.note ? selectedMood.note : "Vide"}
-                  </Text>
-                  <Text style={{ opacity: 0 }}>Comm: </Text>
-                </View>
+                    <Text>Pas de commentaire</Text>
+                  </View>
+                )}
               </View>
             </>
           )}
@@ -261,13 +276,11 @@ const styles = (colors) =>
       marginTop: 10,
     },
     exit: {
-      // height: 30,
       width: 50,
       justifyContent: "flex-start",
       alignItems: "center",
     },
     moodInfo: {
-      // flexDirection: "row",
       alignItems: "center",
     },
     moodValue: {

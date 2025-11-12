@@ -18,6 +18,9 @@ export const lightTheme = {
     otherdays: "#ceafbeff",
     textOption: "#c18d9eff",
     optionBouton: "#fff",
+    grafBackColor: "#fff",
+    grafRules: "#F095C3",
+    grafText: "black",
   },
 };
 
@@ -41,6 +44,9 @@ export const darkTheme = {
     otherdays: "#605e6aff",
     textOption: "#f4b9cec6",
     optionBouton: "#39353ed8",
+    grafBackColor: "#211f22ff",
+    grafRules: "#f4b9cec6",
+    grafText: "#f4b9cec6",
   },
 };
 
