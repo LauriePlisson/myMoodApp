@@ -229,14 +229,13 @@ const styles = (colors) =>
       color: colors.textOption,
     },
     display: {
-      justifyContent: "center",
+      justifyContent: "flex-start",
       alignItems: "center",
     },
     filtres: {
       borderTopWidth: 1,
       borderTopColor: ` rgba(216, 190, 203,1)`,
       paddingTop: 15,
-      marginBottom: 20,
       flexDirection: "row",
       gap: 15,
     },

@@ -39,7 +39,6 @@ export default function MoodCalendar({ moods, onDaySelect }) {
     };
   });
 
-  // Choisir une couleur selon la valeur du mood
   function getColorFromMoodValue(value) {
     if (value === "") return "black";
     if (value <= 2) return "#d0094cff";
@@ -126,7 +125,7 @@ export default function MoodCalendar({ moods, onDaySelect }) {
       textSectionTitleColor: "white",
       dayTextColor: colors.text,
       textDisabledColor: colors.otherdays,
-      monthTextColor: colors.accent,
+      monthTextColor: colors.grafText,
       arrowColor: colors.accent,
       todayTextColor: colors.accent,
       selectedDayBackgroundColor: colors.primary,
@@ -136,7 +135,7 @@ export default function MoodCalendar({ moods, onDaySelect }) {
   );
 
   return (
-    <View style={s.container}>
+    <>
       <Calendar
         key={refreshKey}
         markingType={"custom"}
@@ -241,15 +240,15 @@ export default function MoodCalendar({ moods, onDaySelect }) {
           )}
         </View>
       )}
-    </View>
+    </>
   );
 }
 
 const styles = (colors) =>
   StyleSheet.create({
     container: {
-      height: "100%",
-      width: "100%",
+      // height: 350,
+      // width: 350,
       marginTop: 30,
       gap: 15,
       justifyContent: "flex-start",
@@ -263,7 +262,7 @@ const styles = (colors) =>
     },
     carte: {
       backgroundColor: colors.moodCard,
-      borderWidth: 2,
+      borderWidth: 4,
       width: 350,
       height: 100,
       borderRadius: 8,

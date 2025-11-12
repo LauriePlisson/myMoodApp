@@ -122,7 +122,7 @@ export default function MoodGrafGifted({
     }
   };
   return (
-    <View style={s.container}>
+    <>
       <View style={s.grafInfo}>
         <TouchableOpacity onPress={() => handleChevronLeft()}>
           <ChevronLeft color={colors.grafText} />
@@ -134,64 +134,72 @@ export default function MoodGrafGifted({
           <ChevronRight color={colors.grafText} />
         </TouchableOpacity>
       </View>
-      <LineChart
-        data={trimmedData}
-        height={220}
-        width={chartWidth}
-        spacing={spacing}
-        initialSpacing={0}
-        rulesColor={colors.grafRules}
-        hideYAxisText={false}
-        hideDataPoints={false}
-        showVerticalLines={false}
-        yAxisThickness={2}
-        xAxisThickness={2}
-        yAxisTextStyle={{ color: colors.grafRules, fontSize: 12 }}
-        yAxisColor="#D8BECB"
-        xAxisColor="#D8BECB"
-        minValue={0}
-        maxValue={10}
-        noOfSections={10}
-        color="#D8BECB"
-        curved={false}
-        thickness={2}
-        areaChart // 🔥 active le remplissage sous la courbe
-        startFillColor="rgba(237, 132, 184, 0.3)" // début du dégradé
-        endFillColor="rgba(216, 190, 190, 0)" // fin du dégradé (transparent)
-        startOpacity={0.4} // (optionnel) contrôle la transparence de départ
-        endOpacity={0.1} // (optionnel) contrôle la transparence à la fin
-        dataPointsRadius={5} // 🔹 arrondi du point (petit cercle)
-        dataPointsColor={colors.grafRules}
-        // backgroundColor={colors.background}
-        // animateOnDataChange
-        // animationDuration={800}
-        // pointerConfig={{
-        //   showPointerStrip: true,
-        //   showPointerLabel: true,
-        //   pointerStripColor: "#D8BECB",
-        //   pointerColor: "#F095C3",
-        //   radius: 6,
-        //   pointerLabelComponent: ({ value, index }) => {
-        //     if (!value) return null;
-        //     return (
-        //       <View
-        //         style={{
-        //           backgroundColor: "white",
-        //           borderRadius: 6,
-        //           padding: 4,
-        //           borderWidth: 1,
-        //           borderColor: "#F095C3",
-        //         }}
-        //       >
-        //         <Text style={{ color: "#F095C3" }}>
-        //           Jour {index + 1} : {value}
-        //         </Text>
-        //       </View>
-        //     );
-        //   },
-        // }}
-      />
-    </View>
+      <View style={s.grafContainer}>
+        <LineChart
+          data={trimmedData}
+          height={220}
+          width={chartWidth}
+          spacing={spacing}
+          initialSpacing={0}
+          rulesColor={colors.grafRules}
+          hideYAxisText={false}
+          hideDataPoints={false}
+          showVerticalLines={false}
+          yAxisThickness={2}
+          xAxisThickness={2}
+          yAxisTextStyle={{
+            color: colors.grafRules,
+            fontSize: 12,
+          }}
+          yAxisLabelWidth={20}
+          yAxisColor="#D8BECB"
+          xAxisLabelsHeight={7}
+          xAxisColor="#D8BECB"
+          minValue={0}
+          maxValue={10}
+          noOfSections={10}
+          color="#D8BECB"
+          curved={false}
+          // curvature={0.015}
+          thickness={2}
+          areaChart
+          startFillColor="rgba(237, 132, 184, 0.3)" // début du dégradé
+          endFillColor="rgba(216, 190, 190, 0)" // fin du dégradé (transparent)
+          startOpacity={0.4}
+          endOpacity={0.1}
+          dataPointsRadius={5}
+          dataPointsColor={colors.grafRules}
+          // backgroundColor={colors.background}
+          // animateOnDataChange
+          // animationDuration={800}
+          // pointerConfig={{
+          //   showPointerStrip: true,
+          //   showPointerLabel: true,
+          //   pointerStripColor: "#D8BECB",
+          //   pointerColor: "#F095C3",
+          //   radius: 6,
+          //   pointerLabelComponent: ({ value, index }) => {
+          //     if (!value) return null;
+          //     return (
+          //       <View
+          //         style={{
+          //           backgroundColor: "white",
+          //           borderRadius: 6,
+          //           padding: 4,
+          //           borderWidth: 1,
+          //           borderColor: "#F095C3",
+          //         }}
+          //       >
+          //         <Text style={{ color: "#F095C3" }}>
+          //           Jour {index + 1} : {value}
+          //         </Text>
+          //       </View>
+          //     );
+          //   },
+          // }}
+        />
+      </View>
+    </>
   );
 }
 
@@ -199,19 +207,35 @@ const styles = (colors) =>
   StyleSheet.create({
     container: {
       alignItems: "center",
-      justifyContent: "center",
-      paddingVertical: 10,
-      width: 370,
-      height: 300,
-      backgroundColor: colors.grafBackColor,
-      borderRadius: 15,
+      justifyContent: "flex-end",
+      //   paddingVertical: 10,
+      //   width: 350,
+      //   height: 300,
+      //   backgroundColor: colors.grafBackColor,
+      //   borderRadius: 15,
+      //   gap: 5,
     },
     grafInfo: {
       flexDirection: "row",
       alignItems: "center",
-      justifyContent: "center",
+      justifyContent: "space-around",
       gap: 15,
-      marginVertical: 5,
       marginTop: 20,
+      width: 350,
+      height: 40,
+      // marginBottom: 10,
+      borderTopEndRadius: 8,
+      borderStartStartRadius: 8,
+      backgroundColor: colors.card,
+    },
+    grafContainer: {
+      borderColor: colors.card,
+      borderTopWidth: 0,
+      borderWidth: 4,
+      borderBottomEndRadius: 8,
+      borderBottomStartRadius: 8,
+      paddingTop: 10,
+      paddingRight: 5,
+      width: 350,
     },
   });
