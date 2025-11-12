@@ -122,7 +122,15 @@ export default function SettingsScreen({ navigation }) {
       >
         <View style={s.modalOverlay}>
           <View style={s.modalContent}>
-            <Text>Es tu sure?</Text>
+            <Text
+              style={{
+                color: colors.modalText,
+                fontWeight: "500",
+                letterSpacing: 0.2,
+              }}
+            >
+              Es tu sure?
+            </Text>
             <View style={s.boutonsModale}>
               <TouchableOpacity
                 style={[s.boutonModale, { backgroundColor: "#fceaf0ff" }]}
@@ -392,14 +400,14 @@ const styles = (colors) =>
     modalContent: {
       width: 300,
       padding: 20,
-      backgroundColor: "#ffffffea",
+      backgroundColor: colors.modalBack,
       borderRadius: 12,
-      alignItems: "center", // centre le contenu à l'intérieur du cadre
+      alignItems: "center",
     },
     boutonsModale: {
-      marginTop: 15,
+      marginTop: 20,
       flexDirection: "row",
-      gap: 15,
+      gap: 12,
     },
     boutonModale: {
       width: 50,
@@ -407,5 +415,10 @@ const styles = (colors) =>
       borderRadius: 10,
       alignItems: "center",
       justifyContent: "center",
+    },
+    textStyle: {
+      color: colors.textBoutonModal,
+      fontWeight: "500",
+      letterSpacing: 0.2,
     },
   });

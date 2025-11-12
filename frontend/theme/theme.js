@@ -21,6 +21,9 @@ export const lightTheme = {
     grafBackColor: "#fff",
     grafRules: "#F095C3",
     grafText: "black",
+    modalBack: "#ffffffe7",
+    textBoutonModal: "#696773",
+    modalText: "#696773",
   },
 };
 
@@ -47,6 +50,9 @@ export const darkTheme = {
     grafBackColor: "#211f22ff",
     grafRules: "#f4b9cec6",
     grafText: "#f4b9cec6",
+    modalBack: "#3a363ce8",
+    textBoutonModal: "black",
+    modalText: "#f4b9cec6",
   },
 };
 
