@@ -1,240 +1,237 @@
 import React from "react";
-import { View, Dimensions } from "react-native";
-// import { LineChart } from "react-native-gifted-charts";
 import {
-  Svg,
-  Line,
-  Circle,
+  View,
   Text,
-  Polyline,
-  Rect,
-  Path,
-} from "react-native-svg";
-import { LineChart } from "react-native-chart-kit";
+  Dimensions,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import { LineChart } from "react-native-gifted-charts";
+import { ChevronLeft, ChevronRight } from "lucide-react-native";
+import { useTheme } from "../context/ThemeContext";
 
-export default function MoodGraf({ moods }) {
-  const screenWidth = Dimensions.get("window").width;
+export default function MoodGrafGifted({
+  moods,
+  period,
+  selectedDate,
+  setSelectedDate,
+}) {
+  let length;
+  let getIndex;
+  const { theme, colors } = useTheme();
+  const s = styles(colors);
 
-  function formatDate(dateString) {
-    return new Date(dateString).getDate();
+  if (period === "semaine") {
+    length = 7;
+    getIndex = (m) => parseInt(m.label, 6) - 1;
+  } else if (period === "mois") {
+    length = 31;
+    getIndex = (m) => parseInt(m.label, 10) - 1;
+  } else if (period === "annee") {
+    length = 12;
+    getIndex = (m) => m.label;
   }
 
-  const dot = moods.map((mood) => ({
-    y: mood.value,
-    x: formatDate(mood.label),
+  const data = Array.from({ length }, (_, i) => ({
+    value: null,
+    label: "",
+    onPress: () => {},
+    dataPointLabelComponent: () => <></>,
   }));
 
-  const normalizedData = Array.from({ length: 31 }, (_, i) => {
-    const point = dot.find((p) => p.x === i + 1); // number === number
-    return point ? point.y : null;
+  moods.forEach((mood) => {
+    const index = getIndex(mood);
+    if (index >= 0 && index < length) {
+      data[index] = {
+        value: mood.value,
+        label: "", // tu peux mettre le jour/mois si tu veux
+        onPress: () => console.log(`Index ${index}: valeur ${mood.value}`),
+        dataPointLabelComponent: () => <></>,
+      };
+    }
   });
 
-  const data = {
-    labels: Array(31).fill(""),
-    datasets: [
-      {
-        data: normalizedData, // tes valeurs
-        color: (opacity = 1) => `rgba(216, 190, 203,1)`, // couleur de la ligne
-        strokeWidth: 2,
-      },
-    ],
+  let lastIndex = data.length - 1;
+  while (lastIndex >= 0 && data[lastIndex].value === null) {
+    lastIndex--;
+  }
+  let firstDataIndex = data.findIndex((d) => d.value !== null);
+  for (let i = 0; i < firstDataIndex; i++) {
+    data[i].value = 0; // commence à zéro
+  }
+  const trimmedData = data.slice(0, lastIndex + 1);
+  const chartWidth = 290;
+  const spacing = chartWidth / (data.length - 1);
+
+  let displayPeriod = "";
+  if (period === "annee") {
+    displayPeriod = selectedDate.getFullYear();
+  } else if (period === "mois") {
+    const monthName = selectedDate.toLocaleString("fr-FR", { month: "long" });
+    const monthNameCapitalized =
+      monthName.charAt(0).toUpperCase() + monthName.slice(1);
+    displayPeriod = `${monthNameCapitalized} ${selectedDate.getFullYear()}`;
+  } else if (period === "semaine") {
+    const dayOfWeek = selectedDate.getDay();
+    const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    selectedDate.setDate(selectedDate.getDate() - diffToMonday);
+    const endOfWeek = new Date(selectedDate);
+    endOfWeek.setDate(selectedDate.getDate() + 6);
+    displayPeriod = `Du ${selectedDate.getDate()}/${
+      selectedDate.getMonth() + 1
+    } au ${endOfWeek.getDate()}/${endOfWeek.getMonth() + 1}`;
+  }
+
+  const handleChevronLeft = () => {
+    if (period === "mois") {
+      const prevMonth = new Date(selectedDate);
+      prevMonth.setMonth(selectedDate.getMonth() - 1);
+      setSelectedDate(prevMonth);
+    }
+    if (period === "semaine") {
+      const prevWeek = new Date(selectedDate);
+      prevWeek.setDate(prevWeek.getDate() - 7);
+      setSelectedDate(prevWeek);
+    }
+    if (period === "annee") {
+      const prevYear = new Date(selectedDate);
+      prevYear.setFullYear(prevYear.getFullYear() - 1);
+      setSelectedDate(prevYear);
+    }
   };
 
-  const chartConfig = {
-    backgroundColor: "#ffffff",
-    backgroundGradientFrom: "#ffffff",
-    backgroundGradientTo: "#ffffff",
-    decimalPlaces: 0,
-    color: (opacity = 1) => ` rgba(216, 190, 203,1)`,
-    labelColor: (opacity = 1) => `rgba(216, 190, 203,1)`,
-    style: {
-      borderRadius: 16,
-    },
-    propsForDots: {
-      r: "3",
-      strokeWidth: "2",
-      stroke: "rgba(240, 149, 195, 1)",
-    },
+  const handleChevronRight = () => {
+    if (period === "mois") {
+      const nextMonth = new Date(selectedDate);
+      nextMonth.setMonth(selectedDate.getMonth() + 1);
+      setSelectedDate(nextMonth);
+    }
+    if (period === "semaine") {
+      const nextWeek = new Date(selectedDate);
+      nextWeek.setDate(nextWeek.getDate() + 7);
+      setSelectedDate(nextWeek);
+    }
+    if (period === "annee") {
+      const nextYear = new Date(selectedDate);
+      nextYear.setFullYear(nextYear.getFullYear() + 1);
+      setSelectedDate(nextYear);
+    }
   };
-
   return (
-    <View
-      style={{
-        width: 300,
-        height: 300,
-        // justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <LineChart
-        data={data}
-        width={screenWidth - 16}
-        height={220}
-        chartConfig={chartConfig}
-        bezier
-        withVerticalLines={false}
-        style={{ borderRadius: 16 }}
-      />
-    </View>
+    <>
+      <View style={s.grafInfo}>
+        <TouchableOpacity onPress={() => handleChevronLeft()}>
+          <ChevronLeft color={colors.grafText} />
+        </TouchableOpacity>
+        <Text style={{ fontSize: 15, color: colors.grafText }}>
+          {displayPeriod}
+        </Text>
+        <TouchableOpacity onPress={() => handleChevronRight()}>
+          <ChevronRight color={colors.grafText} />
+        </TouchableOpacity>
+      </View>
+      <View style={s.grafContainer}>
+        <LineChart
+          data={trimmedData}
+          height={220}
+          width={chartWidth}
+          spacing={spacing}
+          initialSpacing={0}
+          rulesColor={colors.grafRules}
+          hideYAxisText={false}
+          hideDataPoints={false}
+          showVerticalLines={false}
+          yAxisThickness={2}
+          xAxisThickness={2}
+          yAxisTextStyle={{
+            color: colors.grafRules,
+            fontSize: 12,
+          }}
+          yAxisLabelWidth={20}
+          yAxisColor="#D8BECB"
+          xAxisLabelsHeight={7}
+          xAxisColor="#D8BECB"
+          minValue={0}
+          maxValue={10}
+          noOfSections={10}
+          color="#D8BECB"
+          curved={false}
+          // curvature={0.015}
+          thickness={2}
+          areaChart
+          startFillColor="rgba(237, 132, 184, 0.3)" // début du dégradé
+          endFillColor="rgba(216, 190, 190, 0)" // fin du dégradé (transparent)
+          startOpacity={0.4}
+          endOpacity={0.1}
+          dataPointsRadius={5}
+          dataPointsColor={colors.grafRules}
+          // backgroundColor={colors.background}
+          // animateOnDataChange
+          // animationDuration={800}
+          // pointerConfig={{
+          //   showPointerStrip: true,
+          //   showPointerLabel: true,
+          //   pointerStripColor: "#D8BECB",
+          //   pointerColor: "#F095C3",
+          //   radius: 6,
+          //   pointerLabelComponent: ({ value, index }) => {
+          //     if (!value) return null;
+          //     return (
+          //       <View
+          //         style={{
+          //           backgroundColor: "white",
+          //           borderRadius: 6,
+          //           padding: 4,
+          //           borderWidth: 1,
+          //           borderColor: "#F095C3",
+          //         }}
+          //       >
+          //         <Text style={{ color: "#F095C3" }}>
+          //           Jour {index + 1} : {value}
+          //         </Text>
+          //       </View>
+          //     );
+          //   },
+          // }}
+        />
+      </View>
+    </>
   );
 }
-// const width = 350;
-// const height = 300;
-// const padding = 23;
-// const maxX = 31;
-// const maxY = 10;
-// const numXTicks = 31;
-// const numYTicks = 10;
 
-// const scaleX = (width - 2 * padding) / maxX;
-// const scaleY = (height - 2 * padding) / maxY;
-
-// function formatDate(dateString) {
-//   return new Date(dateString).toLocaleDateString("fr-FR", {
-//     day: "2-digit",
-//   });
-// }
-
-// let dot = [];
-// const dataTable = data.map((mood, i) => {
-//   dot.push({
-//     y: mood.value,
-//     x: formatDate(mood.label),
-//     // color: getColorFromMoodValue(mood.value),
-//   });
-// });
-// const svgPoints = dot.map(({ x, y, color }) => ({
-//   x: padding + x * scaleX,
-//   y: height - padding - y * scaleY,
-//   // color: color,
-// }));
-
-// const pathData = svgPoints.reduce((acc, point, i) => {
-//   return i === 0
-//     ? `M ${point.x} ${point.y}`
-//     : `${acc} L ${point.x} ${point.y}`;
-// }, "");
-// // Création des graduations pour X
-// const xTicks = Array.from({ length: numXTicks + 1 }, (_, i) => {
-//   const x = padding + (i * (width - 2 * padding)) / numXTicks;
-//   return x;
-// });
-
-// // Création des graduations pour Y
-// const yTicks = Array.from({ length: numYTicks + 1 }, (_, i) => {
-//   const y = height - padding - (i * (height - 2 * padding)) / numYTicks;
-//   return y;
-// });
-
-// return (
-//   <View style={{ alignItems: "center", marginTop: 50 }}>
-//     <Svg width={width} height={height}>
-//       {/* Fond du graphique */}
-//       <Rect
-//         x={0}
-//         y={0}
-//         width={width}
-//         height={height}
-//         fill="#ffffffff"
-//         stroke="#d8becbff"
-//       />
-//       <Line
-//         x1={padding}
-//         y1={height - padding}
-//         x2={width - padding}
-//         y2={height - padding}
-//         stroke="#d8becbff"
-//         strokeWidth="2"
-//       />
-//       <Line
-//         x1={padding}
-//         y1={padding}
-//         x2={padding}
-//         y2={height - padding}
-//         stroke="#d8becbff"
-//         strokeWidth="2"
-//       />
-//       {xTicks.map((x, i) => (
-//         <React.Fragment key={i}>
-//           <Line
-//             x1={x}
-//             y1={height - padding}
-//             x2={x}
-//             y2={height - padding + 5}
-//             stroke="#d8becbff"
-//             strokeWidth="1"
-//           />
-//         </React.Fragment>
-//       ))}
-
-//       {/* Graduations axe Y */}
-//       {yTicks.map((y, i) => (
-//         <React.Fragment key={i}>
-//           <Line
-//             x1={padding - 5}
-//             y1={y}
-//             x2={padding}
-//             y2={y}
-//             stroke="#d8becbff"
-//             strokeWidth="1"
-//           />
-//           <Text
-//             x={padding - 10}
-//             y={y + 3}
-//             fontSize="10"
-//             fill="#d8becbff"
-//             textAnchor="end"
-//           >
-//             {i}
-//           </Text>
-//         </React.Fragment>
-//       ))}
-
-//       <Path d={pathData} fill="none" stroke="#d8becbff" strokeWidth="2" />
-//       {svgPoints.map((p, i) => (
-//         <Circle key={i} cx={p.x} cy={p.y} r={4} fill="#d8becbff" />
-//       ))}
-//     </Svg>
-//   </View>
-// );
-// GRAPHIQUE GIFTED CHARTS
-// const daysWithMood = data.map((m) => new Date(m.label).getDate());
-// const firstDay = Math.min(...daysWithMood);
-// const lastDay = Math.max(...daysWithMood);
-// const chartData = [];
-// for (let day = firstDay; day <= lastDay; day++) {
-//   const mood = data.find((m) => new Date(m.label).getDate() === day);
-//   chartData.push({
-//     value: mood ? mood.value : null,
-//     label: day.toString(),
-//   });
-// }
-// const fullMonth = Array.from({ length: 31 }, (_, i) => {
-//   const day = i + 1;
-//   const mood = data.find((m) => new Date(m.label).getDate() === day);
-//   return {
-//     value: mood ? mood.value : null,
-//     label: day % 3 === 1 ? day.toString() : "", // label tous les 3 jours
-//   };
-// });
-// return (
-//   <View style={{ padding: 20 }}>
-//     <LineChart
-//       data={fullMonth}
-//       height={220}
-//       width={350}
-//       spacing={12}
-//       initialSpacing={0}
-//       yAxisThickness={0}
-//       xAxisHeight={30}
-//       color="#d8becb"
-//       textColor="#444"
-//       maxValue={10}
-//       minValue={0}
-//       showVerticalLines={false}
-//       showReferenceLine1
-//       referenceLine1Config={{ color: "#eee", thickness: 1 }}
-//     />
-//   </View>
-// );
-// }
+const styles = (colors) =>
+  StyleSheet.create({
+    // container: {
+    //   alignItems: "center",
+    //   justifyContent: "flex-end",
+    //   //   paddingVertical: 10,
+    //   //   width: 350,
+    //   //   height: 300,
+    //   //   backgroundColor: colors.grafBackColor,
+    //   //   borderRadius: 15,
+    //   //   gap: 5,
+    // },
+    grafInfo: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-around",
+      gap: 15,
+      marginTop: 20,
+      width: 350,
+      height: 40,
+      // marginBottom: 10,
+      borderTopEndRadius: 8,
+      borderStartStartRadius: 8,
+      backgroundColor: colors.card,
+    },
+    grafContainer: {
+      borderColor: colors.card,
+      borderTopWidth: 0,
+      borderWidth: 4,
+      borderBottomEndRadius: 8,
+      borderBottomStartRadius: 8,
+      paddingTop: 10,
+      paddingRight: 5,
+      width: 350,
+    },
+  });

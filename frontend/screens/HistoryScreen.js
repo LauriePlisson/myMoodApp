@@ -7,13 +7,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import { Dimensions } from "react-native";
 import { useTheme } from "../context/ThemeContext";
-import MoodGraftest from "../components/MoodGraftest";
 
 export default function HistoryScreen() {
   const [moodsSelectedYear, setMoodsSelectedYear] = useState([]);
-  const [moodsDataFiltered, setMoodsDataFiltered] = useState([]);
   const [viewCalendar, setViewCalendar] = useState(true);
-  const [selectedMood, setSelectedMood] = useState({});
   const [period, setPeriod] = useState("mois");
   const [selectedDate, setSelectedDate] = useState(new Date()); // date de référence
   const user = useSelector((state) => state.user.value);
@@ -135,7 +132,11 @@ export default function HistoryScreen() {
           </TouchableOpacity>
           <TouchableOpacity
             style={s.option}
-            onPress={() => setViewCalendar(false)}
+            onPress={() => {
+              setViewCalendar(false),
+                setPeriod("mois"),
+                setSelectedDate(new Date());
+            }}
           >
             <Text
               style={[
@@ -157,25 +158,30 @@ export default function HistoryScreen() {
               <View style={s.filtres}>
                 <TouchableOpacity
                   style={[s.filtre]}
-                  onPress={() => setPeriod("semaine")}
+                  onPress={() => {
+                    setPeriod("semaine"), setSelectedDate(new Date());
+                  }}
                 >
                   <Text style={styleSemaine}>Semaine</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={s.filtre}
-                  onPress={() => setPeriod("mois")}
+                  onPress={() => {
+                    setPeriod("mois"), setSelectedDate(new Date());
+                  }}
                 >
                   <Text style={styleMois}>Mois</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={s.filtre}
-                  onPress={() => setPeriod("annee")}
+                  onPress={() => {
+                    setPeriod("annee"), setSelectedDate(new Date());
+                  }}
                 >
                   <Text style={styleAnnee}>Année</Text>
                 </TouchableOpacity>
               </View>
-              {/* <MoodGraf moods={data} /> */}
-              <MoodGraftest
+              <MoodGraf
                 moods={dataForChart}
                 period={period}
                 selectedDate={selectedDate}
