@@ -55,8 +55,6 @@ export default function MoodGrafGifted({
   const data = Array.from({ length }, (_, i) => ({
     value: null,
     label: "",
-    // onPress: () => {},
-    // dataPointLabelComponent: () => <></>,
   }));
 
   moods.forEach((mood) => {
@@ -65,23 +63,26 @@ export default function MoodGrafGifted({
       data[index] = {
         value: mood.value,
         label: mood.label,
-        // onPress: () => {
-        //   setDisplayMood(true);
-        //   if (period === "annee") {
-        //     const month = moisEnLettre(mood.label);
-        //     setSelectedMood({
-        //       label: `${month}`,
-        //       value: mood.value,
-        //     });
-        //   }
-        //   console.log(
-        //     `Index ${index}: valeur ${mood.value} date ${mood.label}`
-        //   );
-        // },
-        dataPointLabelComponent: () => <></>,
       };
     }
   });
+
+  const handleFocus = (mood) => {
+    setDisplayMood(true);
+    if (period === "annee") {
+      const month = moisEnLettre(mood.label);
+      setSelectedMood({
+        label: `${month}`,
+        value: mood.value,
+      });
+    }
+    if (period === "mois") {
+      setSelectedMood({
+        label: mood.label,
+        value: mood.value,
+      });
+    }
+  };
 
   let lastIndex = data.length - 1;
   while (lastIndex >= 0 && data[lastIndex].value === null) {
@@ -89,7 +90,7 @@ export default function MoodGrafGifted({
   }
   let firstDataIndex = data.findIndex((d) => d.value !== null);
   for (let i = 0; i < firstDataIndex; i++) {
-    data[i].value = 0; // commence à zéro
+    data[i].value = 0;
   }
   const trimmedData = data.slice(0, lastIndex + 1);
   const chartWidth = 290;
@@ -182,7 +183,7 @@ export default function MoodGrafGifted({
           dataPointLabelRadius={15}
           dataPointsColor={colors.grafRules}
           focusEnabled={true}
-          onFocus={(data) => console.log(data)}
+          onFocus={(mood) => handleFocus(mood)}
         />
       </View>
       {displayMood && (
@@ -268,6 +269,7 @@ const styles = (colors) =>
     },
     grafContainer: {
       borderColor: colors.card,
+      backgroundColor: colors.calendarBackground,
       borderTopWidth: 0,
       borderWidth: 4,
       borderBottomEndRadius: 8,
@@ -278,6 +280,7 @@ const styles = (colors) =>
     },
     carte: {
       backgroundColor: colors.moodCard,
+      marginTop: 10,
       borderWidth: 4,
       width: 350,
       height: 100,
