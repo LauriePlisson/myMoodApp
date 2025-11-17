@@ -6,8 +6,9 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
+import { useState } from "react";
 import { LineChart } from "react-native-gifted-charts";
-import { ChevronLeft, ChevronRight } from "lucide-react-native";
+import { ChevronLeft, ChevronRight, X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
 
 export default function MoodGrafGifted({
@@ -16,17 +17,36 @@ export default function MoodGrafGifted({
   selectedDate,
   setSelectedDate,
 }) {
+  const [displayMood, setDisplayMood] = useState(false);
+  const [selectedMood, setSelectedMood] = useState({});
+
   let length;
   let getIndex;
   const { theme, colors } = useTheme();
   const s = styles(colors);
 
-  if (period === "semaine") {
-    length = 7;
-    getIndex = (m) => parseInt(m.label, 6) - 1;
-  } else if (period === "mois") {
+  const mois = [
+    "Janvier",
+    "Février",
+    "Mars",
+    "Avril",
+    "Mai",
+    "Juin",
+    "Juillet",
+    "Août",
+    "Septembre",
+    "Octobre",
+    "Novembre",
+    "Décembre",
+  ];
+
+  function moisEnLettre(numeroMois) {
+    return mois[numeroMois];
+  }
+
+  if (period === "mois") {
     length = 31;
-    getIndex = (m) => parseInt(m.label, 10) - 1;
+    getIndex = (m) => m.label;
   } else if (period === "annee") {
     length = 12;
     getIndex = (m) => m.label;
@@ -35,8 +55,8 @@ export default function MoodGrafGifted({
   const data = Array.from({ length }, (_, i) => ({
     value: null,
     label: "",
-    onPress: () => {},
-    dataPointLabelComponent: () => <></>,
+    // onPress: () => {},
+    // dataPointLabelComponent: () => <></>,
   }));
 
   moods.forEach((mood) => {
@@ -44,8 +64,20 @@ export default function MoodGrafGifted({
     if (index >= 0 && index < length) {
       data[index] = {
         value: mood.value,
-        label: "", // tu peux mettre le jour/mois si tu veux
-        onPress: () => console.log(`Index ${index}: valeur ${mood.value}`),
+        label: mood.label,
+        // onPress: () => {
+        //   setDisplayMood(true);
+        //   if (period === "annee") {
+        //     const month = moisEnLettre(mood.label);
+        //     setSelectedMood({
+        //       label: `${month}`,
+        //       value: mood.value,
+        //     });
+        //   }
+        //   console.log(
+        //     `Index ${index}: valeur ${mood.value} date ${mood.label}`
+        //   );
+        // },
         dataPointLabelComponent: () => <></>,
       };
     }
@@ -71,15 +103,6 @@ export default function MoodGrafGifted({
     const monthNameCapitalized =
       monthName.charAt(0).toUpperCase() + monthName.slice(1);
     displayPeriod = `${monthNameCapitalized} ${selectedDate.getFullYear()}`;
-  } else if (period === "semaine") {
-    const dayOfWeek = selectedDate.getDay();
-    const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-    selectedDate.setDate(selectedDate.getDate() - diffToMonday);
-    const endOfWeek = new Date(selectedDate);
-    endOfWeek.setDate(selectedDate.getDate() + 6);
-    displayPeriod = `Du ${selectedDate.getDate()}/${
-      selectedDate.getMonth() + 1
-    } au ${endOfWeek.getDate()}/${endOfWeek.getMonth() + 1}`;
   }
 
   const handleChevronLeft = () => {
@@ -87,11 +110,6 @@ export default function MoodGrafGifted({
       const prevMonth = new Date(selectedDate);
       prevMonth.setMonth(selectedDate.getMonth() - 1);
       setSelectedDate(prevMonth);
-    }
-    if (period === "semaine") {
-      const prevWeek = new Date(selectedDate);
-      prevWeek.setDate(prevWeek.getDate() - 7);
-      setSelectedDate(prevWeek);
     }
     if (period === "annee") {
       const prevYear = new Date(selectedDate);
@@ -106,17 +124,13 @@ export default function MoodGrafGifted({
       nextMonth.setMonth(selectedDate.getMonth() + 1);
       setSelectedDate(nextMonth);
     }
-    if (period === "semaine") {
-      const nextWeek = new Date(selectedDate);
-      nextWeek.setDate(nextWeek.getDate() + 7);
-      setSelectedDate(nextWeek);
-    }
     if (period === "annee") {
       const nextYear = new Date(selectedDate);
       nextYear.setFullYear(nextYear.getFullYear() + 1);
       setSelectedDate(nextYear);
     }
   };
+
   return (
     <>
       <View style={s.grafInfo}>
@@ -150,6 +164,7 @@ export default function MoodGrafGifted({
           yAxisLabelWidth={20}
           yAxisColor="#D8BECB"
           xAxisLabelsHeight={7}
+          xAxisLabelTextStyle={{ color: "transparent" }}
           xAxisColor="#D8BECB"
           minValue={0}
           maxValue={10}
@@ -164,37 +179,64 @@ export default function MoodGrafGifted({
           startOpacity={0.4}
           endOpacity={0.1}
           dataPointsRadius={5}
+          dataPointLabelRadius={15}
           dataPointsColor={colors.grafRules}
-          // backgroundColor={colors.background}
-          // animateOnDataChange
-          // animationDuration={800}
-          // pointerConfig={{
-          //   showPointerStrip: true,
-          //   showPointerLabel: true,
-          //   pointerStripColor: "#D8BECB",
-          //   pointerColor: "#F095C3",
-          //   radius: 6,
-          //   pointerLabelComponent: ({ value, index }) => {
-          //     if (!value) return null;
-          //     return (
-          //       <View
-          //         style={{
-          //           backgroundColor: "white",
-          //           borderRadius: 6,
-          //           padding: 4,
-          //           borderWidth: 1,
-          //           borderColor: "#F095C3",
-          //         }}
-          //       >
-          //         <Text style={{ color: "#F095C3" }}>
-          //           Jour {index + 1} : {value}
-          //         </Text>
-          //       </View>
-          //     );
-          //   },
-          // }}
+          focusEnabled={true}
+          onFocus={(data) => console.log(data)}
         />
       </View>
+      {displayMood && (
+        <View
+          style={[
+            s.carte,
+            // {
+            //   borderColor: getColorBackgroundFromMoodValue(
+            //     selectedMood.moodValue
+            //   ),
+            // },
+          ]}
+        >
+          <View style={[s.topCarte]}>
+            <View style={{ flexDirection: "row", gap: 5 }}>
+              <Text style={{ fontSize: 15, color: colors.text }}>
+                {selectedMood.label}
+                {/* {new Date(selectedMood.date).toLocaleDateString("fr-FR", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "2-digit",
+                })} */}
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={s.exit}
+              onPress={() => setDisplayMood(false)}
+            >
+              <X
+                size={20}
+                // color={getColorFromMoodValue(selectedMood.moodValue)}
+              />
+            </TouchableOpacity>
+          </View>
+
+          <>
+            <View style={s.moodInfo}>
+              <View style={{ flexDirection: "row" }}>
+                <Text
+                  style={[
+                    s.moodValue,
+                    // { color: getColorFromMoodValue(selectedMood.moodValue) },
+                  ]}
+                >
+                  moyenne: {selectedMood.value}
+                  {/* {String(selectedMood.moodValue).padStart(2, "0")} */}
+                </Text>
+              </View>
+              {/* {selectedMood.note ? ( */}
+              {/* )} */}
+            </View>
+          </>
+        </View>
+      )}
     </>
   );
 }
@@ -233,5 +275,37 @@ const styles = (colors) =>
       paddingTop: 10,
       paddingRight: 5,
       width: 350,
+    },
+    carte: {
+      backgroundColor: colors.moodCard,
+      borderWidth: 4,
+      width: 350,
+      height: 100,
+      borderRadius: 8,
+      paddingHorizontal: 7,
+    },
+    topCarte: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginTop: 10,
+    },
+    exit: {
+      width: 50,
+      justifyContent: "flex-start",
+      alignItems: "center",
+    },
+    moodInfo: {
+      alignItems: "center",
+    },
+    moodValue: {
+      fontSize: 25,
+      marginBottom: 5,
+    },
+    com: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      width: "100%",
     },
   });

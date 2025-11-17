@@ -9,7 +9,8 @@ import { Dimensions } from "react-native";
 import { useTheme } from "../context/ThemeContext";
 
 export default function HistoryScreen() {
-  const [moodsSelectedYear, setMoodsSelectedYear] = useState([]);
+  const [moodsThisYear, setMoodsThisYear] = useState([]);
+  // const [moodsSelectedYear, setMoodsSelectedYear] = useState([]);
   const [viewCalendar, setViewCalendar] = useState(true);
   const [period, setPeriod] = useState("mois");
   const [selectedDate, setSelectedDate] = useState(new Date()); // date de référence
@@ -34,12 +35,12 @@ export default function HistoryScreen() {
         }
       );
       const data = await res.json();
-      setMoodsSelectedYear(data.moods);
+      setMoodsThisYear(data.moods);
     };
     recupMoodsbyYear();
   }, [viewCalendar]);
 
-  const filtrage = moodsSelectedYear
+  const filtrage = moodsThisYear
     .filter((mood) => {
       const selectedYear = selectedDate.getFullYear();
       const selectedMonth = selectedDate.getMonth();
@@ -47,8 +48,10 @@ export default function HistoryScreen() {
       const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
       const monday = new Date(selectedDate);
       monday.setDate(selectedDate.getDate() - diffToMonday);
+      monday.setHours(0, 0, 0, 0);
       const sunday = new Date(monday);
       sunday.setDate(monday.getDate() + 6);
+      sunday.setHours(23, 59, 59, 999);
 
       const moodDate = new Date(mood.date);
       const moodMonth = moodDate.getMonth();
@@ -59,9 +62,6 @@ export default function HistoryScreen() {
       }
       if (period === "annee") {
         return moodYear === selectedYear;
-      }
-      if (period === "semaine") {
-        return moodDate >= monday && moodDate <= sunday;
       }
     })
     .map((mood) => ({ value: mood.moodValue, label: mood.date }));
@@ -86,6 +86,7 @@ export default function HistoryScreen() {
     });
   } else {
     dataForChart = filtrage.map((m) => ({
+      // date: m.date,
       label: new Date(m.label).getDate().toString(),
       value: m.value,
     }));
@@ -96,12 +97,6 @@ export default function HistoryScreen() {
     styleMois = { color: colors.accent };
   } else {
     styleMois = { color: colors.secondary };
-  }
-  let styleSemaine = {};
-  if (period === "semaine") {
-    styleSemaine = { color: colors.accent };
-  } else {
-    styleSemaine = { color: colors.secondary };
   }
   let styleAnnee = {};
   if (period === "annee") {
@@ -152,18 +147,10 @@ export default function HistoryScreen() {
         </View>
         <View style={s.display}>
           {viewCalendar ? (
-            <MoodCalendar moods={moodsSelectedYear} />
+            <MoodCalendar moods={moodsThisYear} />
           ) : (
             <>
               <View style={s.filtres}>
-                <TouchableOpacity
-                  style={[s.filtre]}
-                  onPress={() => {
-                    setPeriod("semaine"), setSelectedDate(new Date());
-                  }}
-                >
-                  <Text style={styleSemaine}>Semaine</Text>
-                </TouchableOpacity>
                 <TouchableOpacity
                   style={s.filtre}
                   onPress={() => {
