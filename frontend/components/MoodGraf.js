@@ -143,6 +143,22 @@ export default function MoodGrafGifted({
     }
   };
 
+  function getColorFromMoodValue(value) {
+    if (value === "") return "black";
+    if (value <= 2) return "#d0094cff";
+    if (value < 5) return "#rgba(185, 154, 114, 1)";
+    if (value < 7) return "#rgba(72, 153, 151, 1)";
+    return "#09d066ff";
+  }
+
+  function getColorBackgroundFromMoodValue(value) {
+    if (value === "") return "white";
+    if (value <= 2) return "rgba(208, 9, 75, 0.42)";
+    if (value < 5) return "#rgba(237, 155, 48, 0.42)";
+    if (value < 7) return "#rgba(113, 247, 245, 0.42)";
+    return "rgba(22, 240, 124, 0.42)";
+  }
+
   const handleVoirMois = () => {
     const year = selectedDate.getFullYear();
     const month = selectedMood.month;
@@ -208,7 +224,14 @@ export default function MoodGrafGifted({
         />
       </View>
       {displayMood && (
-        <View style={[s.carte]}>
+        <View
+          style={[
+            s.carte,
+            {
+              borderColor: getColorBackgroundFromMoodValue(selectedMood.value),
+            },
+          ]}
+        >
           <View style={[s.topCarte]}>
             <View style={{ flexDirection: "row", gap: 5 }}>
               <Text style={{ fontSize: 15, color: colors.text }}>
@@ -219,10 +242,7 @@ export default function MoodGrafGifted({
               style={s.exit}
               onPress={() => setDisplayMood(false)}
             >
-              <X
-                size={20}
-                // color={getColorFromMoodValue(selectedMood.moodValue)}
-              />
+              <X size={20} color={getColorFromMoodValue(selectedMood.value)} />
             </TouchableOpacity>
           </View>
 
@@ -232,7 +252,7 @@ export default function MoodGrafGifted({
               <Text
                 style={[
                   s.moodValue,
-                  // { color: getColorFromMoodValue(selectedMood.moodValue) },
+                  { color: getColorFromMoodValue(selectedMood.value) },
                 ]}
               >
                 {selectedMood.value}
