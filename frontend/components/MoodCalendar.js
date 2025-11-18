@@ -6,7 +6,12 @@ import { X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
 import { useMemo } from "react";
 
-export default function MoodCalendar({ moods, selectedDate, setSelectedDate }) {
+export default function MoodCalendar({
+  moods,
+  selectedDate,
+  setSelectedDate,
+  loadYear,
+}) {
   const [displayMood, setDisplayMood] = useState(false);
   const [selectedMood, setSelectedMood] = useState({});
   const [refreshKey, setRefreshKey] = useState(0);
@@ -58,19 +63,28 @@ export default function MoodCalendar({ moods, selectedDate, setSelectedDate }) {
     return "rgba(22, 240, 124, 0.42)";
   }
   const handleDaySelect = (dateString) => {
-    const selectedDate = new Date(dateString);
+    const selectedLocal = new Date(dateString);
+    selectedLocal.setHours(0, 0, 0, 0);
+
     const today = new Date();
-    selectedDate.setHours(0, 0, 0, 0);
     today.setHours(0, 0, 0, 0);
 
-    if (selectedDate > today) {
+    if (selectedLocal > today) {
       setSelectedMood({ date: dateString, future: true });
       setDisplayMood(true);
       return;
     }
 
-    const mood = moods.find((m) => formatLocalDate(m.date) === dateString);
+    const moodsForYear = moods[selectedDate.getFullYear()] || [];
+
+    const mood = moodsForYear.find((m) => {
+      const moodLocal = new Date(m.date);
+      moodLocal.setHours(0, 0, 0, 0);
+      return moodLocal.getTime() === selectedLocal.getTime();
+    });
+
     setSelectedMood(mood || { date: dateString, noMood: true });
+    setDisplayMood(true);
   };
 
   LocaleConfig.locales["fr"] = {
@@ -121,6 +135,17 @@ export default function MoodCalendar({ moods, selectedDate, setSelectedDate }) {
     }, [])
   );
 
+  const handleChangeMonth = (month) => {
+    const newDate = new Date(month.year, month.month - 1, 1);
+
+    const year = newDate.getFullYear();
+    if (!moods[year]) {
+      loadYear(year);
+    }
+
+    setSelectedDate(newDate);
+  };
+
   const calendarTheme = useMemo(
     () => ({
       backgroundColor: colors.background,
@@ -148,8 +173,7 @@ export default function MoodCalendar({ moods, selectedDate, setSelectedDate }) {
           setDisplayMood(true);
         }}
         onMonthChange={(month) => {
-          const newDate = new Date(month.year, month.month - 1, 1);
-          setSelectedDate(newDate);
+          handleChangeMonth(month);
         }}
         style={s.calendar}
         theme={calendarTheme}

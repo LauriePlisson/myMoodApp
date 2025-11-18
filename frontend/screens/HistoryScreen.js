@@ -161,6 +161,7 @@ export default function HistoryScreen() {
           {viewCalendar ? (
             <MoodCalendar
               moods={moodsByYear}
+              loadYear={loadYear}
               selectedDate={selectedDate}
               setSelectedDate={setSelectedDate}
             />
