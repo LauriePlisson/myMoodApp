@@ -6,13 +6,16 @@ import { X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
 import { useMemo } from "react";
 
-export default function MoodCalendar({ moods, onDaySelect }) {
+export default function MoodCalendar({ moods, selectedDate, setSelectedDate }) {
   const [displayMood, setDisplayMood] = useState(false);
   const [selectedMood, setSelectedMood] = useState({});
   const [refreshKey, setRefreshKey] = useState(0);
   const { theme } = useTheme();
   const { colors } = useTheme();
   const s = styles(colors);
+
+  const year = selectedDate.getFullYear();
+  const moodsForCalendar = moods[year] || [];
 
   function formatLocalDate(dateString) {
     const date = new Date(dateString);
@@ -21,7 +24,7 @@ export default function MoodCalendar({ moods, onDaySelect }) {
       .split("T")[0];
   }
   const markedDates = {};
-  moods.forEach((mood) => {
+  moodsForCalendar.forEach((mood) => {
     const localDate = formatLocalDate(mood.date);
     markedDates[localDate] = {
       customStyles: {
@@ -143,6 +146,10 @@ export default function MoodCalendar({ moods, onDaySelect }) {
         onDayPress={(day) => {
           handleDaySelect(day.dateString);
           setDisplayMood(true);
+        }}
+        onMonthChange={(month) => {
+          const newDate = new Date(month.year, month.month - 1, 1);
+          setSelectedDate(newDate);
         }}
         style={s.calendar}
         theme={calendarTheme}

@@ -9,8 +9,8 @@ import { Dimensions } from "react-native";
 import { useTheme } from "../context/ThemeContext";
 
 export default function HistoryScreen() {
-  const [moodsThisYear, setMoodsThisYear] = useState([]);
-  // const [moodsSelectedYear, setMoodsSelectedYear] = useState([]);
+  const [moodsByYear, setMoodsByYear] = useState({});
+  const [displayMood, setDisplayMood] = useState(false);
   const [viewCalendar, setViewCalendar] = useState(true);
   const [period, setPeriod] = useState("mois");
   const [selectedDate, setSelectedDate] = useState(new Date()); // date de référence
@@ -19,28 +19,41 @@ export default function HistoryScreen() {
   const { colors } = useTheme();
   const s = styles(colors);
 
+  const loadYear = async (year) => {
+    console.log("loadYear called with:", year);
+    if (moodsByYear[year]) return;
+
+    const start = `${year}-01-01`;
+    const end = `${year}-12-31`;
+
+    const res = await fetch(
+      `${API_URL}/moods/period?start=${start}&end=${end}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      }
+    );
+
+    const data = await res.json();
+
+    setMoodsByYear((prev) => ({
+      ...prev,
+      [year]: data.moods,
+    }));
+  };
+
   useEffect(() => {
-    const recupMoodsbyYear = async () => {
-      const currentYear = new Date().getFullYear();
-      const start = `${currentYear}-01-01`;
-      const end = `${currentYear}-12-31`;
-      const res = await fetch(
-        `${API_URL}/moods/period?start=${start}&end=${end}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
-          },
-        }
-      );
-      const data = await res.json();
-      setMoodsThisYear(data.moods);
-    };
-    recupMoodsbyYear();
+    const currentYear = new Date().getFullYear();
+    loadYear(currentYear);
   }, [viewCalendar]);
 
-  const filtrage = moodsThisYear
+  const selectedYear = selectedDate.getFullYear();
+  const moodsForSelectedYear = moodsByYear[selectedYear] || [];
+
+  const filtrage = moodsForSelectedYear
     .filter((mood) => {
       const selectedYear = selectedDate.getFullYear();
       const selectedMonth = selectedDate.getMonth();
@@ -86,7 +99,6 @@ export default function HistoryScreen() {
     });
   } else {
     dataForChart = filtrage.map((m) => ({
-      // date: m.date,
       label: new Date(m.label).getDate().toString(),
       value: m.value,
     }));
@@ -147,14 +159,20 @@ export default function HistoryScreen() {
         </View>
         <View style={s.display}>
           {viewCalendar ? (
-            <MoodCalendar moods={moodsThisYear} />
+            <MoodCalendar
+              moods={moodsByYear}
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+            />
           ) : (
             <>
               <View style={s.filtres}>
                 <TouchableOpacity
                   style={s.filtre}
                   onPress={() => {
-                    setPeriod("mois"), setSelectedDate(new Date());
+                    setPeriod("mois"),
+                      setSelectedDate(new Date()),
+                      setDisplayMood(false);
                   }}
                 >
                   <Text style={styleMois}>Mois</Text>
@@ -162,7 +180,9 @@ export default function HistoryScreen() {
                 <TouchableOpacity
                   style={s.filtre}
                   onPress={() => {
-                    setPeriod("annee"), setSelectedDate(new Date());
+                    setPeriod("annee"),
+                      setSelectedDate(new Date()),
+                      setDisplayMood(false);
                   }}
                 >
                   <Text style={styleAnnee}>Année</Text>
@@ -170,7 +190,11 @@ export default function HistoryScreen() {
               </View>
               <MoodGraf
                 moods={dataForChart}
+                loadYear={loadYear}
                 period={period}
+                displayMood={displayMood}
+                setDisplayMood={setDisplayMood}
+                setPeriod={setPeriod}
                 selectedDate={selectedDate}
                 setSelectedDate={setSelectedDate}
               />

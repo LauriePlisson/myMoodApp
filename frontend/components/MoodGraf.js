@@ -16,8 +16,11 @@ export default function MoodGrafGifted({
   period,
   selectedDate,
   setSelectedDate,
+  setPeriod,
+  displayMood,
+  setDisplayMood,
+  loadYear,
 }) {
-  const [displayMood, setDisplayMood] = useState(false);
   const [selectedMood, setSelectedMood] = useState({});
 
   let length;
@@ -74,6 +77,7 @@ export default function MoodGrafGifted({
       setSelectedMood({
         label: `${month}`,
         value: mood.value,
+        month: mood.label,
       });
     }
     if (period === "mois") {
@@ -109,13 +113,20 @@ export default function MoodGrafGifted({
   const handleChevronLeft = () => {
     if (period === "mois") {
       const prevMonth = new Date(selectedDate);
-      prevMonth.setMonth(selectedDate.getMonth() - 1);
+      prevMonth.setMonth(prevMonth.getMonth() - 1);
+      const prevYear = prevMonth.getFullYear();
+      setSelectedDate(prevMonth);
+      if (!moods[prevYear]) {
+        loadYear(prevYear);
+      }
       setSelectedDate(prevMonth);
     }
     if (period === "annee") {
-      const prevYear = new Date(selectedDate);
-      prevYear.setFullYear(prevYear.getFullYear() - 1);
-      setSelectedDate(prevYear);
+      const prevYearDate = new Date(selectedDate);
+      const prevYear = prevYearDate.getFullYear() - 1;
+
+      setSelectedDate(new Date(prevYear, 0, 1));
+      loadYear(prevYear);
     }
   };
 
@@ -130,6 +141,16 @@ export default function MoodGrafGifted({
       nextYear.setFullYear(nextYear.getFullYear() + 1);
       setSelectedDate(nextYear);
     }
+  };
+
+  const handleVoirMois = () => {
+    const year = selectedDate.getFullYear();
+    const month = selectedMood.month;
+    const newDate = new Date(year, month, 1);
+
+    setPeriod("mois");
+    setSelectedDate(newDate);
+    setDisplayMood(false);
   };
 
   return (
@@ -187,25 +208,11 @@ export default function MoodGrafGifted({
         />
       </View>
       {displayMood && (
-        <View
-          style={[
-            s.carte,
-            // {
-            //   borderColor: getColorBackgroundFromMoodValue(
-            //     selectedMood.moodValue
-            //   ),
-            // },
-          ]}
-        >
+        <View style={[s.carte]}>
           <View style={[s.topCarte]}>
             <View style={{ flexDirection: "row", gap: 5 }}>
               <Text style={{ fontSize: 15, color: colors.text }}>
-                {selectedMood.label}
-                {/* {new Date(selectedMood.date).toLocaleDateString("fr-FR", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "2-digit",
-                })} */}
+                Mois de {selectedMood.label}
               </Text>
             </View>
             <TouchableOpacity
@@ -221,19 +228,31 @@ export default function MoodGrafGifted({
 
           <>
             <View style={s.moodInfo}>
-              <View style={{ flexDirection: "row" }}>
-                <Text
-                  style={[
-                    s.moodValue,
-                    // { color: getColorFromMoodValue(selectedMood.moodValue) },
-                  ]}
-                >
-                  moyenne: {selectedMood.value}
-                  {/* {String(selectedMood.moodValue).padStart(2, "0")} */}
-                </Text>
-              </View>
-              {/* {selectedMood.note ? ( */}
-              {/* )} */}
+              <Text>Moyenne: </Text>
+              <Text
+                style={[
+                  s.moodValue,
+                  // { color: getColorFromMoodValue(selectedMood.moodValue) },
+                ]}
+              >
+                {selectedMood.value}
+                {/* {String(selectedMood.moodValue).padStart(2, "0")} */}
+              </Text>
+              <Text style={{ color: "transparent" }}>Moyenne: </Text>
+            </View>
+            <View style={s.acces}>
+              <TouchableOpacity
+                style={{
+                  borderBottomWidth: 1,
+                  width: 80,
+                  alignItems: "center",
+                }}
+                onPress={() => {
+                  handleVoirMois();
+                }}
+              >
+                <Text style={{ fontStyle: "italic" }}>Voir le mois</Text>
+              </TouchableOpacity>
             </View>
           </>
         </View>
@@ -244,16 +263,6 @@ export default function MoodGrafGifted({
 
 const styles = (colors) =>
   StyleSheet.create({
-    // container: {
-    //   alignItems: "center",
-    //   justifyContent: "flex-end",
-    //   //   paddingVertical: 10,
-    //   //   width: 350,
-    //   //   height: 300,
-    //   //   backgroundColor: colors.grafBackColor,
-    //   //   borderRadius: 15,
-    //   //   gap: 5,
-    // },
     grafInfo: {
       flexDirection: "row",
       alignItems: "center",
@@ -262,7 +271,6 @@ const styles = (colors) =>
       marginTop: 20,
       width: 350,
       height: 40,
-      // marginBottom: 10,
       borderTopEndRadius: 8,
       borderStartStartRadius: 8,
       backgroundColor: colors.card,
@@ -299,16 +307,23 @@ const styles = (colors) =>
       alignItems: "center",
     },
     moodInfo: {
+      flexDirection: "row",
       alignItems: "center",
+      justifyContent: "space-between",
+      paddingHorizontal: 15,
+      marginTop: 5,
     },
     moodValue: {
       fontSize: 25,
-      marginBottom: 5,
     },
     com: {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
       width: "100%",
+    },
+    acces: {
+      alignItems: "flex-end",
+      marginRight: 0,
     },
   });
