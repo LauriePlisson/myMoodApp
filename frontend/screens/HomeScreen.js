@@ -4,16 +4,14 @@ import {
   TouchableOpacity,
   StyleSheet,
   TextInput,
-  Platform,
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import Slider from "@react-native-community/slider";
 import { useState, useEffect, useCallback } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
-import { Check, X, Sparkles } from "lucide-react-native";
+import { Check, X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
 
 export default function HomeScreen({ navigation }) {
@@ -222,7 +220,7 @@ export default function HomeScreen({ navigation }) {
     </TouchableWithoutFeedback>
   );
 }
-// }
+
 const styles = (colors) =>
   StyleSheet.create({
     container: {

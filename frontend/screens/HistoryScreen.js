@@ -1,11 +1,8 @@
 import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
-import { LineChart } from "react-native-gifted-charts";
 import MoodCalendar from "../components/MoodCalendar";
 import MoodGraf from "../components/MoodGraf";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
-import { Dimensions } from "react-native";
 import { useTheme } from "../context/ThemeContext";
 
 export default function HistoryScreen() {
@@ -13,14 +10,13 @@ export default function HistoryScreen() {
   const [displayMood, setDisplayMood] = useState(false);
   const [viewCalendar, setViewCalendar] = useState(true);
   const [period, setPeriod] = useState("mois");
-  const [selectedDate, setSelectedDate] = useState(new Date()); // date de référence
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const user = useSelector((state) => state.user.value);
   const API_URL = process.env.EXPO_PUBLIC_API_URL;
   const { colors } = useTheme();
   const s = styles(colors);
 
   const loadYear = async (year) => {
-    console.log("loadYear called with:", year);
     if (moodsByYear[year]) return;
 
     const start = `${year}-01-01`;
@@ -104,18 +100,12 @@ export default function HistoryScreen() {
     }));
   }
 
-  let styleMois = {};
-  if (period === "mois") {
-    styleMois = { color: colors.accent };
-  } else {
-    styleMois = { color: colors.secondary };
-  }
-  let styleAnnee = {};
-  if (period === "annee") {
-    styleAnnee = { color: colors.accent };
-  } else {
-    styleAnnee = { color: colors.secondary };
-  }
+  const styleMois = {
+    color: period === "mois" ? colors.accent : colors.secondary,
+  };
+  const styleAnnee = {
+    color: period === "annee" ? colors.accent : colors.secondary,
+  };
 
   return (
     <View style={s.container}>

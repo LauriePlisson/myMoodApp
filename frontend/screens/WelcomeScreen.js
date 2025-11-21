@@ -4,12 +4,10 @@ import {
   TouchableOpacity,
   StyleSheet,
   TextInput,
-  Switch,
   KeyboardAvoidingView,
   Keyboard,
   Platform,
   TouchableWithoutFeedback,
-  ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState, useEffect } from "react";
@@ -18,7 +16,6 @@ import { logIn } from "../reducers/user";
 import { useTheme } from "../context/ThemeContext";
 
 export default function WelcomeScreen({ navigation }) {
-  const [isDark, setIsdark] = useState(false);
   const [isLogIn, setIsLogIn] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -64,7 +61,7 @@ export default function WelcomeScreen({ navigation }) {
         body: JSON.stringify(dataUser),
       });
       const data = await res.json();
-      // console.log(data);
+
       if (data.error) {
         setError(data.error);
       }
@@ -83,7 +80,6 @@ export default function WelcomeScreen({ navigation }) {
     setPassword("");
     setUsername("");
   };
-  const toggleSwitch = () => setIsdark((previousState) => !previousState);
 
   return (
     <SafeAreaView style={[s.container]}>

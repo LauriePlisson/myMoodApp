@@ -6,8 +6,8 @@ import {
   Modal,
   TextInput,
   Switch,
+  Alert,
 } from "react-native";
-import Toast from "react-native-toast-message";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -57,12 +57,6 @@ export default function SettingsScreen({ navigation }) {
       if (newUsername !== "") {
         dispatch(changeUsername(newUsername));
       }
-      // Toast.show({
-      //   type: "success",
-      //   text1: "Succès",
-      //   text2: "Les changements ont été effectués ✅",
-      //   position: "center",
-      // });
       setSuccesMessage("Changement enregistré");
       setTimeout(() => setSuccesMessage(""), 3000);
       setEditPassword(false);

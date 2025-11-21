@@ -22,9 +22,6 @@ export default function MoodGrafGifted({
   loadYear,
 }) {
   const [selectedMood, setSelectedMood] = useState({});
-
-  let length;
-  let getIndex;
   const { theme, colors } = useTheme();
   const s = styles(colors);
 
@@ -47,13 +44,8 @@ export default function MoodGrafGifted({
     return mois[numeroMois];
   }
 
-  if (period === "mois") {
-    length = 31;
-    getIndex = (m) => m.label;
-  } else if (period === "annee") {
-    length = 12;
-    getIndex = (m) => m.label;
-  }
+  const length = period === "mois" ? 31 : 12;
+  const getIndex = (m) => m.label;
 
   const data = Array.from({ length }, (_, i) => ({
     value: null,
@@ -119,7 +111,6 @@ export default function MoodGrafGifted({
       if (!moods[prevYear]) {
         loadYear(prevYear);
       }
-      setSelectedDate(prevMonth);
     }
     if (period === "annee") {
       const prevYearDate = new Date(selectedDate);
@@ -146,16 +137,16 @@ export default function MoodGrafGifted({
   function getColorFromMoodValue(value) {
     if (value === "") return "black";
     if (value <= 2) return "#d0094cff";
-    if (value < 5) return "#rgba(185, 154, 114, 1)";
-    if (value < 7) return "#rgba(72, 153, 151, 1)";
+    if (value < 5) return "rgba(185, 154, 114, 1)";
+    if (value < 7) return "rgba(72, 153, 151, 1)";
     return "#09d066ff";
   }
 
   function getColorBackgroundFromMoodValue(value) {
     if (value === "") return "white";
     if (value <= 2) return "rgba(208, 9, 75, 0.42)";
-    if (value < 5) return "#rgba(237, 155, 48, 0.42)";
-    if (value < 7) return "#rgba(113, 247, 245, 0.42)";
+    if (value < 5) return "rgba(237, 155, 48, 0.42)";
+    if (value < 7) return "rgba(113, 247, 245, 0.42)";
     return "rgba(22, 240, 124, 0.42)";
   }
 

@@ -15,8 +15,7 @@ export default function MoodCalendar({
   const [displayMood, setDisplayMood] = useState(false);
   const [selectedMood, setSelectedMood] = useState({});
   const [refreshKey, setRefreshKey] = useState(0);
-  const { theme } = useTheme();
-  const { colors } = useTheme();
+  const { theme, colors } = useTheme();
   const s = styles(colors);
 
   const year = selectedDate.getFullYear();
@@ -50,16 +49,16 @@ export default function MoodCalendar({
   function getColorFromMoodValue(value) {
     if (value === "") return "black";
     if (value <= 2) return "#d0094cff";
-    if (value < 5) return "#rgba(185, 154, 114, 1)";
-    if (value < 7) return "#rgba(72, 153, 151, 1)";
+    if (value < 5) return "rgba(185, 154, 114, 1)";
+    if (value < 7) return "rgba(72, 153, 151, 1)";
     return "#09d066ff";
   }
 
   function getColorBackgroundFromMoodValue(value) {
     if (value === "") return "white";
     if (value <= 2) return "rgba(208, 9, 75, 0.42)";
-    if (value < 5) return "#rgba(237, 155, 48, 0.42)";
-    if (value < 7) return "#rgba(113, 247, 245, 0.42)";
+    if (value < 5) return "rgba(237, 155, 48, 0.42)";
+    if (value < 7) return "rgba(113, 247, 245, 0.42)";
     return "rgba(22, 240, 124, 0.42)";
   }
   const handleDaySelect = (dateString) => {
@@ -170,7 +169,6 @@ export default function MoodCalendar({
         markedDates={markedDates}
         onDayPress={(day) => {
           handleDaySelect(day.dateString);
-          setDisplayMood(true);
         }}
         onMonthChange={(month) => {
           handleChangeMonth(month);
