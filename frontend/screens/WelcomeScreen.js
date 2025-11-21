@@ -10,6 +10,7 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { logIn } from "../reducers/user";
@@ -25,7 +26,15 @@ export default function WelcomeScreen({ navigation }) {
   const s = styles(colors);
   const dispatch = useDispatch();
 
+  const user = useSelector((state) => state.user.value);
+
   const API_URL = process.env.EXPO_PUBLIC_API_URL;
+
+  useEffect(() => {
+    if (user.token) {
+      navigation.replace("TabNavigator");
+    }
+  }, [user]);
 
   useEffect(() => {
     if (!error) return;
