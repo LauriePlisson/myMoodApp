@@ -10,6 +10,7 @@ import { useState } from "react";
 import { LineChart } from "react-native-gifted-charts";
 import { ChevronLeft, ChevronRight, X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
+import MoodCard from "./MoodCard";
 
 export default function MoodGrafGifted({
   moods,

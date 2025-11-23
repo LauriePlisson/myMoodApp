@@ -5,6 +5,7 @@ import { useState, useCallback } from "react";
 import { X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
 import { useMemo } from "react";
+import MoodCard from "./MoodCard";
 
 export default function MoodCalendar({
   moods,
