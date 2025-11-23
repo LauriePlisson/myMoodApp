@@ -18,6 +18,8 @@ export default function HomeScreen({ navigation }) {
   const [editingMood, setEditingMood] = useState(false);
   const [moodValue, setMoodValue] = useState("05");
   const [moodOfTheDay, setMoodOfTheDay] = useState(null);
+  const [backupMoodValue, setBackupMoodValue] = useState(null);
+  const [backupNote, setBackupNote] = useState(null);
   const [succesMessage, setSuccesMessage] = useState("");
   const [note, setNote] = useState("");
   const [ajoutCom, setAjoutCom] = useState(false);
@@ -108,6 +110,18 @@ export default function HomeScreen({ navigation }) {
     if (editingMood && moodOfTheDay) return "Modifie ton Mood";
     if (moodOfTheDay && !editingMood) return "Ton Mood du jour";
     if (!moodOfTheDay) return "Ajoute ton Mood";
+  };
+
+  const handleModif = () => {
+    if (!editingMood) {
+      setBackupMoodValue(moodValue);
+      setBackupNote(note);
+    } else {
+      setMoodValue(backupMoodValue);
+      setNote(backupNote);
+    }
+    setEditingMood(!editingMood);
+    setAjoutCom(false);
   };
 
   return (
@@ -207,8 +221,7 @@ export default function HomeScreen({ navigation }) {
         {moodOfTheDay && (
           <TouchableOpacity
             onPress={() => {
-              setEditingMood(!editingMood);
-              setAjoutCom(false);
+              handleModif();
             }}
           >
             <Text style={s.modif}>
