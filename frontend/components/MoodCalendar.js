@@ -217,11 +217,11 @@ export default function MoodCalendar({
           </View>
           {selectedMood.future ? (
             <Text style={{ marginTop: 10, color: colors.text }}>
-              Ce jour n’est pas encore arrivé 🕒
+              Ce jour n’est pas encore arrivé
             </Text>
           ) : selectedMood.noMood ? (
             <Text style={{ marginTop: 10, color: colors.text }}>
-              Pas de mood pour ce jour 😶
+              Pas de mood enregistré pour ce jour
             </Text>
           ) : (
             <>

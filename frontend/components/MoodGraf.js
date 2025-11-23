@@ -44,12 +44,22 @@ export default function MoodGrafGifted({
     return mois[numeroMois];
   }
 
+  function formatDate(dateString) {
+    const date = new Date(dateString); // convertit UTC → date locale automatiquement
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
+
   const length = period === "mois" ? 31 : 12;
   const getIndex = (m) => m.label;
 
   const data = Array.from({ length }, (_, i) => ({
     value: null,
     label: "",
+    date: null,
+    fullMood: null,
   }));
 
   moods.forEach((mood) => {
@@ -58,6 +68,7 @@ export default function MoodGrafGifted({
       data[index] = {
         value: mood.value,
         label: mood.label,
+        fullMood: mood.fullMood,
       };
     }
   });
@@ -73,10 +84,23 @@ export default function MoodGrafGifted({
       });
     }
     if (period === "mois") {
-      setSelectedMood({
-        label: mood.label,
-        value: mood.value,
-      });
+      if (mood.fullMood) {
+        setSelectedMood({
+          value: mood.value,
+          label: mood.label,
+          date: formatDate(mood.fullMood.date),
+          note: mood.fullMood.note,
+        });
+      } else {
+        setSelectedMood({
+          value: null,
+          label: mood.label,
+          date: null,
+          note: null,
+        });
+
+        return;
+      }
     }
   };
 
@@ -214,7 +238,7 @@ export default function MoodGrafGifted({
           onFocus={(mood) => handleFocus(mood)}
         />
       </View>
-      {displayMood && (
+      {displayMood ? (
         <View
           style={[
             s.carte,
@@ -223,51 +247,137 @@ export default function MoodGrafGifted({
             },
           ]}
         >
-          <View style={[s.topCarte]}>
-            <View style={{ flexDirection: "row", gap: 5 }}>
-              <Text style={{ fontSize: 15, color: colors.text }}>
-                Mois de {selectedMood.label}
-              </Text>
-            </View>
-            <TouchableOpacity
-              style={s.exit}
-              onPress={() => setDisplayMood(false)}
-            >
-              <X size={20} color={getColorFromMoodValue(selectedMood.value)} />
-            </TouchableOpacity>
-          </View>
-
-          <>
-            <View style={s.moodInfo}>
-              <Text>Moyenne: </Text>
-              <Text
-                style={[
-                  s.moodValue,
-                  { color: getColorFromMoodValue(selectedMood.value) },
-                ]}
-              >
-                {selectedMood.value}
-                {/* {String(selectedMood.moodValue).padStart(2, "0")} */}
-              </Text>
-              <Text style={{ color: "transparent" }}>Moyenne: </Text>
-            </View>
-            <View style={s.acces}>
-              <TouchableOpacity
-                style={{
-                  borderBottomWidth: 1,
-                  width: 80,
-                  alignItems: "center",
-                }}
-                onPress={() => {
-                  handleVoirMois();
-                }}
-              >
-                <Text style={{ fontStyle: "italic" }}>Voir le mois</Text>
-              </TouchableOpacity>
-            </View>
-          </>
+          {period === "annee" ? (
+            <>
+              <View style={[s.topCarte]}>
+                <View style={{ flexDirection: "row", gap: 5 }}>
+                  <Text style={{ fontSize: 15, color: colors.text }}>
+                    {selectedMood?.label !== "undefined"
+                      ? `Mois de ${selectedMood.label}`
+                      : ""}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  style={s.exit}
+                  onPress={() => setDisplayMood(false)}
+                >
+                  <X
+                    size={20}
+                    color={getColorFromMoodValue(selectedMood.value)}
+                  />
+                </TouchableOpacity>
+              </View>
+              {selectedMood.label !== "undefined" ? (
+                <>
+                  <View style={s.moodInfo}>
+                    <Text>Moyenne: </Text>
+                    <Text
+                      style={[
+                        s.moodValue,
+                        { color: getColorFromMoodValue(selectedMood.value) },
+                      ]}
+                    >
+                      {String(selectedMood.value).padStart(2, "0")}
+                    </Text>
+                    <Text style={{ color: "transparent" }}>Moyenne: </Text>
+                  </View>
+                  <View style={s.acces}>
+                    <TouchableOpacity
+                      style={{
+                        borderBottomWidth: 1,
+                        width: 80,
+                        alignItems: "center",
+                      }}
+                      onPress={() => {
+                        handleVoirMois();
+                      }}
+                    >
+                      <Text style={{ fontStyle: "italic" }}>Voir le mois</Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              ) : (
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: 40,
+                  }}
+                >
+                  <Text>Pas de donnée enregistré pour ce mois</Text>
+                </View>
+              )}
+            </>
+          ) : (
+            <>
+              <View style={[s.topCarte]}>
+                <View style={{ flexDirection: "row", gap: 5 }}>
+                  <Text style={{ fontSize: 15, color: colors.text }}>
+                    {selectedMood?.date ? `Mood du: ${selectedMood.date}` : ""}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  style={s.exit}
+                  onPress={() => setDisplayMood(false)}
+                >
+                  <X
+                    size={20}
+                    color={getColorFromMoodValue(selectedMood.value)}
+                  />
+                </TouchableOpacity>
+              </View>
+              {selectedMood.date ? (
+                <>
+                  <View style={s.moodInfo}>
+                    <Text>Note: </Text>
+                    <Text
+                      style={[
+                        s.moodValue,
+                        { color: getColorFromMoodValue(selectedMood.value) },
+                      ]}
+                    >
+                      {String(selectedMood.value).padStart(2, "0")}
+                    </Text>
+                    <Text style={{ color: "transparent" }}>Note: </Text>
+                  </View>
+                  {selectedMood.note ? (
+                    <View style={s.com}>
+                      <Text
+                        style={{
+                          fontSize: 15,
+                          fontStyle: "italic",
+                          color: colors.text,
+                        }}
+                      >
+                        Comm:{" "}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          color: colors.text,
+                        }}
+                      >
+                        {selectedMood.note}
+                      </Text>
+                      <Text style={{ color: "transparent" }}>Comm: </Text>
+                    </View>
+                  ) : null}
+                </>
+              ) : (
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: 40,
+                  }}
+                >
+                  <Text>Pas de donnée enregistré pour ce jour</Text>
+                </View>
+              )}
+            </>
+          )}
         </View>
-      )}
+      ) : null}
     </>
   );
 }

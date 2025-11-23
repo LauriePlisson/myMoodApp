@@ -73,7 +73,11 @@ export default function HistoryScreen() {
         return moodYear === selectedYear;
       }
     })
-    .map((mood) => ({ value: mood.moodValue, label: mood.date }));
+    .map((mood) => ({
+      value: mood.moodValue,
+      label: mood.date,
+      fullMood: mood,
+    }));
 
   let dataForChart = [];
 
@@ -97,6 +101,7 @@ export default function HistoryScreen() {
     dataForChart = filtrage.map((m) => ({
       label: new Date(m.label).getDate().toString(),
       value: m.value,
+      fullMood: m.fullMood,
     }));
   }
 
