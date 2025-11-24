@@ -220,36 +220,4 @@ const styles = (colors) =>
       paddingBottom: 5,
       width: 350,
     },
-    carte: {
-      backgroundColor: colors.moodCard,
-      borderWidth: 4,
-      width: 350,
-      height: 100,
-      borderRadius: 8,
-      paddingHorizontal: 7,
-    },
-    topCarte: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      marginTop: 10,
-    },
-    exit: {
-      width: 50,
-      justifyContent: "flex-start",
-      alignItems: "center",
-    },
-    moodInfo: {
-      alignItems: "center",
-    },
-    moodValue: {
-      fontSize: 25,
-      marginBottom: 5,
-    },
-    com: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      width: "100%",
-    },
   });

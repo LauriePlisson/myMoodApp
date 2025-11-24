@@ -261,44 +261,4 @@ const styles = (colors) =>
       paddingRight: 5,
       width: 350,
     },
-    carte: {
-      backgroundColor: colors.moodCard,
-      marginTop: 10,
-      borderWidth: 4,
-      width: 350,
-      height: 100,
-      borderRadius: 8,
-      paddingHorizontal: 7,
-    },
-    topCarte: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      marginTop: 10,
-    },
-    exit: {
-      width: 50,
-      justifyContent: "flex-start",
-      alignItems: "center",
-    },
-    moodInfo: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      paddingHorizontal: 15,
-      marginTop: 5,
-    },
-    moodValue: {
-      fontSize: 25,
-    },
-    com: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      width: "100%",
-    },
-    acces: {
-      alignItems: "flex-end",
-      marginRight: 0,
-    },
   });
