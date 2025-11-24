@@ -16,10 +16,11 @@ export default function MoodCard({
 }) {
   const { theme, colors } = useTheme();
   const s = styles(colors);
+
   return (
     <View style={s.card}>
       <View style={s.sectionCard}>
-        <View style={s.date}>
+        <View style={[s.date, { opacity: selectedMood.value ? 1 : 0 }]}>
           <Text>Mood du: </Text>
           <Text>{selectedMood.date}</Text>
         </View>
@@ -31,38 +32,48 @@ export default function MoodCard({
           <X size={20} />
         </TouchableOpacity>
       </View>
-      <View style={s.midCard}>
-        <View style={[s.sectionCard, s.noteSection]}>
-          <Text style={{ color: period === "mois" ? "transparent" : "black" }}>
-            Moyenne:
-          </Text>
-          <Text style={s.note}>
-            {String(selectedMood.value).padStart(2, "0")}
-          </Text>
-          <Text style={{ color: "transparent" }}>Moyenne:</Text>
-        </View>
-        {period === "mois" && (
-          <View style={s.comSection}>
-            <Text style={s.com}>{selectedMood.note}</Text>
-          </View>
-        )}
-        {period === "annee" && (
-          <View style={[s.sectionCard, s.acces]}>
-            <TouchableOpacity
-              style={{
-                borderBottomWidth: 1,
-                width: 80,
-                alignItems: "center",
-              }}
-              onPress={() => {
-                handleVoirMois();
-              }}
+      {selectedMood.value ? (
+        <View style={s.midCard}>
+          <View style={[s.sectionCard, s.noteSection]}>
+            <Text
+              style={{ color: period === "mois" ? "transparent" : "black" }}
             >
-              <Text style={{ fontStyle: "italic" }}>Voir le mois</Text>
-            </TouchableOpacity>
+              Moyenne:
+            </Text>
+            <Text style={s.note}>
+              {String(selectedMood.value).padStart(2, "0")}
+            </Text>
+            <Text style={{ color: "transparent" }}>Moyenne:</Text>
           </View>
-        )}
-      </View>
+          {period === "mois" && (
+            <View style={s.comSection}>
+              <Text style={s.com}>{selectedMood.note}</Text>
+            </View>
+          )}
+          {period === "annee" && (
+            <View style={[s.sectionCard, s.acces]}>
+              <TouchableOpacity
+                style={{
+                  borderBottomWidth: 1,
+                  width: 80,
+                  alignItems: "center",
+                }}
+                onPress={() => {
+                  handleVoirMois();
+                }}
+              >
+                <Text style={{ fontStyle: "italic" }}>Voir le mois</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+      ) : (
+        <View>
+          <Text>
+            Pas de donnée pour ce {period === "annee" ? "mois" : "jour"}
+          </Text>
+        </View>
+      )}
     </View>
   );
 }

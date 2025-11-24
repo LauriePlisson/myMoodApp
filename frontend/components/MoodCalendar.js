@@ -69,6 +69,7 @@ export default function MoodCalendar({
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   }
+
   const handleDaySelect = (dateString) => {
     const selectedLocal = new Date(dateString);
     selectedLocal.setHours(0, 0, 0, 0);
@@ -76,11 +77,11 @@ export default function MoodCalendar({
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    if (selectedLocal > today) {
-      setSelectedMood({ date: dateString, future: true });
-      setDisplayMood(true);
-      return;
-    }
+    // if (selectedLocal > today) {
+    //   setSelectedMood({ date: dateString, future: true });
+    //   setDisplayMood(true);
+    //   return;
+    // }
 
     const moodsForYear = moods[selectedDate.getFullYear()] || [];
 
@@ -89,17 +90,14 @@ export default function MoodCalendar({
       moodLocal.setHours(0, 0, 0, 0);
       return moodLocal.getTime() === selectedLocal.getTime();
     });
-
-    setSelectedMood(
-      {
+    if (!mood) {
+      setSelectedMood({ value: null });
+    } else
+      setSelectedMood({
         value: mood.moodValue,
         date: formatDate(mood.date),
         note: mood.note,
-      } || {
-        date: dateString,
-        noMood: true,
-      }
-    );
+      });
     setDisplayMood(true);
   };
 
