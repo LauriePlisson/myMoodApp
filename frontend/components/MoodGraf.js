@@ -181,13 +181,14 @@ export default function MoodGrafGifted({
   return (
     <>
       <View style={s.grafInfo}>
-        <TouchableOpacity onPress={() => handleChevronLeft()}>
+        <TouchableOpacity style={s.chevron} onPress={() => handleChevronLeft()}>
           <ChevronLeft color={colors.grafText} />
         </TouchableOpacity>
-        <Text style={{ fontSize: 15, color: colors.grafText }}>
-          {displayPeriod}
-        </Text>
-        <TouchableOpacity onPress={() => handleChevronRight()}>
+        <Text style={s.grafText}>{displayPeriod}</Text>
+        <TouchableOpacity
+          style={s.chevron}
+          onPress={() => handleChevronRight()}
+        >
           <ChevronRight color={colors.grafText} />
         </TouchableOpacity>
       </View>
@@ -238,6 +239,7 @@ export default function MoodGrafGifted({
           period={period}
           selectedDate={selectedDate}
           handleVoirMois={handleVoirMois}
+          setDisplayMood={setDisplayMood}
         />
       )}
     </>
@@ -250,13 +252,22 @@ const styles = (colors) =>
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-around",
-      gap: 15,
       marginTop: 20,
       width: 350,
       height: 40,
       borderTopEndRadius: 8,
       borderStartStartRadius: 8,
       backgroundColor: colors.card,
+    },
+    chevron: {
+      alignItems: "center",
+      width: 20,
+    },
+    grafText: {
+      fontSize: 15,
+      color: colors.grafText,
+      width: 150,
+      textAlign: "center",
     },
     grafContainer: {
       borderColor: colors.card,
