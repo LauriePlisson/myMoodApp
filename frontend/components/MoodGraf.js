@@ -82,6 +82,8 @@ export default function MoodGrafGifted({
         label: `${month}`,
         value: mood.value,
         month: mood.label,
+        date: `${month}`,
+        note: "",
       });
     }
     if (period === "mois") {
@@ -159,27 +161,10 @@ export default function MoodGrafGifted({
     }
   };
 
-  function getColorFromMoodValue(value) {
-    if (value === "") return "black";
-    if (value <= 2) return "#d0094cff";
-    if (value < 5) return "rgba(185, 154, 114, 1)";
-    if (value < 7) return "rgba(72, 153, 151, 1)";
-    return "#09d066ff";
-  }
-
-  function getColorBackgroundFromMoodValue(value) {
-    if (value === "") return "white";
-    if (value <= 2) return "rgba(208, 9, 75, 0.42)";
-    if (value < 5) return "rgba(237, 155, 48, 0.42)";
-    if (value < 7) return "rgba(113, 247, 245, 0.42)";
-    return "rgba(22, 240, 124, 0.42)";
-  }
-
   const handleVoirMois = () => {
     const year = selectedDate.getFullYear();
     const month = selectedMood.month;
     const newDate = new Date(year, month, 1);
-
     setPeriod("mois");
     setSelectedDate(newDate);
     setDisplayMood(false);
@@ -239,146 +224,14 @@ export default function MoodGrafGifted({
           onFocus={(mood) => handleFocus(mood)}
         />
       </View>
-      {displayMood ? (
-        <View
-          style={[
-            s.carte,
-            {
-              borderColor: getColorBackgroundFromMoodValue(selectedMood.value),
-            },
-          ]}
-        >
-          {period === "annee" ? (
-            <>
-              <View style={[s.topCarte]}>
-                <View style={{ flexDirection: "row", gap: 5 }}>
-                  <Text style={{ fontSize: 15, color: colors.text }}>
-                    {selectedMood?.label !== "undefined"
-                      ? `Mois de ${selectedMood.label}`
-                      : ""}
-                  </Text>
-                </View>
-                <TouchableOpacity
-                  style={s.exit}
-                  onPress={() => setDisplayMood(false)}
-                >
-                  <X
-                    size={20}
-                    color={getColorFromMoodValue(selectedMood.value)}
-                  />
-                </TouchableOpacity>
-              </View>
-              {selectedMood.label !== "undefined" ? (
-                <>
-                  <View style={s.moodInfo}>
-                    <Text>Moyenne: </Text>
-                    <Text
-                      style={[
-                        s.moodValue,
-                        { color: getColorFromMoodValue(selectedMood.value) },
-                      ]}
-                    >
-                      {String(selectedMood.value).padStart(2, "0")}
-                    </Text>
-                    <Text style={{ color: "transparent" }}>Moyenne: </Text>
-                  </View>
-                  <View style={s.acces}>
-                    <TouchableOpacity
-                      style={{
-                        borderBottomWidth: 1,
-                        width: 80,
-                        alignItems: "center",
-                      }}
-                      onPress={() => {
-                        handleVoirMois();
-                      }}
-                    >
-                      <Text style={{ fontStyle: "italic" }}>Voir le mois</Text>
-                    </TouchableOpacity>
-                  </View>
-                </>
-              ) : (
-                <View
-                  style={{
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: 40,
-                  }}
-                >
-                  <Text>Pas de donnée enregistré pour ce mois</Text>
-                </View>
-              )}
-            </>
-          ) : (
-            <>
-              <View style={[s.topCarte]}>
-                <View style={{ flexDirection: "row", gap: 5 }}>
-                  <Text style={{ fontSize: 15, color: colors.text }}>
-                    {selectedMood?.date ? `Mood du: ${selectedMood.date}` : ""}
-                  </Text>
-                </View>
-                <TouchableOpacity
-                  style={s.exit}
-                  onPress={() => setDisplayMood(false)}
-                >
-                  <X
-                    size={20}
-                    color={getColorFromMoodValue(selectedMood.value)}
-                  />
-                </TouchableOpacity>
-              </View>
-              {selectedMood.date ? (
-                <>
-                  <View style={s.moodInfo}>
-                    <Text>Note: </Text>
-                    <Text
-                      style={[
-                        s.moodValue,
-                        { color: getColorFromMoodValue(selectedMood.value) },
-                      ]}
-                    >
-                      {String(selectedMood.value).padStart(2, "0")}
-                    </Text>
-                    <Text style={{ color: "transparent" }}>Note: </Text>
-                  </View>
-                  {selectedMood.note ? (
-                    <View style={s.com}>
-                      <Text
-                        style={{
-                          fontSize: 15,
-                          fontStyle: "italic",
-                          color: colors.text,
-                        }}
-                      >
-                        Comm:{" "}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 20,
-                          color: colors.text,
-                        }}
-                      >
-                        {selectedMood.note}
-                      </Text>
-                      <Text style={{ color: "transparent" }}>Comm: </Text>
-                    </View>
-                  ) : null}
-                </>
-              ) : (
-                <View
-                  style={{
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: 40,
-                  }}
-                >
-                  <Text>Pas de donnée enregistré pour ce jour</Text>
-                </View>
-              )}
-            </>
-          )}
-        </View>
-      ) : null}
+      {displayMood && (
+        <MoodCard
+          selectedMood={selectedMood}
+          period={period}
+          selectedDate={selectedDate}
+          handleVoirMois={handleVoirMois}
+        />
+      )}
     </>
   );
 }

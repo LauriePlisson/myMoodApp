@@ -62,6 +62,13 @@ export default function MoodCalendar({
     if (value < 7) return "rgba(113, 247, 245, 0.42)";
     return "rgba(22, 240, 124, 0.42)";
   }
+  function formatDate(dateString) {
+    const date = new Date(dateString); // convertit UTC → date locale automatiquement
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
   const handleDaySelect = (dateString) => {
     const selectedLocal = new Date(dateString);
     selectedLocal.setHours(0, 0, 0, 0);
@@ -83,7 +90,16 @@ export default function MoodCalendar({
       return moodLocal.getTime() === selectedLocal.getTime();
     });
 
-    setSelectedMood(mood || { date: dateString, noMood: true });
+    setSelectedMood(
+      {
+        value: mood.moodValue,
+        date: formatDate(mood.date),
+        note: mood.note,
+      } || {
+        date: dateString,
+        noMood: true,
+      }
+    );
     setDisplayMood(true);
   };
 
@@ -178,97 +194,11 @@ export default function MoodCalendar({
         theme={calendarTheme}
       />
       {displayMood && (
-        <View
-          style={[
-            s.carte,
-            {
-              borderColor: getColorBackgroundFromMoodValue(
-                selectedMood.moodValue
-              ),
-            },
-          ]}
-        >
-          <View style={[s.topCarte]}>
-            <View style={{ flexDirection: "row", gap: 5 }}>
-              <Text
-                style={{
-                  fontSize: 15,
-                  color: getColorFromMoodValue(selectedMood.moodValue),
-                }}
-              >
-                Mood du:{" "}
-              </Text>
-              <Text style={{ fontSize: 15, color: colors.text }}>
-                {new Date(selectedMood.date).toLocaleDateString("fr-FR", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "2-digit",
-                })}
-              </Text>
-            </View>
-            <TouchableOpacity
-              style={s.exit}
-              onPress={() => setDisplayMood(false)}
-            >
-              <X
-                size={20}
-                color={getColorFromMoodValue(selectedMood.moodValue)}
-              />
-            </TouchableOpacity>
-          </View>
-          {selectedMood.future ? (
-            <Text style={{ marginTop: 10, color: colors.text }}>
-              Ce jour n’est pas encore arrivé
-            </Text>
-          ) : selectedMood.noMood ? (
-            <Text style={{ marginTop: 10, color: colors.text }}>
-              Pas de mood enregistré pour ce jour
-            </Text>
-          ) : (
-            <>
-              <View style={s.moodInfo}>
-                <View style={{ flexDirection: "row" }}>
-                  <Text
-                    style={[
-                      s.moodValue,
-                      { color: getColorFromMoodValue(selectedMood.moodValue) },
-                    ]}
-                  >
-                    {String(selectedMood.moodValue).padStart(2, "0")}
-                  </Text>
-                </View>
-                {selectedMood.note ? (
-                  <View style={s.com}>
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        fontStyle: "italic",
-                        color: colors.text,
-                      }}
-                    >
-                      Comm:{" "}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        color: colors.text,
-                      }}
-                    >
-                      {selectedMood.note}
-                    </Text>
-                    <Text style={{ opacity: 0 }}>Comm: </Text>
-                  </View>
-                ) : (
-                  <View
-                    style={{ alignItems: "center", justifyContent: "center" }}
-                  >
-                    <Text>Pas de commentaire</Text>
-                  </View>
-                )}
-              </View>
-            </>
-          )}
-        </View>
+        <MoodCard
+          selectedMood={selectedMood}
+          setDisplayMood={setDisplayMood}
+          period={"mois"}
+        />
       )}
     </>
   );
