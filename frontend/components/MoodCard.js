@@ -20,8 +20,10 @@ export default function MoodCard({
   return (
     <View style={s.card}>
       <View style={s.sectionCard}>
-        <View style={[s.date, { opacity: selectedMood.value ? 1 : 0 }]}>
-          <Text>Mood du: </Text>
+        <View
+          style={[s.date, { opacity: selectedMood.value !== null ? 1 : 0 }]}
+        >
+          <Text>{period === "mois" ? "Mood du: " : "Moods de: "}</Text>
           <Text>{selectedMood.date}</Text>
         </View>
         <TouchableOpacity
@@ -32,7 +34,7 @@ export default function MoodCard({
           <X size={20} />
         </TouchableOpacity>
       </View>
-      {selectedMood.value ? (
+      {selectedMood.value !== null ? (
         <View style={s.midCard}>
           <View style={[s.sectionCard, s.noteSection]}>
             <Text
@@ -68,7 +70,7 @@ export default function MoodCard({
           )}
         </View>
       ) : (
-        <View>
+        <View style={s.noData}>
           <Text>
             Pas de donnée pour ce {period === "annee" ? "mois" : "jour"}
           </Text>
@@ -115,5 +117,11 @@ const styles = (colors) =>
       //   borderWidth: 2,
       justifyContent: "flex-end",
       paddingHorizontal: 30,
+    },
+    noData: {
+      //   borderWidth: 2,
+      height: 50,
+      justifyContent: "center",
+      alignItems: "center",
     },
   });
