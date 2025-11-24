@@ -76,15 +76,21 @@ export default function MoodGrafGifted({
 
   const handleFocus = (mood) => {
     setDisplayMood(true);
+    const month = moisEnLettre(mood.label);
     if (period === "annee") {
-      const month = moisEnLettre(mood.label);
-      setSelectedMood({
-        label: `${month}`,
-        value: mood.value,
-        month: mood.label,
-        date: `${month}`,
-        note: "",
-      });
+      if (mood.label) {
+        setSelectedMood({
+          label: `${month}`,
+          value: mood.value,
+          month: mood.label,
+          date: `${month}`,
+          note: "",
+        });
+      } else {
+        setSelectedMood({
+          value: null,
+        });
+      }
     }
     if (period === "mois") {
       if (mood.fullMood) {
@@ -130,6 +136,7 @@ export default function MoodGrafGifted({
   }
 
   const handleChevronLeft = () => {
+    setDisplayMood(false);
     if (period === "mois") {
       const prevMonth = new Date(selectedDate);
       prevMonth.setMonth(prevMonth.getMonth() - 1);
@@ -149,6 +156,7 @@ export default function MoodGrafGifted({
   };
 
   const handleChevronRight = () => {
+    setDisplayMood(false);
     if (period === "mois") {
       const nextMonth = new Date(selectedDate);
       nextMonth.setMonth(selectedDate.getMonth() + 1);

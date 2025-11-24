@@ -21,7 +21,12 @@ export default function MoodCard({
     <View style={s.card}>
       <View style={s.sectionCard}>
         <View
-          style={[s.date, { opacity: selectedMood.value !== null ? 1 : 0 }]}
+          style={[
+            s.date,
+            {
+              opacity: selectedMood.value !== null ? 1 : 0,
+            },
+          ]}
         >
           <Text>{period === "mois" ? "Mood du: " : "Moods de: "}</Text>
           <Text>{selectedMood.date}</Text>
