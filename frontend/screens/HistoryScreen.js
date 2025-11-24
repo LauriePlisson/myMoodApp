@@ -119,7 +119,9 @@ export default function HistoryScreen() {
         <View style={s.options}>
           <TouchableOpacity
             style={s.option}
-            onPress={() => setViewCalendar(true)}
+            onPress={() => {
+              setViewCalendar(true), setDisplayMood(false);
+            }}
           >
             <Text
               style={[
@@ -136,6 +138,7 @@ export default function HistoryScreen() {
             style={s.option}
             onPress={() => {
               setViewCalendar(false),
+                setDisplayMood(false),
                 setPeriod("mois"),
                 setSelectedDate(new Date());
             }}
