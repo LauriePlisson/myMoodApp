@@ -230,6 +230,7 @@ export default function MoodGrafGifted({
           dataPointLabelRadius={15}
           dataPointsColor={colors.grafRules}
           focusEnabled={true}
+          focusedDataPointColor={"red"} // couleur a changer
           onFocus={(mood) => handleFocus(mood)}
         />
       </View>

@@ -17,8 +17,20 @@ export default function MoodCard({
   const { theme, colors } = useTheme();
   const s = styles(colors);
 
+  function getColorFromMoodValue(value) {
+    if (value === null) return "black";
+    if (value < 3) return "#d0094cff";
+    if (value < 6) return "rgba(185, 154, 114, 1)";
+    if (value < 9) return "rgba(72, 153, 151, 1)";
+    return "#09d066ff";
+  }
   return (
-    <View style={s.card}>
+    <View
+      style={[
+        s.card,
+        { borderColor: getColorFromMoodValue(selectedMood.value) },
+      ]}
+    >
       <View style={s.sectionCard}>
         <View
           style={[
@@ -28,40 +40,47 @@ export default function MoodCard({
             },
           ]}
         >
-          <Text>{period === "mois" ? "Mood du: " : "Moods de: "}</Text>
-          <Text>{selectedMood.date}</Text>
+          {/* <Text>{period === "mois" ? "Mood du: " : "Moods de: "}</Text> */}
+          <Text style={s.moodDate}>{selectedMood.date}</Text>
         </View>
         <TouchableOpacity
           onPress={() => {
             setDisplayMood(false);
           }}
         >
-          <X size={20} />
+          <X size={20} color={getColorFromMoodValue(selectedMood.value)} />
         </TouchableOpacity>
       </View>
       {selectedMood.value !== null ? (
         <View style={s.midCard}>
           <View style={[s.sectionCard, s.noteSection]}>
             <Text
-              style={{ color: period === "mois" ? "transparent" : "black" }}
+              style={{
+                color: period === "mois" ? "transparent" : colors.accent,
+              }}
             >
               Moyenne:
             </Text>
-            <Text style={s.note}>
+            <Text
+              style={[
+                s.note,
+                { color: getColorFromMoodValue(selectedMood.value) },
+              ]}
+            >
               {String(selectedMood.value).padStart(2, "0")}
             </Text>
             <Text style={{ color: "transparent" }}>Moyenne:</Text>
           </View>
-          {period === "mois" && (
+          {period === "mois" ? (
             <View style={s.comSection}>
               <Text style={s.com}>{selectedMood.note}</Text>
             </View>
-          )}
-          {period === "annee" && (
+          ) : (
             <View style={[s.sectionCard, s.acces]}>
               <TouchableOpacity
                 style={{
                   borderBottomWidth: 1,
+                  borderColor: colors.accent,
                   width: 80,
                   alignItems: "center",
                 }}
@@ -69,7 +88,9 @@ export default function MoodCard({
                   handleVoirMois();
                 }}
               >
-                <Text style={{ fontStyle: "italic" }}>Voir le mois</Text>
+                <Text style={{ fontStyle: "italic", color: colors.accent }}>
+                  Voir le mois
+                </Text>
               </TouchableOpacity>
             </View>
           )}
@@ -94,8 +115,8 @@ const styles = (colors) =>
       height: 100,
       marginTop: 10,
       justifyContent: "flex-start",
-      backgroundColor: "white",
-      paddingVertical: 5,
+      backgroundColor: colors.background,
+      paddingTop: 5,
       paddingHorizontal: 10,
     },
     sectionCard: {
@@ -104,29 +125,45 @@ const styles = (colors) =>
       justifyContent: "space-between",
     },
     midCard: {
-      justifyContent: "center",
+      alignItems: "center",
+      justifyContent: "flex-start",
+      marginTop: 5,
       height: 70,
-      gap: 10,
     },
     date: {
       flexDirection: "row",
     },
     noteSection: {
       paddingHorizontal: 30,
+      width: 350,
+      marginTop: 5,
+      marginBottom: 2,
     },
     comSection: {
       justifyContent: "center",
       alignItems: "center",
     },
+    moodDate: {
+      fontWeight: "500",
+      color: colors.accent,
+    },
     acces: {
-      //   borderWidth: 2,
       justifyContent: "flex-end",
       paddingHorizontal: 30,
+      marginTop: 10,
+      width: 350,
     },
     noData: {
-      //   borderWidth: 2,
       height: 50,
       justifyContent: "center",
       alignItems: "center",
+    },
+    note: {
+      fontSize: 20,
+      fontWeight: "bold",
+    },
+    com: {
+      fontSize: 15,
+      color: colors.accent,
     },
   });

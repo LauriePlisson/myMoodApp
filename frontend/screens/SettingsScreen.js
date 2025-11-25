@@ -91,6 +91,7 @@ export default function SettingsScreen({ navigation }) {
   };
 
   const handlePressOui = () => {
+    setModalVisible(false);
     if (openFrom === "LogOut") {
       handleLogOut();
     }
@@ -99,8 +100,16 @@ export default function SettingsScreen({ navigation }) {
     }
     if (openFrom === "Edit") {
       handleEdit();
-      setModalVisible(false);
     }
+  };
+
+  const handlePressNon = () => {
+    setModalVisible(false);
+    if (openFrom === "Edit")
+      setSuccesMessage("Modification annulée"),
+        setTimeout(() => setSuccesMessage(""), 3000);
+    if (openFrom === "LogOut" || openFrom === "Delete")
+      setSuccesMessage("Annulé"), setTimeout(() => setSuccesMessage(""), 3000);
   };
 
   return (
@@ -134,7 +143,9 @@ export default function SettingsScreen({ navigation }) {
               </TouchableOpacity>
               <TouchableOpacity
                 style={[s.boutonModale, { backgroundColor: "#d8becbff" }]}
-                onPress={() => setModalVisible(false)}
+                onPress={() => {
+                  handlePressNon();
+                }}
               >
                 <Text style={s.textStyle}>Non</Text>
               </TouchableOpacity>
