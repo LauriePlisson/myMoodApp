@@ -41,7 +41,7 @@ const TabNavigator = ({ navigation }) => {
           }
         },
         tabBarInactiveTintColor: "#B4A6AB",
-        tabBarActiveTintColor: "#A48A97",
+        tabBarActiveTintColor: "#c18d9eff", //"#A48A97",
         tabBarStyle: {
           backgroundColor: isDark ? "#211f22ff" : "#edeaefff",
           borderTopColor: isDark ? "#3a3a3c" : "#ddd",

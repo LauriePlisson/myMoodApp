@@ -176,7 +176,7 @@ export default function MoodCalendar({
       textSectionTitleColor: "white",
       dayTextColor: colors.text,
       textDisabledColor: colors.otherdays,
-      monthTextColor: colors.grafText,
+      monthTextColor: colors.simple,
       arrowColor: colors.accent,
       todayTextColor: colors.accent,
       selectedDayBackgroundColor: colors.primary,
