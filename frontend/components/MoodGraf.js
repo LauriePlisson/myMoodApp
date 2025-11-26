@@ -178,6 +178,14 @@ export default function MoodGrafGifted({
     setDisplayMood(false);
   };
 
+  function getColorFromMoodValue(value) {
+    if (value === null) return "white";
+    if (value < 3) return "#d1d8f2ff";
+    if (value < 6) return "rgba(132, 119, 217, 1)";
+    if (value < 8) return "#bf84d9ff";
+    return "rgba(245, 123, 190, 1)";
+  }
+
   return (
     <>
       <View style={s.grafInfo}>
@@ -230,7 +238,7 @@ export default function MoodGrafGifted({
           dataPointLabelRadius={15}
           dataPointsColor={colors.grafRules}
           focusEnabled={true}
-          focusedDataPointColor={"red"} // couleur a changer
+          focusedDataPointColor={getColorFromMoodValue(selectedMood.value)} // couleur a changer
           onFocus={(mood) => handleFocus(mood)}
         />
       </View>

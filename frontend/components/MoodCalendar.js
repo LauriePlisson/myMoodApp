@@ -48,19 +48,19 @@ export default function MoodCalendar({
   });
 
   function getColorFromMoodValue(value) {
-    if (value === "") return "black";
-    if (value <= 2) return "#d0094cff";
-    if (value < 5) return "rgba(185, 154, 114, 1)";
-    if (value < 7) return "rgba(72, 153, 151, 1)";
-    return "#09d066ff";
+    if (value === null) return "black";
+    if (value < 3) return "rgba(209, 216, 242, 1)";
+    if (value < 6) return "rgba(132, 119, 217, 1)";
+    if (value < 8) return "rgba(191, 132, 217, 1)";
+    return "rgba(245, 123, 190, 1)";
   }
 
   function getColorBackgroundFromMoodValue(value) {
-    if (value === "") return "white";
-    if (value <= 2) return "rgba(208, 9, 75, 0.42)";
-    if (value < 5) return "rgba(237, 155, 48, 0.42)";
-    if (value < 7) return "rgba(113, 247, 245, 0.42)";
-    return "rgba(22, 240, 124, 0.42)";
+    if (value === null) return "black";
+    if (value < 3) return "rgba(209, 216, 242, 0.2)";
+    if (value < 6) return "rgba(132, 119, 217, 0.2)";
+    if (value < 8) return "rgba(191, 132, 217, 0.2)";
+    return "rgba(245, 123, 190, 0.2)";
   }
   function formatDate(dateString) {
     const date = new Date(dateString); // convertit UTC → date locale automatiquement

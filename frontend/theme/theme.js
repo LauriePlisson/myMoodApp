@@ -24,6 +24,8 @@ export const lightTheme = {
     modalBack: "#ffffffe7",
     textBoutonModal: "#696773",
     modalText: "#696773",
+    simple: "black",
+    simpleInv: "white",
   },
 };
 
@@ -53,6 +55,8 @@ export const darkTheme = {
     modalBack: "#3a363ce8",
     textBoutonModal: "black",
     modalText: "#f4b9cec6",
+    simple: "white",
+    simpleInv: "black",
   },
 };
 

@@ -18,16 +18,27 @@ export default function MoodCard({
   const s = styles(colors);
 
   function getColorFromMoodValue(value) {
-    if (value === null) return "black";
-    if (value < 3) return "#d0094cff";
-    if (value < 6) return "rgba(185, 154, 114, 1)";
-    if (value < 9) return "rgba(72, 153, 151, 1)";
-    return "#09d066ff";
+    if (value === null) return colors.simple;
+    if (value < 3) return "rgba(209, 216, 242, 1)";
+    if (value < 6) return "rgba(132, 119, 217, 1)";
+    if (value < 8) return "rgba(191, 132, 217, 1)";
+    return "rgba(245, 123, 190, 1)";
+  }
+
+  function getColorBackgroundFromMoodValue(value) {
+    if (value === null) return colors.simpleInv;
+    if (value < 3) return "rgba(209, 216, 242, 0.2)";
+    if (value < 6) return "rgba(132, 119, 217, 0.2)";
+    if (value < 8) return "rgba(191, 132, 217, 0.2)";
+    return "rgba(245, 123, 190, 0.2)";
   }
   return (
     <View
       style={[
         s.card,
+        {
+          backgroundColor: getColorBackgroundFromMoodValue(selectedMood.value),
+        },
         { borderColor: getColorFromMoodValue(selectedMood.value) },
       ]}
     >
@@ -56,7 +67,7 @@ export default function MoodCard({
           <View style={[s.sectionCard, s.noteSection]}>
             <Text
               style={{
-                color: period === "mois" ? "transparent" : colors.accent,
+                color: period === "mois" ? "transparent" : colors.secondary,
               }}
             >
               Moyenne:
@@ -80,7 +91,7 @@ export default function MoodCard({
               <TouchableOpacity
                 style={{
                   borderBottomWidth: 1,
-                  borderColor: colors.accent,
+                  borderColor: colors.secondary,
                   width: 80,
                   alignItems: "center",
                 }}
@@ -88,7 +99,7 @@ export default function MoodCard({
                   handleVoirMois();
                 }}
               >
-                <Text style={{ fontStyle: "italic", color: colors.accent }}>
+                <Text style={{ fontStyle: "italic", color: colors.secondary }}>
                   Voir le mois
                 </Text>
               </TouchableOpacity>
@@ -97,7 +108,7 @@ export default function MoodCard({
         </View>
       ) : (
         <View style={s.noData}>
-          <Text>
+          <Text style={{ color: colors.simple }}>
             Pas de donnée pour ce {period === "annee" ? "mois" : "jour"}
           </Text>
         </View>
@@ -115,7 +126,7 @@ const styles = (colors) =>
       height: 100,
       marginTop: 10,
       justifyContent: "flex-start",
-      backgroundColor: colors.background,
+      backgroundColor: colors.calendarBackground,
       paddingTop: 5,
       paddingHorizontal: 10,
     },
@@ -145,7 +156,7 @@ const styles = (colors) =>
     },
     moodDate: {
       fontWeight: "500",
-      color: colors.accent,
+      color: colors.text,
     },
     acces: {
       justifyContent: "flex-end",
@@ -164,6 +175,6 @@ const styles = (colors) =>
     },
     com: {
       fontSize: 15,
-      color: colors.accent,
+      color: colors.text,
     },
   });
