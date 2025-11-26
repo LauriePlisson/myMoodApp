@@ -200,7 +200,7 @@ export default function SettingsScreen({ navigation }) {
             }}
           >
             <Text style={s.subtext}>
-              {!editUsername ? "Change Username" : "Valider"}
+              {!editUsername ? "Changer de nom d'utilisateur" : "Valider"}
             </Text>
           </TouchableOpacity>
           {editPassword && (
@@ -248,7 +248,7 @@ export default function SettingsScreen({ navigation }) {
             }}
           >
             <Text style={s.subtext}>
-              {!editPassword ? "Change Password" : "Valider"}
+              {!editPassword ? "Changer de mot de passe" : "Valider"}
             </Text>
           </TouchableOpacity>
         </View>
@@ -280,7 +280,7 @@ export default function SettingsScreen({ navigation }) {
               },
             ]}
           >
-            <Text style={s.subtext}>Dark Mode</Text>
+            <Text style={s.subtext}>Mode sombre</Text>
             <Switch
               onValueChange={toggleTheme}
               value={theme === "dark"}
@@ -301,7 +301,7 @@ export default function SettingsScreen({ navigation }) {
               setOpenFrom("LogOut");
             }}
           >
-            <Text style={s.subtext}>Log Out</Text>
+            <Text style={s.subtext}>Se déconnecter</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[s.bouton]}
@@ -310,7 +310,7 @@ export default function SettingsScreen({ navigation }) {
               setOpenFrom("Delete");
             }}
           >
-            <Text style={s.subtext}>Delete Account</Text>
+            <Text style={s.subtext}>Supprimer son compte</Text>
           </TouchableOpacity>
         </View>
       </View>

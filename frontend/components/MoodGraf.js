@@ -10,6 +10,10 @@ import { useState } from "react";
 import { LineChart } from "react-native-gifted-charts";
 import { ChevronLeft, ChevronRight, X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
+import {
+  getColorFromMoodValue,
+  getColorBackgroundFromMoodValue,
+} from "../utils/moodColors";
 import MoodCard from "./MoodCard";
 
 export default function MoodGrafGifted({
@@ -177,14 +181,6 @@ export default function MoodGrafGifted({
     setSelectedDate(newDate);
     setDisplayMood(false);
   };
-
-  function getColorFromMoodValue(value) {
-    if (value === null) return "white";
-    if (value < 3) return "#d1d8f2ff";
-    if (value < 6) return "rgba(132, 119, 217, 1)";
-    if (value < 8) return "#bf84d9ff";
-    return "rgba(245, 123, 190, 1)";
-  }
 
   return (
     <>

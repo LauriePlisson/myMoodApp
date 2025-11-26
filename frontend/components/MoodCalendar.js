@@ -1,8 +1,11 @@
 import { Calendar, LocaleConfig } from "react-native-calendars";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { useState, useCallback } from "react";
-import { X } from "lucide-react-native";
+import {
+  getColorFromMoodValue,
+  getColorBackgroundFromMoodValue,
+} from "../utils/moodColors";
 import { useTheme } from "../context/ThemeContext";
 import { useMemo } from "react";
 import MoodCard from "./MoodCard";
@@ -71,21 +74,6 @@ export default function MoodCalendar({
     };
   }
 
-  function getColorFromMoodValue(value) {
-    if (value === null) return "black";
-    if (value < 3) return "rgba(186, 198, 242, 1)";
-    if (value < 6) return "rgba(132, 119, 217, 1)";
-    if (value < 8) return "#bf84d9ff";
-    return "rgba(245, 123, 190, 1)";
-  }
-
-  function getColorBackgroundFromMoodValue(value) {
-    if (value === null) return "black";
-    if (value < 3) return "#d1d8f233";
-    if (value < 6) return "#8477d933";
-    if (value < 8) return "#bf84d933";
-    return "#f57bbe33";
-  }
   function formatDate(dateString) {
     const date = new Date(dateString); // convertit UTC → date locale automatiquement
     const day = String(date.getDate()).padStart(2, "0");

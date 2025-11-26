@@ -5,6 +5,10 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
+import {
+  getColorFromMoodValue,
+  getColorBackgroundFromMoodValue,
+} from "../utils/moodColors";
 import { X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
 
@@ -17,21 +21,6 @@ export default function MoodCard({
   const { theme, colors } = useTheme();
   const s = styles(colors);
 
-  function getColorFromMoodValue(value) {
-    if (value === null) return colors.simple;
-    if (value < 3) return "rgba(186, 198, 242, 1)";
-    if (value < 6) return "rgba(132, 119, 217, 1)";
-    if (value < 8) return "rgba(191, 132, 217, 1)";
-    return "rgba(245, 123, 190, 1)";
-  }
-
-  function getColorBackgroundFromMoodValue(value) {
-    if (value === null) return colors.simpleInv;
-    if (value < 3) return "rgba(209, 216, 242, 0.2)";
-    if (value < 6) return "rgba(132, 119, 217, 0.2)";
-    if (value < 8) return "rgba(191, 132, 217, 0.2)";
-    return "rgba(245, 123, 190, 0.2)";
-  }
   return (
     <View
       style={[
