@@ -266,7 +266,7 @@ const styles = (colors) =>
       height: 40,
       borderTopEndRadius: 8,
       borderStartStartRadius: 8,
-      backgroundColor: colors.card,
+      backgroundColor: colors.contourGrafCal,
     },
     chevron: {
       alignItems: "center",

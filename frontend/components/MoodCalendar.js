@@ -65,6 +65,7 @@ export default function MoodCalendar({
         text: {
           ...(markedDates[selectedDateString]?.customStyles?.text || {}),
           color: getColorFromMoodValue(selectedMood.value),
+          fontWeight: "500",
         },
       },
     };
@@ -72,7 +73,7 @@ export default function MoodCalendar({
 
   function getColorFromMoodValue(value) {
     if (value === null) return "black";
-    if (value < 3) return "#d1d8f2ff";
+    if (value < 3) return "rgba(186, 198, 242, 1)";
     if (value < 6) return "rgba(132, 119, 217, 1)";
     if (value < 8) return "#bf84d9ff";
     return "rgba(245, 123, 190, 1)";
@@ -224,7 +225,7 @@ const styles = (colors) =>
     },
     calendar: {
       borderRadius: 8,
-      backgroundColor: colors.card,
+      backgroundColor: colors.contourGrafCal,
       paddingBottom: 5,
       width: 350,
     },

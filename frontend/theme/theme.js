@@ -24,6 +24,7 @@ export const lightTheme = {
     modalBack: "#ffffffe7",
     textBoutonModal: "#696773",
     modalText: "#696773",
+    contourGrafCal: "#dcc2d5ff",
     simple: "black",
     simpleInv: "white",
   },
@@ -57,6 +58,7 @@ export const darkTheme = {
     modalText: "#f4b9cec6",
     simple: "white",
     simpleInv: "black",
+    contourGrafCal: "#211f22ff",
   },
 };
 

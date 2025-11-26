@@ -19,7 +19,7 @@ export default function MoodCard({
 
   function getColorFromMoodValue(value) {
     if (value === null) return colors.simple;
-    if (value < 3) return "rgba(209, 216, 242, 1)";
+    if (value < 3) return "rgba(186, 198, 242, 1)";
     if (value < 6) return "rgba(132, 119, 217, 1)";
     if (value < 8) return "rgba(191, 132, 217, 1)";
     return "rgba(245, 123, 190, 1)";
