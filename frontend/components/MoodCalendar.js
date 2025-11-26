@@ -15,6 +15,7 @@ export default function MoodCalendar({
 }) {
   const [displayMood, setDisplayMood] = useState(false);
   const [selectedMood, setSelectedMood] = useState({});
+  const [selectedDateString, setSelectedDateString] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const { theme, colors } = useTheme();
   const s = styles(colors);
@@ -28,7 +29,9 @@ export default function MoodCalendar({
       .toISOString()
       .split("T")[0];
   }
+
   const markedDates = {};
+
   moodsForCalendar.forEach((mood) => {
     const localDate = formatLocalDate(mood.date);
     markedDates[localDate] = {
@@ -47,20 +50,40 @@ export default function MoodCalendar({
     };
   });
 
+  if (selectedDateString) {
+    markedDates[selectedDateString] = {
+      ...(markedDates[selectedDateString] || {}), // si déjà un mood : on garde les styles
+      customStyles: {
+        ...(markedDates[selectedDateString]?.customStyles || {}),
+        container: {
+          ...(markedDates[selectedDateString]?.customStyles?.container || {}),
+          borderWidth: 2,
+          borderColor: getColorFromMoodValue(selectedMood.value), // couleur d'entourage du jour sélectionné
+          justifyContent: "center",
+          alignItems: "center",
+        },
+        text: {
+          ...(markedDates[selectedDateString]?.customStyles?.text || {}),
+          color: getColorFromMoodValue(selectedMood.value),
+        },
+      },
+    };
+  }
+
   function getColorFromMoodValue(value) {
     if (value === null) return "black";
-    if (value < 3) return "rgba(209, 216, 242, 1)";
+    if (value < 3) return "#d1d8f2ff";
     if (value < 6) return "rgba(132, 119, 217, 1)";
-    if (value < 8) return "rgba(191, 132, 217, 1)";
+    if (value < 8) return "#bf84d9ff";
     return "rgba(245, 123, 190, 1)";
   }
 
   function getColorBackgroundFromMoodValue(value) {
     if (value === null) return "black";
-    if (value < 3) return "rgba(209, 216, 242, 0.2)";
-    if (value < 6) return "rgba(132, 119, 217, 0.2)";
-    if (value < 8) return "rgba(191, 132, 217, 0.2)";
-    return "rgba(245, 123, 190, 0.2)";
+    if (value < 3) return "#d1d8f233";
+    if (value < 6) return "#8477d933";
+    if (value < 8) return "#bf84d933";
+    return "#f57bbe33";
   }
   function formatDate(dateString) {
     const date = new Date(dateString); // convertit UTC → date locale automatiquement
@@ -169,6 +192,7 @@ export default function MoodCalendar({
         markingType={"custom"}
         markedDates={markedDates}
         onDayPress={(day) => {
+          setSelectedDateString(day.dateString);
           handleDaySelect(day.dateString);
         }}
         onMonthChange={(month) => {

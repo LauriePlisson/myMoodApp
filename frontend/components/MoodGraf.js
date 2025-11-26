@@ -230,8 +230,8 @@ export default function MoodGrafGifted({
           // curvature={0.015}
           thickness={2}
           areaChart
-          startFillColor="rgba(237, 132, 184, 0.3)" // début du dégradé
-          endFillColor="rgba(216, 190, 190, 0)" // fin du dégradé (transparent)
+          startFillColor="rgba(245, 123, 190, 1)" //"rgba(237, 132, 184, 0.3)" // début du dégradé
+          endFillColor="#d1d8f2ff" //"rgba(216, 190, 190, 0)" // fin du dégradé (transparent)
           startOpacity={0.4}
           endOpacity={0.1}
           dataPointsRadius={5}
