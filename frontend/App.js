@@ -15,25 +15,8 @@ import { Settings, SmilePlus, History } from "lucide-react-native";
 import { ThemeProvider } from "./context/ThemeContext";
 import { useTheme } from "./context/ThemeContext";
 import ThemedSettingsStack from "./components/ThemedSettingsStack";
-import * as Notifications from "expo-notifications";
+import { NotificationProvider } from "./context/NotificationContext";
 import { useEffect } from "react";
-
-async function registerForPushNotificationsAsync() {
-  const { status } = await Notifications.requestPermissionsAsync();
-
-  if (status !== "granted") {
-    alert("Tu n'as pas autorisé les notifications");
-    return;
-  }
-}
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -93,21 +76,20 @@ const TabNavigator = ({ navigation }) => {
 };
 
 export default function App() {
-  useEffect(() => {
-    registerForPushNotificationsAsync();
-  }, []);
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
-        <ThemeProvider>
-          <NavigationContainer>
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="Welcome" component={WelcomeScreen} />
-              <Stack.Screen name="TabNavigator" component={TabNavigator} />
-              <Stack.Screen name="Settings" component={ThemedSettingsStack} />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </ThemeProvider>
+        <NotificationProvider>
+          <ThemeProvider>
+            <NavigationContainer>
+              <Stack.Navigator screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="Welcome" component={WelcomeScreen} />
+                <Stack.Screen name="TabNavigator" component={TabNavigator} />
+                <Stack.Screen name="Settings" component={ThemedSettingsStack} />
+              </Stack.Navigator>
+            </NavigationContainer>
+          </ThemeProvider>
+        </NotificationProvider>
       </PersistGate>
     </Provider>
   );
