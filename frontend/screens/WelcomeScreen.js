@@ -140,7 +140,7 @@ export default function WelcomeScreen({ navigation }) {
 
                 <TextInput
                   style={[s.input]}
-                  placeholder="pasword"
+                  placeholder="password"
                   placeholderTextColor={colors.textGeneral}
                   value={password}
                   onChangeText={(value) => setPassword(value)}
@@ -196,7 +196,7 @@ export default function WelcomeScreen({ navigation }) {
                   handleSummit();
                 }}
               >
-                <Text style={{ color: "white" }}>
+                <Text style={{ color: colors.white }}>
                   {isLogIn ? "Log In" : "Sign Up"}
                 </Text>
               </TouchableOpacity>

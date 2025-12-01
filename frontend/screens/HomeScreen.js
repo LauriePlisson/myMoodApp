@@ -135,7 +135,7 @@ export default function HomeScreen({ navigation }) {
 
           <Text style={s.text}>​{textHome()}</Text>
 
-          <Text style={{ color: colors.accent }}>{succesMessage}</Text>
+          <Text style={{ color: colors.textAccent }}>{succesMessage}</Text>
         </View>
         <View style={s.counterContainer}>
           <View style={s.panel}>
@@ -152,9 +152,9 @@ export default function HomeScreen({ navigation }) {
                 step={1}
                 value={Number(moodValue)}
                 onValueChange={(value) => setMoodValue(value.toString())}
-                minimumTrackTintColor={colors.accent}
-                maximumTrackTintColor={colors.card}
-                thumbTintColor={colors.accent}
+                minimumTrackTintColor={colors.textAccent}
+                maximumTrackTintColor={colors.cardBackground}
+                thumbTintColor={colors.textAccent}
               />
             </View>
           )}
@@ -186,12 +186,12 @@ export default function HomeScreen({ navigation }) {
                 <TextInput
                   style={[s.input, { borderBottomWidth: 0.2, width: 250 }]}
                   placeholder="Ajoute un commentaire..."
-                  placeholderTextColor={colors.subtext}
+                  placeholderTextColor={colors.textGeneral}
                   value={note}
                   onChangeText={(value) => setNote(value)}
                 />
                 <TouchableOpacity onPress={() => setAjoutCom(false)}>
-                  <Check style={{ color: colors.text }} />
+                  <Check style={{ color: colors.textGeneral }} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
@@ -199,7 +199,7 @@ export default function HomeScreen({ navigation }) {
                     setNote("");
                   }}
                 >
-                  <X style={{ color: colors.text }} />
+                  <X style={{ color: colors.textGeneral }} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -251,12 +251,12 @@ const styles = (colors) =>
     bienvenue: {
       fontSize: 30,
       fontWeight: 100,
-      color: colors.primary,
+      color: colors.textMyMood,
     },
     text: {
       fontSize: 40,
       marginBottom: 20,
-      color: colors.text,
+      color: colors.textGeneral,
     },
     counterContainer: {
       marginBottom: 40,
@@ -266,7 +266,7 @@ const styles = (colors) =>
     panel: {
       width: 150,
       height: 150,
-      backgroundColor: colors.panel,
+      backgroundColor: colors.white,
       borderRadius: 16,
       alignItems: "center",
       justifyContent: "center",
@@ -284,15 +284,15 @@ const styles = (colors) =>
     },
     boutCom: {
       borderBottomWidth: 0.5,
-      borderBottomColor: "#696773",
+      borderBottomColor: colors.textGeneral,
     },
     input: {
-      color: colors.text,
+      color: colors.textGeneral,
       fontSize: 25,
       fontWeight: 100,
     },
     bouton: {
-      backgroundColor: colors.bouton,
+      backgroundColor: colors.buttonBackground,
       width: 120,
       height: 65,
       alignItems: "center",
@@ -302,12 +302,13 @@ const styles = (colors) =>
       marginTop: 0,
     },
     valider: {
-      color: colors.secondary,
+      color: colors.white,
       fontSize: 25,
       fontWeight: 100,
     },
     modif: {
-      color: colors.accent,
-      fontWeight: "400",
+      color: colors.textAccent,
+      fontWeight: "350",
+      fontSize: 16,
     },
   });
