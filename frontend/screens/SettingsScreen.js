@@ -9,10 +9,11 @@ import {
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logOut, changeUsername } from "../reducers/user";
 import { useTheme } from "../context/ThemeContext";
+import * as Notifications from "expo-notifications";
 
 export default function SettingsScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -25,6 +26,8 @@ export default function SettingsScreen({ navigation }) {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [errorEdit, setErrorEdit] = useState("");
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+
   const { theme, toggleTheme } = useTheme();
   const dispatch = useDispatch();
   const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -32,6 +35,15 @@ export default function SettingsScreen({ navigation }) {
 
   const { colors } = useTheme();
   const s = styles(colors);
+
+  useEffect(() => {
+    async function checkPermissions() {
+      const { status } = await Notifications.getPermissionsAsync();
+      console.log("Status des notifications :", status);
+      setNotificationsEnabled(status === "granted");
+    }
+    checkPermissions();
+  }, []);
 
   const handleEdit = async () => {
     const body = {
@@ -267,7 +279,26 @@ export default function SettingsScreen({ navigation }) {
             ]}
           >
             <Text style={s.subtext}>Notifications</Text>
-            <Switch style={{ marginTop: 10 }}></Switch>
+            <Switch
+              style={{ marginTop: 10 }}
+              value={notificationsEnabled}
+              trackColor={
+                theme === "dark"
+                  ? { false: "#767577", true: "#2e3034ff" }
+                  : { false: "#767577", true: "#A48A97" }
+              }
+              thumbColor={theme === "dark" ? "#A48A97" : "#f4f3f4"}
+              onValueChange={async (newValue) => {
+                if (newValue) {
+                  const { status } =
+                    await Notifications.requestPermissionsAsync();
+                  setNotificationsEnabled(status === "granted");
+                } else {
+                  await Notifications.cancelAllScheduledNotificationsAsync();
+                  setNotificationsEnabled(false);
+                }
+              }}
+            ></Switch>
           </TouchableOpacity>
           <TouchableOpacity
             style={[

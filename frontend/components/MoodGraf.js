@@ -58,7 +58,12 @@ export default function MoodGrafGifted({
   }
 
   const length = period === "mois" ? 31 : 12;
-  const getIndex = (m) => m.label;
+  const getIndex = (m) => {
+    if (period === "mois") {
+      return m.label - 1; // ⬅️ on passe de 1→31 à 0→30
+    }
+    return m.label; // année reste inchangé (0→11)
+  };
 
   const data = Array.from({ length }, (_, i) => ({
     value: null,

@@ -15,6 +15,25 @@ import { Settings, SmilePlus, History } from "lucide-react-native";
 import { ThemeProvider } from "./context/ThemeContext";
 import { useTheme } from "./context/ThemeContext";
 import ThemedSettingsStack from "./components/ThemedSettingsStack";
+import * as Notifications from "expo-notifications";
+import { useEffect } from "react";
+
+async function registerForPushNotificationsAsync() {
+  const { status } = await Notifications.requestPermissionsAsync();
+
+  if (status !== "granted") {
+    alert("Tu n'as pas autorisé les notifications");
+    return;
+  }
+}
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -74,6 +93,9 @@ const TabNavigator = ({ navigation }) => {
 };
 
 export default function App() {
+  useEffect(() => {
+    registerForPushNotificationsAsync();
+  }, []);
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
