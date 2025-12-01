@@ -101,14 +101,20 @@ export default function WelcomeScreen({ navigation }) {
               <View style={s.titre}>
                 <Text style={[s.welcome]}>Welcome to </Text>
                 <Text
-                  style={[s.welcome, { color: "#A48A97", fontWeight: "500" }]}
+                  style={[
+                    s.welcome,
+                    { color: colors.textMyMood, fontWeight: "500" },
+                  ]}
                 >
                   MyMood
                 </Text>
               </View>
               <Text
                 style={[
-                  { color: "#c18d9eff", fontWeight: "600" /*"#fceaf0ff"*/ },
+                  {
+                    color: colors.textAccent,
+                    fontWeight: "600" /*"#fceaf0ff"*/,
+                  },
                 ]}
               >
                 {isLogIn ? "Connexion" : "Création de compte"}
@@ -118,7 +124,7 @@ export default function WelcomeScreen({ navigation }) {
                   <TextInput
                     style={[s.input]}
                     placeholder="username"
-                    placeholderTextColor={colors.subtext}
+                    placeholderTextColor={colors.textGeneral}
                     value={username}
                     onChangeText={(value) => setUsername(value)}
                   />
@@ -126,7 +132,7 @@ export default function WelcomeScreen({ navigation }) {
                 <TextInput
                   style={[s.input]}
                   placeholder="email"
-                  placeholderTextColor={colors.subtext}
+                  placeholderTextColor={colors.textGeneral}
                   value={email}
                   onChangeText={(value) => setEmail(value)}
                   keyboardType="email-address"
@@ -135,32 +141,31 @@ export default function WelcomeScreen({ navigation }) {
                 <TextInput
                   style={[s.input]}
                   placeholder="pasword"
-                  placeholderTextColor={colors.subtext}
+                  placeholderTextColor={colors.textGeneral}
                   value={password}
                   onChangeText={(value) => setPassword(value)}
                   secureTextEntry={true}
                 />
+                <Text style={{ color: colors.textAccent }}>{error}</Text>
               </View>
-              <Text style={s.erreur}>{error}</Text>
               <TouchableOpacity
                 onPress={() => {
                   setIsLogIn(!isLogIn);
                   resetField();
                 }}
               >
-                <Text style={[s.text]}>
+                <Text style={{ marginBottom: 15 }}>
                   {isLogIn ? (
                     <>
-                      <Text
-                        style={{ color: colors.secondary, fontStyle: "italic" }}
-                      >
+                      <Text style={[{ fontStyle: "italic" }, s.text]}>
                         Pas encore de compte?{" "}
                       </Text>
                       <Text
                         style={{
-                          color: "#c18d9eff",
+                          color: colors.textAccent,
                           textDecorationLine: "underline",
                           textDecorationStyle: "solid",
+                          fontWeight: "500",
                         }}
                       >
                         Inscris-toi
@@ -168,14 +173,13 @@ export default function WelcomeScreen({ navigation }) {
                     </>
                   ) : (
                     <>
-                      <Text
-                        style={{ color: colors.secondary, fontStyle: "italic" }}
-                      >
+                      <Text style={[s.text, { fontStyle: "italic" }]}>
                         Déjà un compte?{" "}
                       </Text>
                       <Text
                         style={{
-                          color: "#c18d9eff",
+                          color: colors.textAccent,
+                          fontWeight: "400",
                           textDecorationLine: "underline",
                           textDecorationStyle: "solid",
                         }}
@@ -192,7 +196,7 @@ export default function WelcomeScreen({ navigation }) {
                   handleSummit();
                 }}
               >
-                <Text style={{ color: "#fceaf0ff" }}>
+                <Text style={{ color: "white" }}>
                   {isLogIn ? "Log In" : "Sign Up"}
                 </Text>
               </TouchableOpacity>
@@ -216,13 +220,13 @@ const styles = (colors) =>
     cadre: {
       borderRadius: 20,
       width: 300,
-      height: 350,
+      height: 320,
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: colors.card,
+      backgroundColor: colors.cardBackground,
     },
     cadreSignUp: {
-      height: 400,
+      height: 350,
     },
     titre: {
       flexDirection: "row",
@@ -230,7 +234,7 @@ const styles = (colors) =>
     welcome: {
       fontSize: 25,
       marginBottom: 10,
-      color: colors.secondary,
+      color: colors.textGeneral,
       fontWeight: "300",
     },
     inputs: {
@@ -244,18 +248,13 @@ const styles = (colors) =>
       width: "70%",
       height: 40,
       textAlign: "center",
-      color: colors.subtext,
-      borderWidth: 1,
-      borderColor: colors.borderInputColor,
-      backgroundColor: colors.input,
+      color: colors.textGeneral,
+      backgroundColor: colors.inputBackground,
       margin: 5,
       borderRadius: 8,
     },
-    erreur: {
-      color: "red",
-    },
     text: {
-      marginBottom: 15,
+      color: colors.textGeneral,
     },
     bouttons: {
       marginTop: 25,
@@ -271,6 +270,6 @@ const styles = (colors) =>
     },
 
     logIn: {
-      backgroundColor: colors.bouton,
+      backgroundColor: colors.buttonBackground,
     },
   });
