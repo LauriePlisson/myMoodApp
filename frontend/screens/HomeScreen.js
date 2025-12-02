@@ -152,9 +152,9 @@ export default function HomeScreen({ navigation }) {
                 step={1}
                 value={Number(moodValue)}
                 onValueChange={(value) => setMoodValue(value.toString())}
-                minimumTrackTintColor={colors.textAccent}
+                minimumTrackTintColor={colors.buttonBackground}
                 maximumTrackTintColor={colors.cardBackground}
-                thumbTintColor={colors.textAccent}
+                thumbTintColor={colors.buttonBackground}
               />
             </View>
           )}
@@ -251,12 +251,12 @@ const styles = (colors) =>
     bienvenue: {
       fontSize: 30,
       fontWeight: 100,
-      color: colors.textMyMood,
+      color: colors.textGeneral,
     },
     text: {
       fontSize: 40,
       marginBottom: 20,
-      color: colors.textGeneral,
+      color: colors.textMyMood,
     },
     counterContainer: {
       marginBottom: 40,
@@ -293,18 +293,18 @@ const styles = (colors) =>
     },
     bouton: {
       backgroundColor: colors.buttonBackground,
-      width: 120,
-      height: 65,
+      width: 110,
+      height: 55,
       alignItems: "center",
       justifyContent: "center",
-      borderRadius: 20,
+      borderRadius: 50,
       marginBottom: 15,
       marginTop: 0,
     },
     valider: {
       color: colors.white,
-      fontSize: 25,
-      fontWeight: 100,
+      fontSize: 20,
+      fontWeight: 350,
     },
     modif: {
       color: colors.textAccent,
