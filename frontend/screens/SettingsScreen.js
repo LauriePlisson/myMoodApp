@@ -217,7 +217,7 @@ export default function SettingsScreen({ navigation }) {
                 }}
                 style={s.exit}
               >
-                <Text style={{ fontWeight: "bold", color: colors.subtext }}>
+                <Text style={{ fontWeight: "bold", color: colors.textGeneral }}>
                   X
                 </Text>
               </TouchableOpacity>
@@ -347,14 +347,14 @@ const styles = (colors) =>
       gap: 15,
     },
     subtext: {
-      color: colors.subtext,
+      color: colors.textGeneral,
       fontSize: 17,
       fontWeight: "400",
       letterSpacing: 0.3,
     },
     settings: {
       fontSize: 25,
-      color: colors.text,
+      color: colors.textMyMood,
     },
     reglages: {
       width: "100%",
@@ -366,7 +366,7 @@ const styles = (colors) =>
       width: "80%",
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: colors.card,
+      backgroundColor: colors.cardBackground,
       borderRadius: 10,
       height: "auto",
     },
@@ -383,7 +383,7 @@ const styles = (colors) =>
       width: "80%",
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: colors.card,
+      backgroundColor: colors.cardBackground,
       borderRadius: 10,
       height: 110,
     },
@@ -391,7 +391,7 @@ const styles = (colors) =>
       width: "80%",
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: colors.card,
+      backgroundColor: colors.cardBackground,
       borderRadius: 10,
       height: 110,
     },
@@ -403,12 +403,13 @@ const styles = (colors) =>
       paddingLeft: 15,
     },
     input: {
-      paddingLeft: 10,
-      backgroundColor: colors.input,
-      borderRadius: 15,
       width: "80%",
       height: 40,
-      borderBottomWidth: 0.2,
+      textAlign: "center",
+      color: colors.textGeneral,
+      backgroundColor: colors.inputBackground,
+      margin: 5,
+      borderRadius: 8,
     },
     modalOverlay: {
       flex: 1,
