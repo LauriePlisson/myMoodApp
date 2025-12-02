@@ -119,6 +119,8 @@ export default function HomeScreen({ navigation }) {
     } else {
       setMoodValue(backupMoodValue);
       setNote(backupNote);
+      setSuccesMessage("Modification Annulée");
+      setTimeout(() => setSuccesMessage(""), 4000);
     }
     setEditingMood(!editingMood);
     setAjoutCom(false);
@@ -135,7 +137,7 @@ export default function HomeScreen({ navigation }) {
 
           <Text style={s.text}>​{textHome()}</Text>
 
-          <Text style={{ color: colors.textAccent }}>{succesMessage}</Text>
+          <Text style={s.message}>{succesMessage}</Text>
         </View>
         <View style={s.counterContainer}>
           <View style={s.panel}>
@@ -163,7 +165,7 @@ export default function HomeScreen({ navigation }) {
           {!ajoutCom || !editingMood ? (
             <View style={s.sectionCom}>
               <TouchableOpacity
-                style={s.boutCom}
+                style={editingMood ? s.boutCom : null}
                 onPress={() => {
                   setAjoutCom(true);
                 }}
@@ -184,7 +186,14 @@ export default function HomeScreen({ navigation }) {
                 }}
               >
                 <TextInput
-                  style={[s.input, { borderBottomWidth: 0.2, width: 250 }]}
+                  style={[
+                    s.input,
+                    {
+                      borderBottomWidth: 0.2,
+                      width: 250,
+                      borderColor: colors.textGeneral,
+                    },
+                  ]}
                   placeholder="Ajoute un commentaire..."
                   placeholderTextColor={colors.textGeneral}
                   value={note}
@@ -196,7 +205,7 @@ export default function HomeScreen({ navigation }) {
                 <TouchableOpacity
                   onPress={() => {
                     setAjoutCom(false);
-                    setNote("");
+                    setNote(backupNote);
                   }}
                 >
                   <X style={{ color: colors.textGeneral }} />
@@ -224,7 +233,7 @@ export default function HomeScreen({ navigation }) {
               handleModif();
             }}
           >
-            <Text style={s.modif}>
+            <Text style={s.message}>
               {!editingMood ? "Modifier ton Mood?" : "Annuler la modification"}
             </Text>
           </TouchableOpacity>
@@ -293,22 +302,22 @@ const styles = (colors) =>
     },
     bouton: {
       backgroundColor: colors.buttonBackground,
-      width: 110,
-      height: 55,
+      borderRadius: 50,
+      width: 105,
+      height: 40,
       alignItems: "center",
       justifyContent: "center",
-      borderRadius: 50,
       marginBottom: 15,
       marginTop: 0,
     },
     valider: {
       color: colors.white,
-      fontSize: 20,
-      fontWeight: 350,
-    },
-    modif: {
-      color: colors.textAccent,
-      fontWeight: "350",
       fontSize: 16,
+      fontWeight: 400,
+    },
+    message: {
+      color: colors.textAccent,
+      fontSize: 16,
+      fontWeight: 400,
     },
   });

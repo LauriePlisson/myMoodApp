@@ -191,13 +191,13 @@ export default function WelcomeScreen({ navigation }) {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[s.bouton, s.logIn]}
+                style={s.bouton}
                 onPress={() => {
                   handleSummit();
                 }}
               >
-                <Text style={{ color: colors.white }}>
-                  {isLogIn ? "Log In" : "Sign Up"}
+                <Text style={s.textButton}>
+                  {isLogIn ? "Connexion" : "Inscription"}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -226,7 +226,7 @@ const styles = (colors) =>
       backgroundColor: colors.cardBackground,
     },
     cadreSignUp: {
-      height: 350,
+      height: 370,
     },
     titre: {
       flexDirection: "row",
@@ -256,20 +256,17 @@ const styles = (colors) =>
     text: {
       color: colors.textGeneral,
     },
-    bouttons: {
-      marginTop: 25,
-      flexDirection: "row",
-      gap: 15,
-    },
     bouton: {
-      borderRadius: 8,
-      width: 70,
-      height: 30,
+      borderRadius: 50,
+      width: 105,
+      height: 40,
       justifyContent: "center",
       alignItems: "center",
-    },
-
-    logIn: {
       backgroundColor: colors.buttonBackground,
+    },
+    textButton: {
+      color: colors.white,
+      fontSize: 16,
+      fontWeight: 400,
     },
   });
