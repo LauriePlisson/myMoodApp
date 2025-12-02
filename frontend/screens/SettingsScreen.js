@@ -232,6 +232,22 @@ export default function SettingsScreen({ navigation }) {
                     secureTextEntry={true}
                   />
                 </View>
+              </View>
+              {errorEdit && (
+                <Text style={[s.textEdit, { textAlign: "center" }]}>
+                  {errorEdit}
+                </Text>
+              )}
+              <View
+                style={{
+                  flexDirection: "row",
+                  width: "300",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 15,
+                  height: 30,
+                }}
+              >
                 <TouchableOpacity
                   onPress={() => {
                     setModalVisible(true);
@@ -250,7 +266,6 @@ export default function SettingsScreen({ navigation }) {
                   <X size={20} color={colors.textGeneral} />
                 </TouchableOpacity>
               </View>
-              {errorEdit && <Text style={[s.textEdit]}>{errorEdit}</Text>}
             </View>
           ) : (
             <TouchableOpacity
@@ -474,7 +489,7 @@ const styles = (colors) =>
       justifyContent: "center",
     },
     textStyle: {
-      color: colors.white,
+      color: "black",
       fontWeight: "500",
       letterSpacing: 0.2,
     },

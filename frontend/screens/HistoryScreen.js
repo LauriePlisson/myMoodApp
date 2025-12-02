@@ -118,7 +118,12 @@ export default function HistoryScreen() {
       <View style={s.centre}>
         <View style={s.options}>
           <TouchableOpacity
-            style={s.option}
+            style={[
+              s.option,
+              viewCalendar
+                ? { borderColor: colors.textAccent }
+                : { borderColor: colors.textGeneral },
+            ]}
             onPress={() => {
               setViewCalendar(true), setDisplayMood(false);
             }}
@@ -127,15 +132,20 @@ export default function HistoryScreen() {
               style={[
                 s.textOption,
                 viewCalendar
-                  ? { color: colors.textOption }
-                  : { color: colors.secondary },
+                  ? { color: colors.textAccent }
+                  : { color: colors.textGeneral },
               ]}
             >
               Calendrier
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={s.option}
+            style={[
+              s.option,
+              !viewCalendar
+                ? { borderColor: colors.textAccent }
+                : { borderColor: colors.textGeneral },
+            ]}
             onPress={() => {
               setViewCalendar(false),
                 setDisplayMood(false),
@@ -147,8 +157,8 @@ export default function HistoryScreen() {
               style={[
                 s.textOption,
                 !viewCalendar
-                  ? { color: colors.textOption }
-                  : { color: colors.secondary },
+                  ? { color: colors.textAccent }
+                  : { color: colors.textGeneral },
               ]}
             >
               Graphique
@@ -216,7 +226,7 @@ const styles = (colors) =>
     title: {
       marginTop: 35,
       fontSize: 40,
-      color: colors.text,
+      color: colors.textMyMood,
     },
     centre: {
       width: "95%",
@@ -231,18 +241,15 @@ const styles = (colors) =>
       marginBottom: 10,
     },
     option: {
-      textAlign: "centre",
-      marginLeft: 5,
-      backgroundColor: colors.optionBouton,
-      borderRadius: 8,
-      width: 100,
+      borderRadius: 50,
+      width: 105,
       height: 40,
       justifyContent: "center",
       alignItems: "center",
+      borderWidth: 0.5,
     },
     textOption: {
       fontSize: 17,
-      color: colors.textOption,
     },
     display: {
       justifyContent: "flex-start",
@@ -250,7 +257,7 @@ const styles = (colors) =>
     },
     filtres: {
       borderTopWidth: 1,
-      borderTopColor: ` rgba(216, 190, 203,1)`,
+      borderTopColor: ` #d8becbff`,
       paddingTop: 15,
       flexDirection: "row",
       gap: 15,
