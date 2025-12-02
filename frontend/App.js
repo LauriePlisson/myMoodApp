@@ -43,10 +43,10 @@ const TabNavigator = ({ navigation }) => {
           }
         },
         tabBarInactiveTintColor: "#B4A6AB",
-        tabBarActiveTintColor: "#c18d9eff", //"#A48A97",
+        tabBarActiveTintColor: "#a37794ff", //"#A48A97",
         tabBarStyle: {
           backgroundColor: isDark ? "#211f22ff" : "#edeaefff",
-          borderTopColor: isDark ? "#3a3a3c" : "#ddd",
+          borderTopColor: isDark ? "#211f22ff" : "#edeaefff",
         },
         headerStyle: {
           backgroundColor: isDark ? "#211f22ff" : "#edeaefff",
@@ -63,7 +63,7 @@ const TabNavigator = ({ navigation }) => {
               style={{ marginRight: 30, marginBottom: 30 }}
               onPress={() => navigation.navigate("Settings")}
             >
-              <Settings size={24} color={"#B4A6AB"} />
+              <Settings size={24} color={"#A48A97"} />
             </TouchableOpacity>
           );
         },

@@ -113,7 +113,7 @@ export default function WelcomeScreen({ navigation }) {
                 style={[
                   {
                     color: colors.textAccent,
-                    fontWeight: "600" /*"#fceaf0ff"*/,
+                    fontWeight: "600",
                   },
                 ]}
               >

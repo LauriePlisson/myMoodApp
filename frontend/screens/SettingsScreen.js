@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logOut, changeUsername } from "../reducers/user";
 import { useTheme } from "../context/ThemeContext";
 import { useNotification } from "../context/NotificationContext";
+import { Check, X } from "lucide-react-native";
 import * as Notifications from "expo-notifications";
 
 export default function SettingsScreen({ navigation }) {
@@ -131,7 +132,7 @@ export default function SettingsScreen({ navigation }) {
           <View style={s.modalContent}>
             <Text
               style={{
-                color: colors.modalText,
+                color: colors.textMyMood,
                 fontWeight: "500",
                 letterSpacing: 0.2,
               }}
@@ -140,13 +141,13 @@ export default function SettingsScreen({ navigation }) {
             </Text>
             <View style={s.boutonsModale}>
               <TouchableOpacity
-                style={[s.boutonModale, { backgroundColor: "#fceaf0ff" }]}
+                style={[s.boutonModale, { backgroundColor: "#e9d5e3ff" }]} //"#fceaf0ff"
                 onPress={() => handlePressOui()}
               >
                 <Text style={s.textStyle}>Oui</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[s.boutonModale, { backgroundColor: "#d8becbff" }]}
+                style={[s.boutonModale, { backgroundColor: "#c890b5ff" }]} //"#d8becbff"
                 onPress={() => {
                   handlePressNon();
                 }}
@@ -157,111 +158,117 @@ export default function SettingsScreen({ navigation }) {
           </View>
         </View>
       </Modal>
-      <View style={s.text}>
+      <View style={s.topPage}>
         <Text style={s.settings}>Réglages</Text>
-        <Text style={{ color: "#A48A97", fontWeight: 125 }}>
-          {succesMessage}
-        </Text>
+        <Text style={s.message}>{succesMessage}</Text>
       </View>
       <View style={s.reglages}>
         <View style={s.infoUser}>
-          {editUsername && (
-            <>
-              <TouchableOpacity
-                onPress={() => {
-                  setEditUsername(false);
-                  setNewUsername("");
-                }}
-                style={s.exit}
-              >
-                <Text style={{ fontWeight: "bold", color: colors.subtext }}>
-                  X
-                </Text>
-              </TouchableOpacity>
-              <TextInput
-                style={s.input}
-                placeholderTextColor={colors.subtext}
-                placeholder={user.username}
-                value={newUsername}
-                onChangeText={(value) => setNewUsername(value)}
-              ></TextInput>
-
-              <Text>{errorEdit}</Text>
-            </>
-          )}
-          <TouchableOpacity
-            style={[
-              s.bouton,
-              { borderBottomColor: "#A48A97", borderBottomWidth: 0.5 },
-            ]}
-            onPress={() => {
-              if (!editUsername) {
+          {editUsername ? (
+            <View style={s.editUsernameSection}>
+              <Text style={s.textEdit}>Nom d'utilisateur</Text>
+              <View style={s.editUsername}>
+                <TextInput
+                  style={s.input}
+                  placeholderTextColor={colors.textGeneral}
+                  placeholder={user.username}
+                  value={newUsername}
+                  onChangeText={(value) => setNewUsername(value)}
+                />
+                <TouchableOpacity
+                  onPress={() => {
+                    setModalVisible(true);
+                    setOpenFrom("Edit");
+                  }}
+                >
+                  <Check size={20} color={colors.textAccent} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setEditUsername(false);
+                    setNewUsername("");
+                  }}
+                >
+                  <X size={20} color={colors.textGeneral} />
+                </TouchableOpacity>
+              </View>
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={[
+                s.bouton,
+                {
+                  borderBottomColor: colors.textMyMood,
+                  borderBottomWidth: 0.5,
+                },
+              ]}
+              onPress={() => {
                 setEditUsername(true);
-              } else {
-                setModalVisible(true);
-                setOpenFrom("Edit");
-              }
-            }}
-          >
-            <Text style={s.subtext}>
-              {!editUsername ? "Changer de nom d'utilisateur" : "Valider"}
-            </Text>
-          </TouchableOpacity>
-          {editPassword && (
-            <>
-              <TouchableOpacity
-                onPress={() => {
-                  setEditPassword(false);
-                  setNewPassword("");
-                  setOldPassword("");
-                }}
-                style={s.exit}
-              >
-                <Text style={{ fontWeight: "bold", color: colors.textGeneral }}>
-                  X
-                </Text>
-              </TouchableOpacity>
-              <TextInput
-                style={[s.input, { marginBottom: 5 }]}
-                placeholder="Password"
-                value={oldPassword}
-                placeholderTextColor={colors.subtext}
-                onChangeText={(value) => setOldPassword(value)}
-                secureTextEntry={true}
-              ></TextInput>
-              <TextInput
-                style={[s.input]}
-                placeholder="New Password"
-                placeholderTextColor={colors.subtext}
-                value={newPassword}
-                onChangeText={(value) => setNewPassword(value)}
-                secureTextEntry={true}
-              ></TextInput>
-              <Text>{errorEdit}</Text>
-            </>
+              }}
+            >
+              <Text style={s.subtext}>Changer de nom d'utilisateur</Text>
+            </TouchableOpacity>
           )}
-          <TouchableOpacity
-            style={s.bouton}
-            onPress={() => {
-              if (!editPassword) {
+
+          {editPassword ? (
+            <View style={s.editPassSection}>
+              <Text style={s.textEdit}>Mot de Passe</Text>
+              <View style={s.editPass}>
+                <View style={{ margin: 0 }}>
+                  <TextInput
+                    style={s.input}
+                    placeholder="Password"
+                    value={oldPassword}
+                    placeholderTextColor={colors.textGeneral}
+                    onChangeText={(value) => setOldPassword(value)}
+                    secureTextEntry={true}
+                  />
+                  <TextInput
+                    style={s.input}
+                    placeholder="New Password"
+                    placeholderTextColor={colors.textGeneral}
+                    value={newPassword}
+                    onChangeText={(value) => setNewPassword(value)}
+                    secureTextEntry={true}
+                  />
+                </View>
+                <TouchableOpacity
+                  onPress={() => {
+                    setModalVisible(true);
+                    setOpenFrom("Edit");
+                  }}
+                >
+                  <Check size={20} color={colors.textAccent} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setEditPassword(false);
+                    setNewPassword("");
+                    setOldPassword("");
+                  }}
+                >
+                  <X size={20} color={colors.textGeneral} />
+                </TouchableOpacity>
+              </View>
+              {errorEdit && <Text style={[s.textEdit]}>{errorEdit}</Text>}
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={s.bouton}
+              onPress={() => {
                 setEditPassword(true);
-              } else {
-                setModalVisible(true);
-                setOpenFrom("Edit");
-              }
-            }}
-          >
-            <Text style={s.subtext}>
-              {!editPassword ? "Changer de mot de passe" : "Valider"}
-            </Text>
-          </TouchableOpacity>
+              }}
+            >
+              <Text style={s.subtext}>Changer de mot de passe</Text>
+            </TouchableOpacity>
+          )}
         </View>
         <View style={s.mode}>
-          <TouchableOpacity
+          <View
             style={[
               s.bouton,
               {
-                borderBottomColor: "#A48A97",
+                borderBottomColor: colors.textMyMood,
                 borderBottomWidth: 0.5,
                 flexDirection: "row",
                 justifyContent: "space-between",
@@ -282,8 +289,8 @@ export default function SettingsScreen({ navigation }) {
               thumbColor={theme === "dark" ? "#A48A97" : "#f4f3f4"}
               onValueChange={toggleNotifications}
             ></Switch>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </View>
+          <View
             style={[
               s.bouton,
               {
@@ -302,13 +309,13 @@ export default function SettingsScreen({ navigation }) {
               trackColor={{ false: "#767577", true: "#2e3034ff" }}
               thumbColor={theme === "dark" ? "#A48A97" : "#f4f3f4"}
             ></Switch>
-          </TouchableOpacity>
+          </View>
         </View>
         <View style={s.quitte}>
           <TouchableOpacity
             style={[
               s.bouton,
-              { borderBottomColor: "#A48A97", borderBottomWidth: 0.5 },
+              { borderBottomColor: colors.textMyMood, borderBottomWidth: 0.5 },
             ]}
             onPress={() => {
               setModalVisible(true);
@@ -324,7 +331,9 @@ export default function SettingsScreen({ navigation }) {
               setOpenFrom("Delete");
             }}
           >
-            <Text style={s.subtext}>Supprimer son compte</Text>
+            <Text style={[s.subtext, { color: colors.textAccent }]}>
+              Supprimer son compte
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -341,10 +350,47 @@ const styles = (colors) =>
       alignItems: "center",
       backgroundColor: colors.background,
     },
-    text: {
+    topPage: {
       marginBottom: 10,
       alignItems: "center",
-      gap: 15,
+      gap: 12,
+    },
+    message: {
+      color: colors.textAccent,
+      fontSize: 16,
+      fontWeight: 400,
+    },
+    editUsernameSection: {
+      justifyContent: "center",
+      borderBottomWidth: 0.5,
+      borderColor: colors.textMyMood,
+      marginTop: 10,
+      height: 70,
+    },
+    textEdit: {
+      color: colors.textAccent,
+      marginLeft: 5,
+      fontSize: 15,
+    },
+    editUsername: {
+      width: 310,
+      flexDirection: "row",
+      justifyContent: "space-around",
+      alignItems: "center",
+      paddingRight: 5,
+      marginBottom: 5,
+    },
+    editPassSection: {
+      marginVertical: 5,
+      justifyContent: "center",
+      width: "100%",
+    },
+    editPass: {
+      width: 310,
+      flexDirection: "row",
+      justifyContent: "space-around",
+      alignItems: "center",
+      paddingRight: 5,
     },
     subtext: {
       color: colors.textGeneral,
@@ -370,15 +416,6 @@ const styles = (colors) =>
       borderRadius: 10,
       height: "auto",
     },
-    exit: {
-      marginLeft: 240,
-      marginTop: 10,
-      marginBottom: 0,
-      width: 45,
-      height: 25,
-      alignItems: "flex-end",
-      justifyContent: "center",
-    },
     mode: {
       width: "80%",
       justifyContent: "center",
@@ -403,9 +440,9 @@ const styles = (colors) =>
       paddingLeft: 15,
     },
     input: {
-      width: "80%",
+      width: 225,
       height: 40,
-      textAlign: "center",
+      paddingLeft: 5,
       color: colors.textGeneral,
       backgroundColor: colors.inputBackground,
       margin: 5,
@@ -420,7 +457,7 @@ const styles = (colors) =>
     modalContent: {
       width: 300,
       padding: 20,
-      backgroundColor: colors.modalBack,
+      backgroundColor: colors.background,
       borderRadius: 12,
       alignItems: "center",
     },
@@ -432,12 +469,12 @@ const styles = (colors) =>
     boutonModale: {
       width: 50,
       height: 30,
-      borderRadius: 10,
+      borderRadius: 8,
       alignItems: "center",
       justifyContent: "center",
     },
     textStyle: {
-      color: colors.textBoutonModal,
+      color: colors.white,
       fontWeight: "500",
       letterSpacing: 0.2,
     },
