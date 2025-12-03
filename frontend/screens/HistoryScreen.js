@@ -247,6 +247,7 @@ const styles = (colors) =>
       justifyContent: "center",
       alignItems: "center",
       borderWidth: 0.5,
+      backgroundColor: colors.cardBackground,
     },
     textOption: {
       fontSize: 17,

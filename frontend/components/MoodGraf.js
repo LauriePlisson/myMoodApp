@@ -208,14 +208,14 @@ export default function MoodGrafGifted({
           width={chartWidth}
           spacing={spacing}
           initialSpacing={0}
-          rulesColor={colors.grafRules}
+          rulesColor={colors.textAccent}
           hideYAxisText={false}
           hideDataPoints={false}
           showVerticalLines={false}
           yAxisThickness={2}
           xAxisThickness={2}
           yAxisTextStyle={{
-            color: colors.grafRules,
+            color: colors.textAccent,
             fontSize: 12,
           }}
           yAxisLabelWidth={20}
@@ -237,7 +237,7 @@ export default function MoodGrafGifted({
           endOpacity={0.1}
           dataPointsRadius={5}
           dataPointLabelRadius={15}
-          dataPointsColor={colors.grafRules}
+          dataPointsColor="#D8BECB"
           focusEnabled={true}
           focusedDataPointColor={getColorFromMoodValue(selectedMood.value)} // couleur a changer
           onFocus={(mood) => handleFocus(mood)}
@@ -267,7 +267,7 @@ const styles = (colors) =>
       height: 40,
       borderTopEndRadius: 8,
       borderStartStartRadius: 8,
-      backgroundColor: colors.contourGrafCal,
+      backgroundColor: colors.cardBackground,
     },
     chevron: {
       alignItems: "center",
@@ -280,8 +280,8 @@ const styles = (colors) =>
       textAlign: "center",
     },
     grafContainer: {
-      borderColor: colors.card,
-      backgroundColor: colors.calendarBackground,
+      borderColor: colors.cardBackground,
+      backgroundColor: colors.white,
       borderTopWidth: 0,
       borderWidth: 4,
       borderBottomEndRadius: 8,

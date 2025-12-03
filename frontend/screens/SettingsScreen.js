@@ -15,11 +15,11 @@ import { logOut, changeUsername } from "../reducers/user";
 import { useTheme } from "../context/ThemeContext";
 import { useNotification } from "../context/NotificationContext";
 import { Check, X } from "lucide-react-native";
-import * as Notifications from "expo-notifications";
 
 export default function SettingsScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [openFrom, setOpenFrom] = useState("");
+  const [modalMsg, setModalMsg] = useState("");
   const [succesMessage, setSuccesMessage] = useState("");
   const [error, setError] = useState("");
   const [editUsername, setEditUsername] = useState(false);
@@ -130,14 +130,9 @@ export default function SettingsScreen({ navigation }) {
       >
         <View style={s.modalOverlay}>
           <View style={s.modalContent}>
-            <Text
-              style={{
-                color: colors.textMyMood,
-                fontWeight: "500",
-                letterSpacing: 0.2,
-              }}
-            >
-              Es tu sure?
+            <Text style={s.textModal}>Es-tu sure de vouloir </Text>
+            <Text style={[s.textModal, { color: colors.textAccent }]}>
+              {modalMsg}
             </Text>
             <View style={s.boutonsModale}>
               <TouchableOpacity
@@ -169,7 +164,7 @@ export default function SettingsScreen({ navigation }) {
               <Text style={s.textEdit}>Nom d'utilisateur</Text>
               <View style={s.editUsername}>
                 <TextInput
-                  style={s.input}
+                  style={[s.input]}
                   placeholderTextColor={colors.textGeneral}
                   placeholder={user.username}
                   value={newUsername}
@@ -179,6 +174,7 @@ export default function SettingsScreen({ navigation }) {
                   onPress={() => {
                     setModalVisible(true);
                     setOpenFrom("Edit");
+                    setModalMsg("changer ton nom d'utilisateur?");
                   }}
                 >
                   <Check size={20} color={colors.textAccent} />
@@ -214,23 +210,53 @@ export default function SettingsScreen({ navigation }) {
             <View style={s.editPassSection}>
               <Text style={s.textEdit}>Mot de Passe</Text>
               <View style={s.editPass}>
-                <View style={{ margin: 0 }}>
+                <View>
                   <TextInput
-                    style={s.input}
+                    style={[s.input, { marginLeft: 10 }]}
                     placeholder="Password"
                     value={oldPassword}
                     placeholderTextColor={colors.textGeneral}
                     onChangeText={(value) => setOldPassword(value)}
                     secureTextEntry={true}
                   />
-                  <TextInput
-                    style={s.input}
-                    placeholder="New Password"
-                    placeholderTextColor={colors.textGeneral}
-                    value={newPassword}
-                    onChangeText={(value) => setNewPassword(value)}
-                    secureTextEntry={true}
-                  />
+                  <View
+                    style={{
+                      width: 310,
+                      flexDirection: "row",
+                      justifyContent: "space-around",
+                      alignItems: "center",
+                      paddingRight: 5,
+                      marginBottom: 5,
+                    }}
+                  >
+                    <TextInput
+                      style={s.input}
+                      placeholder="New Password"
+                      placeholderTextColor={colors.textGeneral}
+                      value={newPassword}
+                      onChangeText={(value) => setNewPassword(value)}
+                      secureTextEntry={true}
+                    />
+
+                    <TouchableOpacity
+                      onPress={() => {
+                        setModalVisible(true);
+                        setOpenFrom("Edit");
+                        setModalMsg("changer ton mot de passe?");
+                      }}
+                    >
+                      <Check size={20} color={colors.textAccent} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setEditPassword(false);
+                        setNewPassword("");
+                        setOldPassword("");
+                      }}
+                    >
+                      <X size={20} color={colors.textGeneral} />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
               {errorEdit && (
@@ -238,34 +264,6 @@ export default function SettingsScreen({ navigation }) {
                   {errorEdit}
                 </Text>
               )}
-              <View
-                style={{
-                  flexDirection: "row",
-                  width: "300",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 15,
-                  height: 30,
-                }}
-              >
-                <TouchableOpacity
-                  onPress={() => {
-                    setModalVisible(true);
-                    setOpenFrom("Edit");
-                  }}
-                >
-                  <Check size={20} color={colors.textAccent} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    setEditPassword(false);
-                    setNewPassword("");
-                    setOldPassword("");
-                  }}
-                >
-                  <X size={20} color={colors.textGeneral} />
-                </TouchableOpacity>
-              </View>
             </View>
           ) : (
             <TouchableOpacity
@@ -335,6 +333,7 @@ export default function SettingsScreen({ navigation }) {
             onPress={() => {
               setModalVisible(true);
               setOpenFrom("LogOut");
+              setModalMsg("te déconnecter?");
             }}
           >
             <Text style={s.subtext}>Se déconnecter</Text>
@@ -344,6 +343,7 @@ export default function SettingsScreen({ navigation }) {
             onPress={() => {
               setModalVisible(true);
               setOpenFrom("Delete");
+              setModalMsg("supprimer ton compte?");
             }}
           >
             <Text style={[s.subtext, { color: colors.textAccent }]}>
@@ -376,15 +376,16 @@ const styles = (colors) =>
       fontWeight: 400,
     },
     editUsernameSection: {
-      justifyContent: "center",
+      justifyContent: "flex-start",
       borderBottomWidth: 0.5,
       borderColor: colors.textMyMood,
-      marginTop: 10,
-      height: 70,
+      marginTop: 5,
+      height: 80,
     },
     textEdit: {
       color: colors.textAccent,
-      marginLeft: 5,
+      margin: 5,
+      marginBottom: 2,
       fontSize: 15,
     },
     editUsername: {
@@ -397,15 +398,12 @@ const styles = (colors) =>
     },
     editPassSection: {
       marginVertical: 5,
-      justifyContent: "center",
+      justifyContent: "flex-start",
       width: "100%",
     },
     editPass: {
       width: 310,
-      flexDirection: "row",
-      justifyContent: "space-around",
-      alignItems: "center",
-      paddingRight: 5,
+      height: 100,
     },
     subtext: {
       color: colors.textGeneral,
@@ -476,8 +474,15 @@ const styles = (colors) =>
       borderRadius: 12,
       alignItems: "center",
     },
+    textModal: {
+      color: colors.textGeneral,
+      fontWeight: 500,
+      fontSize: 15,
+      letterSpacing: 0.2,
+      textAlign: "center",
+    },
     boutonsModale: {
-      marginTop: 20,
+      marginTop: 15,
       flexDirection: "row",
       gap: 12,
     },
