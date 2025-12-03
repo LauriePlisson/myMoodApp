@@ -18,6 +18,8 @@ export const lightTheme = {
     courbeColor: "#e6c4dcbc",
     startFill: "rgba(245, 123, 190, 1)",
     endFill: "#efd1f2ff",
+
+    //moods
   },
 };
 

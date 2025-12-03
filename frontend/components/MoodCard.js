@@ -40,7 +40,6 @@ export default function MoodCard({
             },
           ]}
         >
-          {/* <Text>{period === "mois" ? "Mood du: " : "Moods de: "}</Text> */}
           <Text style={s.moodDate}>{selectedMood.date}</Text>
         </View>
         <TouchableOpacity
@@ -56,7 +55,7 @@ export default function MoodCard({
           <View style={[s.sectionCard, s.noteSection]}>
             <Text
               style={{
-                color: period === "mois" ? "transparent" : colors.secondary,
+                color: period === "mois" ? "transparent" : colors.textGeneral,
               }}
             >
               Moyenne:
@@ -80,7 +79,7 @@ export default function MoodCard({
               <TouchableOpacity
                 style={{
                   borderBottomWidth: 1,
-                  borderColor: colors.secondary,
+                  borderColor: colors.textMyMood,
                   width: 80,
                   alignItems: "center",
                 }}
@@ -88,7 +87,7 @@ export default function MoodCard({
                   handleVoirMois();
                 }}
               >
-                <Text style={{ fontStyle: "italic", color: colors.secondary }}>
+                <Text style={{ fontStyle: "italic", color: colors.textMyMood }}>
                   Voir le mois
                 </Text>
               </TouchableOpacity>
@@ -97,7 +96,7 @@ export default function MoodCard({
         </View>
       ) : (
         <View style={s.noData}>
-          <Text style={{ color: colors.simple }}>
+          <Text style={{ color: colors.textGeneral }}>
             Pas de donnée pour ce {period === "annee" ? "mois" : "jour"}
           </Text>
         </View>
@@ -115,7 +114,7 @@ const styles = (colors) =>
       height: 100,
       marginTop: 10,
       justifyContent: "flex-start",
-      backgroundColor: colors.calendarBackground,
+      backgroundColor: colors.whiteBlack,
       paddingTop: 5,
       paddingHorizontal: 10,
     },
@@ -145,7 +144,7 @@ const styles = (colors) =>
     },
     moodDate: {
       fontWeight: "500",
-      color: colors.text,
+      color: colors.textGeneral,
     },
     acces: {
       justifyContent: "flex-end",
@@ -164,6 +163,6 @@ const styles = (colors) =>
     },
     com: {
       fontSize: 15,
-      color: colors.text,
+      color: colors.textGeneral,
     },
   });
