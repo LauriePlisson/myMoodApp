@@ -160,16 +160,15 @@ export default function MoodCalendar({
 
   const calendarTheme = useMemo(
     () => ({
-      backgroundColor: colors.background,
-      calendarBackground: colors.calendarBackground,
+      calendarBackground: colors.white,
       textSectionTitleColor: "white",
-      dayTextColor: colors.text,
-      textDisabledColor: colors.otherdays,
-      monthTextColor: colors.simple,
-      arrowColor: colors.accent,
-      todayTextColor: colors.accent,
-      selectedDayBackgroundColor: colors.primary,
-      selectedDayTextColor: colors.primary,
+      dayTextColor: colors.textMyMood,
+      monthTextColor: colors.buttonBackground,
+      textMonthFontWeight: "500",
+      arrowColor: "white",
+      todayTextColor: colors.textAccent,
+      // todayBackgroundColor: colors.inputBackground,
+      textDisabledColor: colors.textGeneral,
     }),
     [theme]
   );
@@ -213,7 +212,7 @@ const styles = (colors) =>
     },
     calendar: {
       borderRadius: 8,
-      backgroundColor: colors.contourGrafCal,
+      backgroundColor: colors.cardBackground,
       paddingBottom: 5,
       width: 350,
     },

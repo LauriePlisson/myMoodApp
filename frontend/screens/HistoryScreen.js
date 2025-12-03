@@ -105,13 +105,6 @@ export default function HistoryScreen() {
     }));
   }
 
-  const styleMois = {
-    color: period === "mois" ? colors.accent : colors.secondary,
-  };
-  const styleAnnee = {
-    color: period === "annee" ? colors.accent : colors.secondary,
-  };
-
   return (
     <View style={s.container}>
       <Text style={s.title}>Tes Moods</Text>
@@ -121,8 +114,8 @@ export default function HistoryScreen() {
             style={[
               s.option,
               viewCalendar
-                ? { borderColor: colors.textAccent }
-                : { borderColor: colors.textGeneral },
+                ? { backgroundColor: colors.buttonBackground }
+                : { backgroundColor: colors.white },
             ]}
             onPress={() => {
               setViewCalendar(true), setDisplayMood(false);
@@ -132,7 +125,7 @@ export default function HistoryScreen() {
               style={[
                 s.textOption,
                 viewCalendar
-                  ? { color: colors.textAccent }
+                  ? { color: colors.white }
                   : { color: colors.textGeneral },
               ]}
             >
@@ -143,8 +136,8 @@ export default function HistoryScreen() {
             style={[
               s.option,
               !viewCalendar
-                ? { borderColor: colors.textAccent }
-                : { borderColor: colors.textGeneral },
+                ? { backgroundColor: colors.buttonBackground }
+                : { backgroundColor: colors.white },
             ]}
             onPress={() => {
               setViewCalendar(false),
@@ -157,7 +150,7 @@ export default function HistoryScreen() {
               style={[
                 s.textOption,
                 !viewCalendar
-                  ? { color: colors.textAccent }
+                  ? { color: colors.white }
                   : { color: colors.textGeneral },
               ]}
             >
@@ -177,24 +170,58 @@ export default function HistoryScreen() {
             <>
               <View style={s.filtres}>
                 <TouchableOpacity
-                  style={s.filtre}
+                  style={[
+                    s.filtre,
+                    // period === "mois"
+                    //   ? {
+                    //       borderWidth: 0.2,
+                    //       borderRadius: 15,
+                    //       borderColor: colors.buttonBackground,
+                    //     }
+                    //   : null,
+                  ]}
                   onPress={() => {
                     setPeriod("mois"),
                       setSelectedDate(new Date()),
                       setDisplayMood(false);
                   }}
                 >
-                  <Text style={styleMois}>Mois</Text>
+                  <Text
+                    style={
+                      period === "mois"
+                        ? {
+                            color: colors.buttonBackground,
+                            fontWeight: "bold",
+                            letterSpacing: 0.2,
+                          }
+                        : { color: colors.textGeneral }
+                    }
+                  >
+                    Mois
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={s.filtre}
+                  style={[
+                    s.filtre,
+                    // period === "annee"
+                    //   ? { backgroundColor: colors.buttonBackground }
+                    //   : { backgroundColor: colors.white },
+                  ]}
                   onPress={() => {
                     setPeriod("annee"),
                       setSelectedDate(new Date()),
                       setDisplayMood(false);
                   }}
                 >
-                  <Text style={styleAnnee}>Année</Text>
+                  <Text
+                    style={
+                      period === "annee"
+                        ? { color: colors.buttonBackground, fontWeight: "bold" }
+                        : { color: colors.textGeneral }
+                    }
+                  >
+                    Année
+                  </Text>
                 </TouchableOpacity>
               </View>
               <MoodGraf
@@ -241,13 +268,12 @@ const styles = (colors) =>
       marginBottom: 10,
     },
     option: {
-      borderRadius: 50,
+      borderRadius: 12,
       width: 105,
       height: 40,
       justifyContent: "center",
       alignItems: "center",
-      borderWidth: 0.5,
-      backgroundColor: colors.cardBackground,
+      // backgroundColor: "white",
     },
     textOption: {
       fontSize: 17,
@@ -258,7 +284,7 @@ const styles = (colors) =>
     },
     filtres: {
       borderTopWidth: 1,
-      borderTopColor: ` #d8becbff`,
+      borderTopColor: colors.textMyMood,
       paddingTop: 15,
       flexDirection: "row",
       gap: 15,
@@ -266,8 +292,7 @@ const styles = (colors) =>
     filtre: {
       textAlign: "centre",
       marginLeft: 5,
-      backgroundColor: colors.optionBouton,
-      borderRadius: 8,
+      borderRadius: 12,
       width: 80,
       height: 30,
       justifyContent: "center",
