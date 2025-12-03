@@ -265,7 +265,7 @@ const styles = (colors) =>
       backgroundColor: colors.buttonBackground,
     },
     textButton: {
-      color: colors.white,
+      color: colors.whiteBlack,
       fontSize: 16,
       fontWeight: 400,
     },

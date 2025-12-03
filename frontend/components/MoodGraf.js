@@ -191,14 +191,14 @@ export default function MoodGrafGifted({
     <>
       <View style={s.grafInfo}>
         <TouchableOpacity style={s.chevron} onPress={() => handleChevronLeft()}>
-          <ChevronLeft color={"white"} />
+          <ChevronLeft color={colors.whiteWhite} />
         </TouchableOpacity>
         <Text style={s.grafText}>{displayPeriod}</Text>
         <TouchableOpacity
           style={s.chevron}
           onPress={() => handleChevronRight()}
         >
-          <ChevronRight color={"white"} />
+          <ChevronRight color={colors.whiteWhite} />
         </TouchableOpacity>
       </View>
       <View style={s.grafContainer}>
@@ -208,36 +208,37 @@ export default function MoodGrafGifted({
           width={chartWidth}
           spacing={spacing}
           initialSpacing={0}
-          rulesColor={colors.textAccent}
+          rulesColor="#e9d5e3ff"
           hideYAxisText={false}
           hideDataPoints={false}
           showVerticalLines={false}
           yAxisThickness={2}
           xAxisThickness={2}
           yAxisTextStyle={{
-            color: colors.textAccent,
+            color: colors.buttonBackground,
             fontSize: 12,
+            fontWeight: "300",
           }}
           yAxisLabelWidth={20}
-          yAxisColor="#D8BECB"
+          yAxisColor={colors.axesColor}
           xAxisLabelsHeight={7}
           xAxisLabelTextStyle={{ color: "transparent" }}
-          xAxisColor="#D8BECB"
+          xAxisColor={colors.axesColor}
           minValue={0}
           maxValue={10}
           noOfSections={10}
-          color="#D8BECB"
+          color={colors.dotColor}
           curved={false}
           // curvature={0.015}
           thickness={2}
           areaChart
-          startFillColor="rgba(245, 123, 190, 1)" //"rgba(237, 132, 184, 0.3)" // début du dégradé
-          endFillColor="#d1d8f2ff" //"rgba(216, 190, 190, 0)" // fin du dégradé (transparent)
+          startFillColor={colors.startFill}
+          endFillColor={colors.endFill}
           startOpacity={0.4}
           endOpacity={0.1}
           dataPointsRadius={5}
           dataPointLabelRadius={15}
-          dataPointsColor={colors.buttonBackground}
+          dataPointsColor={colors.dotColor}
           focusEnabled={true}
           focusedDataPointColor={getColorFromMoodValue(selectedMood.value)} // couleur a changer
           onFocus={(mood) => handleFocus(mood)}
@@ -282,7 +283,7 @@ const styles = (colors) =>
     },
     grafContainer: {
       borderColor: colors.cardBackground,
-      backgroundColor: colors.white,
+      backgroundColor: colors.whiteBlack,
       borderTopWidth: 0,
       borderWidth: 4,
       borderBottomEndRadius: 8,

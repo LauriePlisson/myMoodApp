@@ -275,7 +275,7 @@ const styles = (colors) =>
     panel: {
       width: 150,
       height: 150,
-      backgroundColor: colors.white,
+      backgroundColor: colors.whiteBlack,
       borderRadius: 16,
       alignItems: "center",
       justifyContent: "center",
@@ -311,7 +311,7 @@ const styles = (colors) =>
       marginTop: 0,
     },
     valider: {
-      color: colors.white,
+      color: colors.whiteBlack,
       fontSize: 16,
       fontWeight: 400,
     },

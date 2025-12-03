@@ -115,7 +115,7 @@ export default function HistoryScreen() {
               s.option,
               viewCalendar
                 ? { backgroundColor: colors.buttonBackground }
-                : { backgroundColor: colors.white },
+                : { backgroundColor: colors.whiteBlack },
             ]}
             onPress={() => {
               setViewCalendar(true), setDisplayMood(false);
@@ -125,7 +125,7 @@ export default function HistoryScreen() {
               style={[
                 s.textOption,
                 viewCalendar
-                  ? { color: colors.white, fontWeight: "500" }
+                  ? { color: colors.whiteBlack, fontWeight: "500" }
                   : { color: colors.textGeneral },
               ]}
             >
@@ -137,7 +137,7 @@ export default function HistoryScreen() {
               s.option,
               !viewCalendar
                 ? { backgroundColor: colors.buttonBackground }
-                : { backgroundColor: colors.white },
+                : { backgroundColor: colors.whiteBlack },
             ]}
             onPress={() => {
               setViewCalendar(false),
@@ -150,7 +150,7 @@ export default function HistoryScreen() {
               style={[
                 s.textOption,
                 !viewCalendar
-                  ? { color: colors.white, fontWeight: "500" }
+                  ? { color: colors.whiteBlack, fontWeight: "500" }
                   : { color: colors.textGeneral },
               ]}
             >
