@@ -158,7 +158,7 @@ export default function HistoryScreen() {
             </Text>
           </TouchableOpacity>
         </View>
-        <View style={s.display}>
+        <View style={[s.display, viewCalendar ? { marginTop: 10 } : null]}>
           {viewCalendar ? (
             <MoodCalendar
               moods={moodsByYear}
