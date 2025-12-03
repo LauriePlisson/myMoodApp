@@ -14,7 +14,8 @@ export const lightTheme = {
 
     //GrafColors
     axesColor: "#D8BECB",
-    dotColor: "#ee9fd3dd",
+    dotColor: "#f1bde1e5",
+    courbeColor: "#e6c4dcbc",
     startFill: "rgba(245, 123, 190, 1)",
     endFill: "#efd1f2ff",
   },
@@ -36,7 +37,8 @@ export const darkTheme = {
 
     //GrafColors
     axesColor: "#D8BECB",
-    dotColor: "#edb7dbdd",
+    dotColor: "#af96a8e5",
+    courbeColor: "#e6c4dcbc",
     startFill: "rgba(246, 163, 208, 1)",
     endFill: "#efd1f2ff",
   },

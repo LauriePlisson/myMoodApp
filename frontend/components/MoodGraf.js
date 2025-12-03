@@ -227,7 +227,7 @@ export default function MoodGrafGifted({
           minValue={0}
           maxValue={10}
           noOfSections={10}
-          color={colors.dotColor}
+          color={colors.courbeColor}
           curved={false}
           // curvature={0.015}
           thickness={2}
