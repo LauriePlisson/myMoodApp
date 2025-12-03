@@ -191,14 +191,14 @@ export default function MoodGrafGifted({
     <>
       <View style={s.grafInfo}>
         <TouchableOpacity style={s.chevron} onPress={() => handleChevronLeft()}>
-          <ChevronLeft color={colors.grafText} />
+          <ChevronLeft color={"white"} />
         </TouchableOpacity>
         <Text style={s.grafText}>{displayPeriod}</Text>
         <TouchableOpacity
           style={s.chevron}
           onPress={() => handleChevronRight()}
         >
-          <ChevronRight color={colors.grafText} />
+          <ChevronRight color={"white"} />
         </TouchableOpacity>
       </View>
       <View style={s.grafContainer}>
@@ -237,7 +237,7 @@ export default function MoodGrafGifted({
           endOpacity={0.1}
           dataPointsRadius={5}
           dataPointLabelRadius={15}
-          dataPointsColor="#D8BECB"
+          dataPointsColor={colors.buttonBackground}
           focusEnabled={true}
           focusedDataPointColor={getColorFromMoodValue(selectedMood.value)} // couleur a changer
           onFocus={(mood) => handleFocus(mood)}
@@ -274,8 +274,9 @@ const styles = (colors) =>
       width: 20,
     },
     grafText: {
-      fontSize: 15,
-      color: colors.grafText,
+      fontSize: 18,
+      color: colors.buttonBackground,
+      fontWeight: "500",
       width: 150,
       textAlign: "center",
     },

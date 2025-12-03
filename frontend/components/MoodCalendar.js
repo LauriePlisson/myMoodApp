@@ -166,6 +166,7 @@ export default function MoodCalendar({
       monthTextColor: colors.buttonBackground,
       textMonthFontWeight: "500",
       arrowColor: "white",
+      disabledArrowColor: "white",
       todayTextColor: colors.textAccent,
       // todayBackgroundColor: colors.inputBackground,
       textDisabledColor: colors.textGeneral,

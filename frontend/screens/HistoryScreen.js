@@ -125,7 +125,7 @@ export default function HistoryScreen() {
               style={[
                 s.textOption,
                 viewCalendar
-                  ? { color: colors.white }
+                  ? { color: colors.white, fontWeight: "500" }
                   : { color: colors.textGeneral },
               ]}
             >
@@ -150,7 +150,7 @@ export default function HistoryScreen() {
               style={[
                 s.textOption,
                 !viewCalendar
-                  ? { color: colors.white }
+                  ? { color: colors.white, fontWeight: "500" }
                   : { color: colors.textGeneral },
               ]}
             >
@@ -170,16 +170,7 @@ export default function HistoryScreen() {
             <>
               <View style={s.filtres}>
                 <TouchableOpacity
-                  style={[
-                    s.filtre,
-                    // period === "mois"
-                    //   ? {
-                    //       borderWidth: 0.2,
-                    //       borderRadius: 15,
-                    //       borderColor: colors.buttonBackground,
-                    //     }
-                    //   : null,
-                  ]}
+                  style={[s.filtre]}
                   onPress={() => {
                     setPeriod("mois"),
                       setSelectedDate(new Date()),
@@ -201,12 +192,7 @@ export default function HistoryScreen() {
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={[
-                    s.filtre,
-                    // period === "annee"
-                    //   ? { backgroundColor: colors.buttonBackground }
-                    //   : { backgroundColor: colors.white },
-                  ]}
+                  style={[s.filtre]}
                   onPress={() => {
                     setPeriod("annee"),
                       setSelectedDate(new Date()),
@@ -273,7 +259,6 @@ const styles = (colors) =>
       height: 40,
       justifyContent: "center",
       alignItems: "center",
-      // backgroundColor: "white",
     },
     textOption: {
       fontSize: 17,
@@ -284,17 +269,14 @@ const styles = (colors) =>
     },
     filtres: {
       borderTopWidth: 1,
-      borderTopColor: colors.textMyMood,
-      paddingTop: 15,
+      borderTopColor: colors.buttonBackground,
       flexDirection: "row",
       gap: 15,
     },
     filtre: {
       textAlign: "centre",
-      marginLeft: 5,
-      borderRadius: 12,
+      marginTop: 15,
       width: 80,
-      height: 30,
       justifyContent: "center",
       alignItems: "center",
     },
