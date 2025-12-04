@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useIsFocused } from "@react-navigation/native";
 import { LineChart } from "react-native-gifted-charts";
 import { ChevronLeft, ChevronRight, X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
@@ -27,8 +28,17 @@ export default function MoodGrafGifted({
   loadYear,
 }) {
   const [selectedMood, setSelectedMood] = useState({});
-  const { theme, colors } = useTheme();
+  const { colors } = useTheme();
   const s = styles(colors);
+
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (!isFocused) {
+      // l'écran n'est plus actif → on ferme la MoodCard
+      setDisplayMood(false);
+    }
+  }, [isFocused]);
 
   const mois = [
     "Janvier",

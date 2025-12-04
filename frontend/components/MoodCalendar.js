@@ -1,7 +1,8 @@
 import { Calendar, LocaleConfig } from "react-native-calendars";
 import { View, Text, StyleSheet } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
 import { useFocusEffect } from "@react-navigation/native";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   getColorFromMoodValue,
   getColorBackgroundFromMoodValue,
@@ -22,6 +23,15 @@ export default function MoodCalendar({
   const [refreshKey, setRefreshKey] = useState(0);
   const { theme, colors } = useTheme();
   const s = styles(colors);
+
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (!isFocused) {
+      // l'écran n'est plus actif → on ferme la MoodCard
+      setDisplayMood(false);
+      setSelectedDateString("");
+    }
+  }, [isFocused]);
 
   const year = selectedDate.getFullYear();
   const moodsForCalendar = moods[year] || [];

@@ -16,6 +16,7 @@ export default function HistoryScreen() {
   const { colors } = useTheme();
   const s = styles(colors);
 
+  //fonction fetch moods année
   const loadYear = async (year) => {
     if (moodsByYear[year]) return;
 
@@ -34,7 +35,7 @@ export default function HistoryScreen() {
     );
 
     const data = await res.json();
-
+    // ajout de l'année chargé et ses moods aux années déjà chargées
     setMoodsByYear((prev) => ({
       ...prev,
       [year]: data.moods,
@@ -42,9 +43,16 @@ export default function HistoryScreen() {
   };
 
   useEffect(() => {
+    //si l'utilisateur se déconnecte: clean les moods
+    if (!user.isLoggedIn) {
+      setMoodsByYear({});
+      setDisplayMood(false);
+      return;
+    }
+    //fetch l'année en cours
     const currentYear = new Date().getFullYear();
     loadYear(currentYear);
-  }, [viewCalendar]);
+  }, [viewCalendar, user]);
 
   const selectedYear = selectedDate.getFullYear();
   const moodsForSelectedYear = moodsByYear[selectedYear] || [];

@@ -32,7 +32,7 @@ export default function WelcomeScreen({ navigation }) {
 
   useEffect(() => {
     if (user.token) {
-      navigation.replace("TabNavigator");
+      navigation.replace("TabNavigator", { screen: "Home" });
     }
   }, [user]);
 
@@ -58,7 +58,7 @@ export default function WelcomeScreen({ navigation }) {
         dispatch(
           logIn({ username: data.user.username, token: data.user.token })
         );
-        navigation.navigate("TabNavigator");
+        navigation.navigate("TabNavigator", { screen: "Home" });
         resetField();
       }
     }
@@ -78,7 +78,7 @@ export default function WelcomeScreen({ navigation }) {
         dispatch(
           logIn({ username: data.user.username, token: data.user.token })
         );
-        navigation.navigate("TabNavigator");
+        navigation.navigate("TabNavigator", { screen: "home" });
         resetField();
       }
     }

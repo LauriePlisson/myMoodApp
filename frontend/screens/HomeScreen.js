@@ -33,6 +33,12 @@ export default function HomeScreen({ navigation }) {
   const commentInputRef = useRef(null);
 
   useEffect(() => {
+    if (!user.isLoggedIn) {
+      setMoodOfTheDay(null);
+      setMoodValue("05");
+      setNote("");
+      return;
+    }
     const fetchToday = async () => {
       try {
         const res = await fetch(`${API_URL}/moods/today`, {
@@ -54,7 +60,10 @@ export default function HomeScreen({ navigation }) {
       }
     };
     fetchToday();
-  }, []);
+    // console.log("Render moods component");
+    // console.log("User actuel:", user);
+    // console.log("Moods actuels:", moodOfTheDay);
+  }, [user]);
 
   useFocusEffect(
     useCallback(() => {
