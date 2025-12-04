@@ -46,7 +46,7 @@ export default function MoodCard({
         <TouchableOpacity
           onPress={() => {
             setDisplayMood(false);
-            setSelectedDateString("");
+            if (setSelectedDateString) setSelectedDateString("");
           }}
         >
           <X size={20} color={getColorFromMoodValue(selectedMood.value)} />
