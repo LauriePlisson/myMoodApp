@@ -17,6 +17,7 @@ export default function MoodCard({
   selectedMood,
   handleVoirMois,
   period,
+  setSelectedDateString,
 }) {
   const { theme, colors } = useTheme();
   const s = styles(colors);
@@ -45,6 +46,7 @@ export default function MoodCard({
         <TouchableOpacity
           onPress={() => {
             setDisplayMood(false);
+            setSelectedDateString("");
           }}
         >
           <X size={20} color={getColorFromMoodValue(selectedMood.value)} />

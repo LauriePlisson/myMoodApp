@@ -41,7 +41,8 @@ export default function MoodCalendar({
       customStyles: {
         container: {
           backgroundColor: getColorBackgroundFromMoodValue(mood.moodValue),
-          borderRadius: 30,
+          borderRadius: 50,
+          // borderWidth: 1,
           borderColor: getColorFromMoodValue(mood.moodValue),
           justifyContent: "center",
           alignItems: "center",
@@ -195,6 +196,7 @@ export default function MoodCalendar({
           selectedMood={selectedMood}
           setDisplayMood={setDisplayMood}
           period={"mois"}
+          setSelectedDateString={setSelectedDateString}
         />
       )}
     </>
