@@ -8,6 +8,7 @@ export const lightTheme = {
     textAccent: "#a37794ff",
     textMyMood: "#A48A97",
     textGeneral: "#544c5bff",
+    textPlaceHolder: "#727272a9",
     whiteBlack: "white",
     whiteWhite: "white",
     number: "#544c5bff",

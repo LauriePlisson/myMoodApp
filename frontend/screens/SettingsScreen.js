@@ -9,7 +9,7 @@ import {
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logOut, changeUsername } from "../reducers/user";
 import { useTheme } from "../context/ThemeContext";
@@ -37,6 +37,10 @@ export default function SettingsScreen({ navigation }) {
 
   const { colors } = useTheme();
   const s = styles(colors);
+
+  const usernameInputRef = useRef(null);
+  const oldPasswordInputRef = useRef(null);
+  const newPasswordInputRef = useRef(null);
 
   const handleEdit = async () => {
     const body = {
@@ -164,11 +168,14 @@ export default function SettingsScreen({ navigation }) {
               <Text style={s.textEdit}>Nom d'utilisateur</Text>
               <View style={s.editUsername}>
                 <TextInput
+                  ref={usernameInputRef}
                   style={[s.input]}
-                  placeholderTextColor={colors.textGeneral}
+                  placeholderTextColor={colors.textPlaceHolder}
                   placeholder={user.username}
                   value={newUsername}
                   onChangeText={(value) => setNewUsername(value)}
+                  returnKeyType="done" // dernier champ → clavier peut valider
+                  onSubmitEditing={handleEdit} // tu peux lancer l'enregistrement si tu veux
                 />
                 <TouchableOpacity
                   onPress={() => {
@@ -200,6 +207,9 @@ export default function SettingsScreen({ navigation }) {
               ]}
               onPress={() => {
                 setEditUsername(true);
+                setTimeout(() => {
+                  usernameInputRef.current?.focus();
+                }, 100);
               }}
             >
               <Text style={s.subtext}>Changer de nom d'utilisateur</Text>
@@ -212,10 +222,13 @@ export default function SettingsScreen({ navigation }) {
               <View style={s.editPass}>
                 <View>
                   <TextInput
+                    returnKeyType="next"
+                    onSubmitEditing={() => newPasswordInputRef.current?.focus()}
+                    ref={oldPasswordInputRef}
                     style={[s.input, { marginLeft: 10 }]}
                     placeholder="Password"
                     value={oldPassword}
-                    placeholderTextColor={colors.textGeneral}
+                    placeholderTextColor={colors.textPlaceHolder}
                     onChangeText={(value) => setOldPassword(value)}
                     secureTextEntry={true}
                   />
@@ -230,12 +243,15 @@ export default function SettingsScreen({ navigation }) {
                     }}
                   >
                     <TextInput
+                      ref={newPasswordInputRef}
                       style={s.input}
                       placeholder="New Password"
-                      placeholderTextColor={colors.textGeneral}
+                      placeholderTextColor={colors.textPlaceHolder}
                       value={newPassword}
                       onChangeText={(value) => setNewPassword(value)}
                       secureTextEntry={true}
+                      returnKeyType="done" // dernier champ → clavier peut valider
+                      onSubmitEditing={handleEdit} // tu peux lancer l'enregistrement si tu veux
                     />
 
                     <TouchableOpacity
@@ -270,6 +286,9 @@ export default function SettingsScreen({ navigation }) {
               style={s.bouton}
               onPress={() => {
                 setEditPassword(true);
+                setTimeout(() => {
+                  oldPasswordInputRef.current?.focus();
+                }, 100);
               }}
             >
               <Text style={s.subtext}>Changer de mot de passe</Text>

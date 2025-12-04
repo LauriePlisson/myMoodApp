@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import Slider from "@react-native-community/slider";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useSelector } from "react-redux";
 import { Check, X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
@@ -29,6 +29,8 @@ export default function HomeScreen({ navigation }) {
 
   const user = useSelector((state) => state.user.value);
   const API_URL = process.env.EXPO_PUBLIC_API_URL;
+
+  const commentInputRef = useRef(null);
 
   useEffect(() => {
     const fetchToday = async () => {
@@ -126,6 +128,10 @@ export default function HomeScreen({ navigation }) {
     setAjoutCom(false);
   };
 
+  const handleCommentCheck = () => {
+    setAjoutCom(false);
+  };
+
   return (
     <TouchableWithoutFeedback
       onPress={Keyboard.dismiss}
@@ -168,6 +174,12 @@ export default function HomeScreen({ navigation }) {
                 style={editingMood ? s.boutCom : null}
                 onPress={() => {
                   setAjoutCom(true);
+                  if (!backupNote) {
+                    setBackupNote(note); // on ne sauvegarde que si on n’a pas déjà de backup
+                  }
+                  setTimeout(() => {
+                    commentInputRef.current?.focus();
+                  }, 100);
                 }}
               >
                 <Text style={s.input}>
@@ -195,12 +207,15 @@ export default function HomeScreen({ navigation }) {
                     },
                   ]}
                   placeholder="Ajoute un commentaire..."
-                  placeholderTextColor={colors.textGeneral}
+                  placeholderTextColor={colors.textPlaceHolder}
                   value={note}
                   onChangeText={(value) => setNote(value)}
+                  ref={commentInputRef}
+                  returnKeyType="done"
+                  onSubmitEditing={handleCommentCheck}
                 />
-                <TouchableOpacity onPress={() => setAjoutCom(false)}>
-                  <Check style={{ color: colors.textGeneral }} />
+                <TouchableOpacity onPress={() => handleCommentCheck()}>
+                  <Check style={{ color: colors.textAccent }} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
