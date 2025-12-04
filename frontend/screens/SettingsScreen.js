@@ -136,18 +136,18 @@ export default function SettingsScreen({ navigation }) {
             </Text>
             <View style={s.boutonsModale}>
               <TouchableOpacity
-                style={[s.boutonModale, { backgroundColor: "#e9d5e3ff" }]} //"#fceaf0ff"
-                onPress={() => handlePressOui()}
-              >
-                <Text style={s.textStyle}>Oui</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
                 style={[s.boutonModale, { backgroundColor: "#c890b5ff" }]} //"#d8becbff"
                 onPress={() => {
                   handlePressNon();
                 }}
               >
                 <Text style={s.textStyle}>Non</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[s.boutonModale, { backgroundColor: "#e9d5e3ff" }]} //"#fceaf0ff"
+                onPress={() => handlePressOui()}
+              >
+                <Text style={s.textStyle}>Oui</Text>
               </TouchableOpacity>
             </View>
           </View>
