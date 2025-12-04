@@ -6,7 +6,8 @@ import {
   Modal,
   TextInput,
   Switch,
-  Alert,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState, useEffect, useRef } from "react";
@@ -27,7 +28,9 @@ export default function SettingsScreen({ navigation }) {
   const [newUsername, setNewUsername] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [errorEdit, setErrorEdit] = useState("");
+  const [editType, setEditType] = useState("");
+  const [errorEditPassword, setErrorEditPassword] = useState("");
+  const [errorEditUsername, setErrorEditUsername] = useState("");
 
   const { notificationsEnabled, toggleNotifications } = useNotification();
   const { theme, toggleTheme } = useTheme();
@@ -42,7 +45,22 @@ export default function SettingsScreen({ navigation }) {
   const oldPasswordInputRef = useRef(null);
   const newPasswordInputRef = useRef(null);
 
-  const handleEdit = async () => {
+  const handleEdit = async (type) => {
+    if (type === "username" && newUsername === "") {
+      setErrorEditUsername(
+        "Entre un nouveau nom d'utilisateur avant de valider"
+      );
+      setTimeout(() => setErrorEditUsername(""), 5000);
+      setNewUsername("");
+      return;
+    }
+    if (type === "password" && (oldPassword === "" || newPassword === "")) {
+      setErrorEditPassword("Tous les champs de mot de passe sont obligatoires");
+      setTimeout(() => setErrorEditPassword(""), 5000);
+      // setNewPassword("");
+      setOldPassword("");
+      return;
+    }
     const body = {
       username: newUsername,
       password: oldPassword,
@@ -57,10 +75,10 @@ export default function SettingsScreen({ navigation }) {
       body: JSON.stringify(body),
     });
     const data = await res.json();
-
+    console.log(data);
     if (data.error) {
-      setErrorEdit(data.error);
-      setTimeout(() => setErrorEdit(""), 5000);
+      setErrorEditPassword(data.error);
+      setTimeout(() => setErrorEditPassword(""), 5000);
     }
     if (data.result) {
       if (newUsername !== "") {
@@ -108,7 +126,7 @@ export default function SettingsScreen({ navigation }) {
       handleDelete();
     }
     if (openFrom === "Edit") {
-      handleEdit();
+      handleEdit(editType);
     }
   };
 
@@ -121,6 +139,13 @@ export default function SettingsScreen({ navigation }) {
       setSuccesMessage("Annulé"), setTimeout(() => setSuccesMessage(""), 3000);
   };
 
+  const openModal = (from, msg, type) => {
+    setOpenFrom(from);
+    setModalMsg(msg);
+    setModalVisible(true);
+    if (type) setEditType(type);
+  };
+
   return (
     <SafeAreaView style={s.container}>
       <Modal
@@ -128,7 +153,6 @@ export default function SettingsScreen({ navigation }) {
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
           setModalVisible(!modalVisible);
         }}
       >
@@ -157,221 +181,255 @@ export default function SettingsScreen({ navigation }) {
           </View>
         </View>
       </Modal>
-      <View style={s.topPage}>
-        <Text style={s.settings}>Réglages</Text>
-        <Text style={s.message}>{succesMessage}</Text>
-      </View>
-      <View style={s.reglages}>
-        <View style={s.infoUser}>
-          {editUsername ? (
-            <View style={s.editUsernameSection}>
-              <Text style={s.textEdit}>Nom d'utilisateur</Text>
-              <View style={s.editUsername}>
-                <TextInput
-                  ref={usernameInputRef}
-                  style={[s.input]}
-                  placeholderTextColor={colors.textPlaceHolder}
-                  placeholder={user.username}
-                  value={newUsername}
-                  onChangeText={(value) => setNewUsername(value)}
-                  returnKeyType="done" // dernier champ → clavier peut valider
-                  onSubmitEditing={handleEdit} // tu peux lancer l'enregistrement si tu veux
-                />
-                <TouchableOpacity
-                  onPress={() => {
-                    setModalVisible(true);
-                    setOpenFrom("Edit");
-                    setModalMsg("changer ton nom d'utilisateur?");
-                  }}
-                >
-                  <Check size={20} color={colors.textAccent} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    setEditUsername(false);
-                    setNewUsername("");
-                  }}
-                >
-                  <X size={20} color={colors.textGeneral} />
-                </TouchableOpacity>
-              </View>
-            </View>
-          ) : (
-            <TouchableOpacity
-              style={[
-                s.bouton,
-                {
-                  borderBottomColor: colors.textMyMood,
-                  borderBottomWidth: 0.5,
-                },
-              ]}
-              onPress={() => {
-                setEditUsername(true);
-                setTimeout(() => {
-                  usernameInputRef.current?.focus();
-                }, 100);
-              }}
-            >
-              <Text style={s.subtext}>Changer de nom d'utilisateur</Text>
-            </TouchableOpacity>
-          )}
-
-          {editPassword ? (
-            <View style={s.editPassSection}>
-              <Text style={s.textEdit}>Mot de Passe</Text>
-              <View style={s.editPass}>
-                <View>
-                  <TextInput
-                    returnKeyType="next"
-                    onSubmitEditing={() => newPasswordInputRef.current?.focus()}
-                    ref={oldPasswordInputRef}
-                    style={[s.input, { marginLeft: 10 }]}
-                    placeholder="Password"
-                    value={oldPassword}
-                    placeholderTextColor={colors.textPlaceHolder}
-                    onChangeText={(value) => setOldPassword(value)}
-                    secureTextEntry={true}
-                  />
-                  <View
-                    style={{
-                      width: 310,
-                      flexDirection: "row",
-                      justifyContent: "space-around",
-                      alignItems: "center",
-                      paddingRight: 5,
-                      marginBottom: 5,
-                    }}
-                  >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View style={{ flex: 1, width: "100%", alignItems: "center" }}>
+          <View style={s.topPage}>
+            <Text style={s.settings}>Réglages</Text>
+            <Text style={s.message}>{succesMessage}</Text>
+          </View>
+          <View style={s.reglages}>
+            <View style={s.infoUser}>
+              {editUsername ? (
+                <View style={s.editUsernameSection}>
+                  <Text style={s.textEdit}>Nom d'utilisateur</Text>
+                  <View style={s.editUsername}>
                     <TextInput
-                      ref={newPasswordInputRef}
-                      style={s.input}
-                      placeholder="New Password"
+                      ref={usernameInputRef}
+                      style={[s.input]}
                       placeholderTextColor={colors.textPlaceHolder}
-                      value={newPassword}
-                      onChangeText={(value) => setNewPassword(value)}
-                      secureTextEntry={true}
-                      returnKeyType="done" // dernier champ → clavier peut valider
-                      onSubmitEditing={handleEdit} // tu peux lancer l'enregistrement si tu veux
+                      placeholder={user.username}
+                      value={newUsername}
+                      onChangeText={(value) => setNewUsername(value)}
+                      returnKeyType="done"
+                      onSubmitEditing={() =>
+                        openModal(
+                          "Edit",
+                          "changer ton nom d'utilisateur?",
+                          "username"
+                        )
+                      }
+                      selectionColor={colors.textAccent}
                     />
-
                     <TouchableOpacity
                       onPress={() => {
-                        setModalVisible(true);
-                        setOpenFrom("Edit");
-                        setModalMsg("changer ton mot de passe?");
+                        openModal(
+                          "Edit",
+                          "changer ton nom d'utilisateur?",
+                          "username"
+                        );
                       }}
                     >
                       <Check size={20} color={colors.textAccent} />
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() => {
-                        setEditPassword(false);
-                        setNewPassword("");
-                        setOldPassword("");
+                        setEditUsername(false);
+                        setNewUsername("");
                       }}
                     >
                       <X size={20} color={colors.textGeneral} />
                     </TouchableOpacity>
                   </View>
+                  {errorEditUsername && (
+                    <Text
+                      style={[
+                        s.textEdit,
+                        { textAlign: "center", marginBottom: 5 },
+                      ]}
+                    >
+                      {errorEditUsername}
+                    </Text>
+                  )}
                 </View>
-              </View>
-              {errorEdit && (
-                <Text style={[s.textEdit, { textAlign: "center" }]}>
-                  {errorEdit}
-                </Text>
+              ) : (
+                <TouchableOpacity
+                  style={[
+                    s.bouton,
+                    {
+                      borderBottomColor: colors.textMyMood,
+                      borderBottomWidth: 0.5,
+                    },
+                  ]}
+                  onPress={() => {
+                    setEditUsername(true);
+                    setTimeout(() => {
+                      usernameInputRef.current?.focus();
+                    }, 100);
+                  }}
+                >
+                  <Text style={s.subtext}>Changer de nom d'utilisateur</Text>
+                </TouchableOpacity>
+              )}
+
+              {editPassword ? (
+                <View style={s.editPassSection}>
+                  <Text style={s.textEdit}>Mot de Passe</Text>
+                  <View style={s.editPass}>
+                    <View>
+                      <TextInput
+                        returnKeyType="next"
+                        onSubmitEditing={() =>
+                          newPasswordInputRef.current?.focus()
+                        }
+                        ref={oldPasswordInputRef}
+                        style={[s.input, { marginLeft: 10 }]}
+                        placeholder="Password"
+                        value={oldPassword}
+                        placeholderTextColor={colors.textPlaceHolder}
+                        onChangeText={(value) => setOldPassword(value)}
+                        secureTextEntry={true}
+                        selectionColor={colors.textAccent}
+                      />
+                      <View
+                        style={{
+                          width: 310,
+                          flexDirection: "row",
+                          justifyContent: "space-around",
+                          alignItems: "center",
+                          paddingRight: 5,
+                          marginBottom: 5,
+                        }}
+                      >
+                        <TextInput
+                          ref={newPasswordInputRef}
+                          style={s.input}
+                          placeholder="New Password"
+                          placeholderTextColor={colors.textPlaceHolder}
+                          value={newPassword}
+                          onChangeText={(value) => setNewPassword(value)}
+                          secureTextEntry={true}
+                          returnKeyType="done"
+                          onSubmitEditing={() =>
+                            openModal(
+                              "Edit",
+                              "changer ton mot de passe?",
+                              "password"
+                            )
+                          }
+                          selectionColor={colors.textAccent}
+                        />
+
+                        <TouchableOpacity
+                          onPress={() => {
+                            openModal(
+                              "Edit",
+                              "changer ton mot de passe?",
+                              "password"
+                            );
+                          }}
+                        >
+                          <Check size={20} color={colors.textAccent} />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={() => {
+                            setEditPassword(false);
+                            setNewPassword("");
+                            setOldPassword("");
+                          }}
+                        >
+                          <X size={20} color={colors.textGeneral} />
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </View>
+                  {errorEditPassword && (
+                    <Text style={[s.textEdit, { textAlign: "center" }]}>
+                      {errorEditPassword}
+                    </Text>
+                  )}
+                </View>
+              ) : (
+                <TouchableOpacity
+                  style={s.bouton}
+                  onPress={() => {
+                    setEditPassword(true);
+                    setTimeout(() => {
+                      oldPasswordInputRef.current?.focus();
+                    }, 100);
+                  }}
+                >
+                  <Text style={s.subtext}>Changer de mot de passe</Text>
+                </TouchableOpacity>
               )}
             </View>
-          ) : (
-            <TouchableOpacity
-              style={s.bouton}
-              onPress={() => {
-                setEditPassword(true);
-                setTimeout(() => {
-                  oldPasswordInputRef.current?.focus();
-                }, 100);
-              }}
-            >
-              <Text style={s.subtext}>Changer de mot de passe</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-        <View style={s.mode}>
-          <View
-            style={[
-              s.bouton,
-              {
-                borderBottomColor: colors.textMyMood,
-                borderBottomWidth: 0.5,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                paddingRight: 15,
-              },
-            ]}
-          >
-            <Text style={s.subtext}>Notifications</Text>
-            <Switch
-              style={{ marginTop: 10 }}
-              value={notificationsEnabled}
-              trackColor={
-                theme === "dark"
-                  ? { false: "#767577", true: "#2e3034ff" }
-                  : { false: "#767577", true: "#A48A97" }
-              }
-              thumbColor={theme === "dark" ? "#A48A97" : "#f4f3f4"}
-              onValueChange={toggleNotifications}
-            ></Switch>
+            <View style={s.mode}>
+              <View
+                style={[
+                  s.bouton,
+                  {
+                    borderBottomColor: colors.textMyMood,
+                    borderBottomWidth: 0.5,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    paddingRight: 15,
+                  },
+                ]}
+              >
+                <Text style={s.subtext}>Notifications</Text>
+                <Switch
+                  style={{ marginTop: 10 }}
+                  value={notificationsEnabled}
+                  trackColor={
+                    theme === "dark"
+                      ? { false: "#767577", true: "#2e3034ff" }
+                      : { false: "#767577", true: "#A48A97" }
+                  }
+                  thumbColor={theme === "dark" ? "#A48A97" : "#f4f3f4"}
+                  onValueChange={toggleNotifications}
+                ></Switch>
+              </View>
+              <View
+                style={[
+                  s.bouton,
+                  {
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    paddingRight: 15,
+                  },
+                ]}
+              >
+                <Text style={s.subtext}>Mode sombre</Text>
+                <Switch
+                  onValueChange={toggleTheme}
+                  value={theme === "dark"}
+                  style={{ marginTop: 10 }}
+                  trackColor={{ false: "#767577", true: "#2e3034ff" }}
+                  thumbColor={theme === "dark" ? "#A48A97" : "#f4f3f4"}
+                ></Switch>
+              </View>
+            </View>
+            <View style={s.quitte}>
+              <TouchableOpacity
+                style={[
+                  s.bouton,
+                  {
+                    borderBottomColor: colors.textMyMood,
+                    borderBottomWidth: 0.5,
+                  },
+                ]}
+                onPress={() => {
+                  openModal("LogOut", "te déconnecter?");
+                }}
+              >
+                <Text style={s.subtext}>Me déconnecter</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[s.bouton]}
+                onPress={() => {
+                  openModal("Delete", "supprimer ton compte?");
+                }}
+              >
+                <Text style={[s.subtext, { color: colors.textAccent }]}>
+                  Supprimer mon compte
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <View
-            style={[
-              s.bouton,
-              {
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                paddingRight: 15,
-              },
-            ]}
-          >
-            <Text style={s.subtext}>Mode sombre</Text>
-            <Switch
-              onValueChange={toggleTheme}
-              value={theme === "dark"}
-              style={{ marginTop: 10 }}
-              trackColor={{ false: "#767577", true: "#2e3034ff" }}
-              thumbColor={theme === "dark" ? "#A48A97" : "#f4f3f4"}
-            ></Switch>
-          </View>
+          <Text>{error}</Text>
         </View>
-        <View style={s.quitte}>
-          <TouchableOpacity
-            style={[
-              s.bouton,
-              { borderBottomColor: colors.textMyMood, borderBottomWidth: 0.5 },
-            ]}
-            onPress={() => {
-              setModalVisible(true);
-              setOpenFrom("LogOut");
-              setModalMsg("te déconnecter?");
-            }}
-          >
-            <Text style={s.subtext}>Se déconnecter</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[s.bouton]}
-            onPress={() => {
-              setModalVisible(true);
-              setOpenFrom("Delete");
-              setModalMsg("supprimer ton compte?");
-            }}
-          >
-            <Text style={[s.subtext, { color: colors.textAccent }]}>
-              Supprimer son compte
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-      <Text>{error}</Text>
+      </TouchableWithoutFeedback>
     </SafeAreaView>
   );
 }
@@ -399,7 +457,6 @@ const styles = (colors) =>
       borderBottomWidth: 0.5,
       borderColor: colors.textMyMood,
       marginTop: 5,
-      height: 80,
     },
     textEdit: {
       color: colors.textAccent,

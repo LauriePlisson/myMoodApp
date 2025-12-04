@@ -209,6 +209,7 @@ export default function HomeScreen({ navigation }) {
                   placeholder="Ajoute un commentaire..."
                   placeholderTextColor={colors.textPlaceHolder}
                   value={note}
+                  selectionColor={colors.textAccent}
                   onChangeText={(value) => setNote(value)}
                   ref={commentInputRef}
                   returnKeyType="done"
