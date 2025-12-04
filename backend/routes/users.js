@@ -78,7 +78,7 @@ router.post("/auth/login", async (req, res) => {
 router.delete("/delete", protect, async (req, res) => {
   try {
     const userId = req.user._id;
-    await Mood.deleteMany({ user: userId });
+    await Mood.deleteMany({ userId: userId });
     await User.findByIdAndDelete(userId);
     return res
       .status(200)
