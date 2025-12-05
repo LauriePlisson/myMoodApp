@@ -1,4 +1,11 @@
-import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { useEffect, useState, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import MoodModal from "../components/MoodModal";
@@ -126,134 +133,140 @@ export default function HistoryScreen() {
   }
 
   return (
-    <View style={s.container}>
-      <Text style={s.title}>Tes Moods</Text>
-      <MoodModal
-        setModalVisible={setModalVisible}
-        visible={modalVisible}
-        date={selectedDate}
-        selectedMood={selectedMood}
-      />
-      <View style={s.centre}>
-        <View style={s.options}>
-          <TouchableOpacity
-            style={[
-              s.option,
-              viewCalendar
-                ? { backgroundColor: colors.buttonBackground }
-                : { backgroundColor: colors.whiteBlack },
-            ]}
-            onPress={() => {
-              setViewCalendar(true), setDisplayMood(false);
-            }}
-          >
-            <Text
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={s.container}>
+        <Text style={s.title}>Tes Moods</Text>
+        <MoodModal
+          setModalVisible={setModalVisible}
+          visible={modalVisible}
+          selectedMood={selectedMood}
+          date={selectedMood ? selectedMood.dateString : selectedDate}
+          setMoodsByYear={setMoodsByYear}
+        />
+        <View style={s.centre}>
+          <View style={s.options}>
+            <TouchableOpacity
               style={[
-                s.textOption,
+                s.option,
                 viewCalendar
-                  ? { color: colors.whiteBlack, fontWeight: "500" }
-                  : { color: colors.textGeneral },
+                  ? { backgroundColor: colors.buttonBackground }
+                  : { backgroundColor: colors.whiteBlack },
               ]}
+              onPress={() => {
+                setViewCalendar(true), setDisplayMood(false);
+              }}
             >
-              Calendrier
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              s.option,
-              !viewCalendar
-                ? { backgroundColor: colors.buttonBackground }
-                : { backgroundColor: colors.whiteBlack },
-            ]}
-            onPress={() => {
-              setViewCalendar(false),
-                setDisplayMood(false),
-                setPeriod("mois"),
-                setSelectedDate(new Date());
-            }}
-          >
-            <Text
+              <Text
+                style={[
+                  s.textOption,
+                  viewCalendar
+                    ? { color: colors.whiteBlack, fontWeight: "500" }
+                    : { color: colors.textGeneral },
+                ]}
+              >
+                Calendrier
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
               style={[
-                s.textOption,
+                s.option,
                 !viewCalendar
-                  ? { color: colors.whiteBlack, fontWeight: "500" }
-                  : { color: colors.textGeneral },
+                  ? { backgroundColor: colors.buttonBackground }
+                  : { backgroundColor: colors.whiteBlack },
               ]}
+              onPress={() => {
+                setViewCalendar(false),
+                  setDisplayMood(false),
+                  setPeriod("mois"),
+                  setSelectedDate(new Date());
+              }}
             >
-              Graphique
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <View style={[s.display, viewCalendar ? { marginTop: 10 } : null]}>
-          {viewCalendar ? (
-            <MoodCalendar
-              moods={moodsByYear}
-              loadYear={loadYear}
-              selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}
-              setModalVisible={setModalVisible}
-              setSelectedMood={setSelectedMood}
-              selectedMood={selectedMood}
-            />
-          ) : (
-            <>
-              <View style={s.filtres}>
-                <TouchableOpacity
-                  style={[s.filtre]}
-                  onPress={() => {
-                    setPeriod("mois"),
-                      setSelectedDate(new Date()),
-                      setDisplayMood(false);
-                  }}
-                >
-                  <Text
-                    style={
-                      period === "mois"
-                        ? {
-                            color: colors.buttonBackground,
-                            fontWeight: "bold",
-                            letterSpacing: 0.2,
-                          }
-                        : { color: colors.textGeneral }
-                    }
-                  >
-                    Mois
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[s.filtre]}
-                  onPress={() => {
-                    setPeriod("annee"),
-                      setSelectedDate(new Date()),
-                      setDisplayMood(false);
-                  }}
-                >
-                  <Text
-                    style={
-                      period === "annee"
-                        ? { color: colors.buttonBackground, fontWeight: "bold" }
-                        : { color: colors.textGeneral }
-                    }
-                  >
-                    Année
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <MoodGraf
-                moods={dataForChart}
+              <Text
+                style={[
+                  s.textOption,
+                  !viewCalendar
+                    ? { color: colors.whiteBlack, fontWeight: "500" }
+                    : { color: colors.textGeneral },
+                ]}
+              >
+                Graphique
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View style={[s.display, viewCalendar ? { marginTop: 10 } : null]}>
+            {viewCalendar ? (
+              <MoodCalendar
+                moods={moodsByYear}
                 loadYear={loadYear}
-                period={period}
-                displayMood={displayMood}
-                setDisplayMood={setDisplayMood}
-                setPeriod={setPeriod}
                 selectedDate={selectedDate}
                 setSelectedDate={setSelectedDate}
+                setModalVisible={setModalVisible}
+                setSelectedMood={setSelectedMood}
+                selectedMood={selectedMood}
               />
-            </>
-          )}
+            ) : (
+              <>
+                <View style={s.filtres}>
+                  <TouchableOpacity
+                    style={[s.filtre]}
+                    onPress={() => {
+                      setPeriod("mois"),
+                        setSelectedDate(new Date()),
+                        setDisplayMood(false);
+                    }}
+                  >
+                    <Text
+                      style={
+                        period === "mois"
+                          ? {
+                              color: colors.buttonBackground,
+                              fontWeight: "bold",
+                              letterSpacing: 0.2,
+                            }
+                          : { color: colors.textGeneral }
+                      }
+                    >
+                      Mois
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[s.filtre]}
+                    onPress={() => {
+                      setPeriod("annee"),
+                        setSelectedDate(new Date()),
+                        setDisplayMood(false);
+                    }}
+                  >
+                    <Text
+                      style={
+                        period === "annee"
+                          ? {
+                              color: colors.buttonBackground,
+                              fontWeight: "bold",
+                            }
+                          : { color: colors.textGeneral }
+                      }
+                    >
+                      Année
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <MoodGraf
+                  moods={dataForChart}
+                  loadYear={loadYear}
+                  period={period}
+                  displayMood={displayMood}
+                  setDisplayMood={setDisplayMood}
+                  setPeriod={setPeriod}
+                  selectedDate={selectedDate}
+                  setSelectedDate={setSelectedDate}
+                />
+              </>
+            )}
+          </View>
         </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 const styles = (colors) =>

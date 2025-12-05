@@ -17,9 +17,10 @@ export default function MoodCalendar({
   setSelectedDate,
   loadYear,
   setModalVisible,
+  setSelectedMood,
+  selectedMood,
 }) {
   const [displayMood, setDisplayMood] = useState(false);
-  const [selectedMood, setSelectedMood] = useState({});
   const [selectedDateString, setSelectedDateString] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const { theme, colors } = useTheme();
