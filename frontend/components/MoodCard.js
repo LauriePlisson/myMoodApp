@@ -101,6 +101,19 @@ export default function MoodCard({
           <Text style={{ color: colors.textGeneral }}>
             Pas de donnée pour ce {period === "annee" ? "mois" : "jour"}
           </Text>
+          {selectedMood.past && !selectedMood.future && (
+            <TouchableOpacity
+              style={s.addButton}
+              onPress={() => {
+                // setDisplayMood(false);
+                // Ici tu ouvres ta modal d’ajout
+                // Exemple :
+                // openModal("calendar", "Ajouter un mood", "addMood", selectedMood.dateString);
+              }}
+            >
+              <Text style={s.addButtonText}>Ajouter un mood</Text>
+            </TouchableOpacity>
+          )}
         </View>
       )}
     </View>

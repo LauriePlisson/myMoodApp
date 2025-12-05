@@ -33,6 +33,7 @@ export default function HomeScreen({ navigation }) {
   const commentInputRef = useRef(null);
 
   useEffect(() => {
+    console.log(user.token);
     if (!user.isLoggedIn) {
       setMoodOfTheDay(null);
       setMoodValue("05");

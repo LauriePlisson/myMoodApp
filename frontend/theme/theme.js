@@ -34,6 +34,7 @@ export const darkTheme = {
     textAccent: "#a37794ff",
     textMyMood: "#A48A97",
     textGeneral: "#706d75ff",
+    textPlaceHolder: "#727272a9",
     whiteBlack: "black",
     whiteWhite: "white",
     number: "#a37794ff",
