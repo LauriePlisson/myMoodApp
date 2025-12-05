@@ -92,9 +92,14 @@ export default function MoodCard({
           )}
         </View>
       ) : (
-        <View style={s.noData}>
+        <View style={[s.noData]}>
           <Text style={{ color: colors.textGeneral }}>
-            Pas de donnée pour ce {period === "annee" ? "mois" : "jour"}
+            Pas de donnée pour{" "}
+            {period === "mois" && selectedMood.date
+              ? `le ${selectedMood.date}`
+              : period === "annee"
+              ? "ce mois"
+              : "ce jour"}
           </Text>
           {selectedMood.past && !selectedMood.future && (
             <TouchableOpacity
