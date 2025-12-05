@@ -7,6 +7,7 @@ import { persistStore, persistReducer } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import user from "./reducers/user";
+import moods from "./reducers/moods";
 import WelcomeScreen from "./screens/WelcomeScreen";
 import HomeScreen from "./screens/HomeScreen";
 import HistoryScreen from "./screens/HistoryScreen";
@@ -16,17 +17,23 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { useTheme } from "./context/ThemeContext";
 import ThemedSettingsStack from "./components/ThemedSettingsStack";
 import { NotificationProvider } from "./context/NotificationContext";
-import { useEffect } from "react";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-const reducers = combineReducers({ user });
+
 const persistConfig = { key: "MyMood", storage: AsyncStorage };
+
+const reducers = combineReducers({
+  user: persistReducer(persistConfig, user),
+  moods, // <-- ne persiste pas
+});
+
 const store = configureStore({
-  reducer: persistReducer(persistConfig, reducers),
+  reducer: reducers,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }),
 });
+
 const persistor = persistStore(store);
 
 const TabNavigator = ({ navigation }) => {
