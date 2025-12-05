@@ -6,7 +6,7 @@ import MoodCalendar from "../components/MoodCalendar";
 import MoodGraf from "../components/MoodGraf";
 import { useSelector, useDispatch } from "react-redux";
 import { useTheme } from "../context/ThemeContext";
-import { setMoodsByYear } from "../reducers/moods";
+import { setMoodsByYear, resetMoods } from "../reducers/moods";
 
 export default function HistoryScreen() {
   const [displayMood, setDisplayMood] = useState(false);
@@ -28,13 +28,11 @@ export default function HistoryScreen() {
       //recharge l'année en cours au focus
       const year = selectedDate.getFullYear();
       loadYear(year);
-    }, [selectedDate])
+    }, [])
   );
 
   //fonction fetch moods année
   const loadYear = async (year) => {
-    if (moodsByYear[year]) return;
-
     const start = `${year}-01-01`;
     const end = `${year}-12-31`;
 
@@ -50,19 +48,14 @@ export default function HistoryScreen() {
     );
 
     const data = await res.json();
-    // ajout de l'année chargé et ses moods aux années déjà chargées
 
-    dispatch(
-      setMoodsByYear({
-        [year]: data.moods,
-      })
-    );
+    dispatch(setMoodsByYear({ [year]: data.moods }));
   };
 
   useEffect(() => {
     //si l'utilisateur se déconnecte: clean les moods
     if (!user.isLoggedIn) {
-      setMoodsByYear({});
+      dispatch(resetMoods());
       setDisplayMood(false);
       return;
     }

@@ -91,34 +91,17 @@ export default function MoodModal({
     });
 
     if (success) {
-      const targetDate = selectedMood.dateString;
-      setMoodsByYear((prev) => {
-        const year = targetDate.split("-")[0];
-        const moodsForYear = prev[year] ? [...prev[year]] : [];
+      // ⚡ Met à jour le store Redux correctement
+      dispatch(updateMoodInYear({ mood }));
 
-        const index = moodsForYear.findIndex((m) => m.date === targetDate);
-        if (index !== -1) moodsForYear[index] = mood;
-        else moodsForYear.push(mood);
-
-        return { ...prev, [year]: moodsForYear };
-      });
-
-      const parseDate = (str) => {
-        const [day, month, year] = str.split("/");
-        return new Date(year, month - 1, day);
-      };
-
+      // si c'est le mood du jour
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-
-      const moodDate = parseDate(selectedMood.date);
+      const moodDate = new Date(selectedMood.dateString);
       moodDate.setHours(0, 0, 0, 0);
-
-      const isToday = moodDate.getTime() === today.getTime();
-      if (isToday) {
+      if (moodDate.getTime() === today.getTime()) {
         dispatch(setMoodOfTheDay(mood));
       }
-      dispatch(updateMoodInYear({ mood }));
 
       dispatch(
         setSelectedMood({

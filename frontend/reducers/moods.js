@@ -38,6 +38,11 @@ export const moodsSlice = createSlice({
         ...action.payload, // ajoute/écrase l'année courante
       };
     },
+    resetMoods: (state) => {
+      state.moodsByYear = {};
+      state.selectedMood = null;
+      state.moodOfTheDay = null;
+    },
   },
 });
 
@@ -48,5 +53,6 @@ export const {
   resetMoodOfTheDay,
   updateMoodInYear,
   setMoodsByYear,
+  resetMoods,
 } = moodsSlice.actions;
 export default moodsSlice.reducer;
