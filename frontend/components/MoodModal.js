@@ -9,7 +9,7 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Check } from "lucide-react-native";
 import { saveMoodAPI } from "../utils/moodAPI";
 import { useTheme } from "../context/ThemeContext";
@@ -22,12 +22,22 @@ export default function MoodModal({
   setMoodsByYear,
 }) {
   const [moodValue, setMoodValue] = useState("5".padStart(2, "0"));
-  const [moodOfTheDay, setMoodOfTheDay] = useState(null);
   const [note, setNote] = useState("");
 
   const user = useSelector((state) => state.user.value);
   const { colors } = useTheme();
   const s = styles(colors);
+
+  useEffect(() => {
+    if (selectedMood) {
+      setMoodValue(
+        selectedMood.value !== null
+          ? String(selectedMood.value).padStart(2, "0")
+          : "05"
+      );
+      setNote(selectedMood.note || "");
+    }
+  }, [selectedMood, visible]);
 
   const reset = () => {
     setNote("");
@@ -68,10 +78,10 @@ export default function MoodModal({
 
     const { mood, success } = await saveMoodAPI({
       userToken: user.token,
-      existingMood: moodOfTheDay,
+      existingMood: selectedMood?.fullMood || null,
       moodValue: finalValue,
       note,
-      date,
+      date: selectedMood.dateString,
     });
 
     if (success) {
@@ -195,7 +205,7 @@ const styles = (colors) =>
       width: 90,
       fontSize: 40,
       textAlign: "center",
-      color: colors.textGeneral,
+      color: colors.number,
       paddingVertical: 5,
       borderRadius: 8,
     },

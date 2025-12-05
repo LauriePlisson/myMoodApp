@@ -120,6 +120,7 @@ export default function MoodCalendar({
         past: isPast,
         future: isFuture,
         dateString,
+        fullMood: null,
       });
     } else
       setSelectedMood({
@@ -129,6 +130,7 @@ export default function MoodCalendar({
         past: isPast,
         future: isFuture,
         dateString,
+        fullMood: mood,
       });
     setDisplayMood(true);
   };
@@ -217,6 +219,7 @@ export default function MoodCalendar({
           period={"mois"}
           setSelectedDateString={setSelectedDateString}
           setModalVisible={setModalVisible}
+          isCalendar={true}
         />
       )}
     </>

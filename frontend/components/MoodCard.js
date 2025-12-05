@@ -13,6 +13,7 @@ export default function MoodCard({
   period,
   setSelectedDateString,
   setModalVisible,
+  isCalendar,
 }) {
   const { theme, colors } = useTheme();
   const s = styles(colors);
@@ -68,9 +69,16 @@ export default function MoodCard({
             <Text style={{ color: "transparent" }}>Moyenne:</Text>
           </View>
           {period === "mois" ? (
-            <View style={s.comSection}>
-              <Text style={s.com}>{selectedMood.note}</Text>
-            </View>
+            <>
+              <View style={s.comSection}>
+                <Text style={s.com}>{selectedMood.note}</Text>
+              </View>
+              {isCalendar && (
+                <TouchableOpacity onPress={() => setModalVisible(true)}>
+                  <Text>Modifier le Mood</Text>
+                </TouchableOpacity>
+              )}
+            </>
           ) : (
             <View style={[s.sectionCard, s.acces]}>
               <TouchableOpacity
