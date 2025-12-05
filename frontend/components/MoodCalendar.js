@@ -3,6 +3,8 @@ import { View, Text, StyleSheet } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { useFocusEffect } from "@react-navigation/native";
 import { useState, useCallback, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setSelectedMood } from "../reducers/moods";
 import {
   getColorFromMoodValue,
   getColorBackgroundFromMoodValue,
@@ -17,14 +19,15 @@ export default function MoodCalendar({
   setSelectedDate,
   loadYear,
   setModalVisible,
-  setSelectedMood,
-  selectedMood,
 }) {
   const [displayMood, setDisplayMood] = useState(false);
   const [selectedDateString, setSelectedDateString] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const { theme, colors } = useTheme();
   const s = styles(colors);
+
+  const dispatch = useDispatch();
+  const selectedMood = useSelector((state) => state.moods.selectedMood);
 
   const isFocused = useIsFocused();
   useEffect(() => {
@@ -34,6 +37,10 @@ export default function MoodCalendar({
       setSelectedDateString("");
     }
   }, [isFocused]);
+
+  useEffect(() => {
+    setRefreshKey((prev) => prev + 1);
+  }, [moods]);
 
   const year = selectedDate.getFullYear();
   const moodsForCalendar = moods[year] || [];
@@ -112,29 +119,32 @@ export default function MoodCalendar({
       moodLocal.setHours(0, 0, 0, 0);
       return moodLocal.getTime() === selectedLocal.getTime();
     });
-    if (!mood) {
-      setSelectedMood({
-        value: null,
-        date: formatDate(dateString),
-        note: "",
-        past: isPast,
-        future: isFuture,
-        dateString,
-        fullMood: null,
-      });
-    } else
-      setSelectedMood({
-        value: mood.moodValue,
-        date: formatDate(mood.date),
-        note: mood.note,
-        past: isPast,
-        future: isFuture,
-        dateString,
-        fullMood: mood,
-      });
-    setDisplayMood(true);
-  };
 
+    // FORCER le dispatch même si c’est le même jour/même valeur
+    const newSelectedMood = mood
+      ? {
+          value: mood.moodValue,
+          date: formatDate(mood.date),
+          note: mood.note,
+          past: isPast,
+          future: isFuture,
+          dateString,
+          fullMood: mood,
+        }
+      : {
+          value: null,
+          date: formatDate(dateString),
+          note: "",
+          past: isPast,
+          future: isFuture,
+          dateString,
+          fullMood: null,
+        };
+
+    dispatch(setSelectedMood({ ...newSelectedMood, __force: Math.random() }));
+    setDisplayMood(true);
+    setSelectedDateString(dateString);
+  };
   LocaleConfig.locales["fr"] = {
     monthNames: [
       "Janvier",
@@ -214,7 +224,6 @@ export default function MoodCalendar({
       />
       {displayMood && (
         <MoodCard
-          selectedMood={selectedMood}
           setDisplayMood={setDisplayMood}
           period={"mois"}
           setSelectedDateString={setSelectedDateString}

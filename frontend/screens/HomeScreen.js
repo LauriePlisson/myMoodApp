@@ -10,7 +10,8 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 import Slider from "@react-native-community/slider";
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setMoodOfTheDay } from "../reducers/moods";
 import { saveMoodAPI } from "../utils/moodAPI";
 import { Check, X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
@@ -18,7 +19,7 @@ import { useTheme } from "../context/ThemeContext";
 export default function HomeScreen({ navigation }) {
   const [editingMood, setEditingMood] = useState(false);
   const [moodValue, setMoodValue] = useState("05");
-  const [moodOfTheDay, setMoodOfTheDay] = useState(null);
+
   const [backupMoodValue, setBackupMoodValue] = useState(null);
   const [backupNote, setBackupNote] = useState(null);
   const [succesMessage, setSuccesMessage] = useState("");
@@ -28,15 +29,15 @@ export default function HomeScreen({ navigation }) {
   const { colors } = useTheme();
   const s = styles(colors);
 
+  const moodOfTheDay = useSelector((state) => state.moods.moodOfTheDay);
   const user = useSelector((state) => state.user.value);
   const API_URL = process.env.EXPO_PUBLIC_API_URL;
+  const dispatch = useDispatch();
 
   const commentInputRef = useRef(null);
 
   useEffect(() => {
-    // console.log(user.token);
     if (!user.isLoggedIn) {
-      setMoodOfTheDay(null);
       setMoodValue("05");
       setNote("");
       return;
@@ -53,7 +54,7 @@ export default function HomeScreen({ navigation }) {
         const data = await res.json();
 
         if (data.result && data.mood) {
-          setMoodOfTheDay(data.mood);
+          dispatch(setMoodOfTheDay(data.mood));
           setMoodValue(data.mood.moodValue.toString());
           setNote(data.mood.note || "");
         }
@@ -62,18 +63,13 @@ export default function HomeScreen({ navigation }) {
       }
     };
     fetchToday();
-    // console.log("Render moods component");
-    // console.log("User actuel:", user);
-    // console.log("Moods actuels:", moodOfTheDay);
   }, [user]);
 
   useFocusEffect(
     useCallback(() => {
       if (moodOfTheDay) {
         updateMoodStates(moodOfTheDay);
-        setEditingMood(false);
       } else {
-        setMoodOfTheDay(null);
         setEditingMood(true);
         setMoodValue("05");
         setNote("");
@@ -105,7 +101,7 @@ export default function HomeScreen({ navigation }) {
   };
 
   const updateMoodStates = (mood) => {
-    setMoodOfTheDay(mood);
+    dispatch(setMoodOfTheDay(mood));
     setMoodValue(mood.moodValue.toString());
     setNote(mood.note || "");
     setEditingMood(false);

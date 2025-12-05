@@ -8,7 +8,8 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setSelectedMood, setMoodOfTheDay } from "../reducers/moods";
 import { useState, useEffect } from "react";
 import { X, Check } from "lucide-react-native";
 import { saveMoodAPI } from "../utils/moodAPI";
@@ -18,12 +19,13 @@ export default function MoodModal({
   visible,
   setModalVisible,
   date,
-  selectedMood,
   setMoodsByYear,
 }) {
   const [moodValue, setMoodValue] = useState("5".padStart(2, "0"));
   const [note, setNote] = useState("");
 
+  const selectedMood = useSelector((state) => state.moods.selectedMood);
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
   const { colors } = useTheme();
   const s = styles(colors);
@@ -89,22 +91,47 @@ export default function MoodModal({
         const year = new Date(date).getFullYear();
         const moodsForYear = prev[year] ? [...prev[year]] : [];
         const index = moodsForYear.findIndex((m) => m.date === date);
-        if (index !== -1) moodsForYear[index] = mood;
-        else moodsForYear.push(mood);
+
+        const newMood = { ...mood }; // clone
+
+        if (index !== -1) moodsForYear[index] = newMood;
+        else moodsForYear.push(newMood);
 
         return { ...prev, [year]: moodsForYear };
       });
 
+      const parseDate = (str) => {
+        const [day, month, year] = str.split("/");
+        return new Date(year, month - 1, day);
+      };
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const moodDate = parseDate(selectedMood.date);
+      moodDate.setHours(0, 0, 0, 0);
+
+      const isToday = moodDate.getTime() === today.getTime();
+      if (isToday) {
+        // console.log("SET MOOD OF THE DAY", {
+        //   value: mood.moodValue,
+        //   note: mood.note,
+        //   fullMood: mood,
+        // });
+        dispatch(setMoodOfTheDay(mood));
+      }
+      dispatch(
+        setSelectedMood({
+          ...selectedMood,
+          value: mood.moodValue,
+          note: mood.note,
+          fullMood: mood,
+        })
+      );
       setModalVisible(false);
       reset();
     }
   };
-
-  const formattedDate = new Date(date).toLocaleDateString("fr-FR", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
 
   return (
     <Modal animationType="fade" transparent={true} visible={visible}>

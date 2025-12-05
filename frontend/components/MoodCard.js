@@ -3,12 +3,13 @@ import {
   getColorFromMoodValue,
   getColorBackgroundFromMoodValue,
 } from "../utils/moodColors";
+import { useSelector, useDispatch } from "react-redux";
+import { setSelectedMood } from "../reducers/moods";
 import { X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
 
 export default function MoodCard({
   setDisplayMood,
-  selectedMood,
   handleVoirMois,
   period,
   setSelectedDateString,
@@ -17,6 +18,9 @@ export default function MoodCard({
 }) {
   const { theme, colors } = useTheme();
   const s = styles(colors);
+
+  const selectedMood = useSelector((state) => state.moods.selectedMood);
+  const dispatch = useDispatch();
 
   return (
     <View
@@ -42,6 +46,7 @@ export default function MoodCard({
         <TouchableOpacity
           onPress={() => {
             setDisplayMood(false);
+            dispatch(setSelectedMood({}));
             if (setSelectedDateString) setSelectedDateString("");
           }}
         >

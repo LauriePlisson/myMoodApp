@@ -1,4 +1,3 @@
-import React from "react";
 import {
   View,
   Text,
@@ -11,6 +10,8 @@ import { useIsFocused } from "@react-navigation/native";
 import { LineChart } from "react-native-gifted-charts";
 import { ChevronLeft, ChevronRight, X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
+import { useSelector, useDispatch } from "react-redux";
+import { setSelectedMood } from "../reducers/moods";
 import {
   getColorFromMoodValue,
   getColorBackgroundFromMoodValue,
@@ -27,14 +28,17 @@ export default function MoodGrafGifted({
   setDisplayMood,
   loadYear,
 }) {
-  const [selectedMood, setSelectedMood] = useState({});
   const { colors } = useTheme();
   const s = styles(colors);
 
+  const dispatch = useDispatch();
   const isFocused = useIsFocused();
+  const selectedMood = useSelector((state) => state.moods.selectedMood);
+  const selectedMoodValue = selectedMood?.value ?? 0;
 
   useEffect(() => {
     if (!isFocused) {
+      dispatch(setSelectedMood({}));
       // l'écran n'est plus actif → on ferme la MoodCard
       setDisplayMood(false);
     }
@@ -98,34 +102,42 @@ export default function MoodGrafGifted({
     const month = moisEnLettre(mood.label);
     if (period === "annee") {
       if (mood.label) {
-        setSelectedMood({
-          label: `${month}`,
-          value: mood.value,
-          month: mood.label,
-          date: `${month}`,
-          note: "",
-        });
+        dispatch(
+          setSelectedMood({
+            label: `${month}`,
+            value: mood.value,
+            month: mood.label,
+            date: `${month}`,
+            note: "",
+          })
+        );
       } else {
-        setSelectedMood({
-          value: null,
-        });
+        dispatch(
+          setSelectedMood({
+            value: null,
+          })
+        );
       }
     }
     if (period === "mois") {
       if (mood.fullMood) {
-        setSelectedMood({
-          value: mood.value,
-          label: mood.label,
-          date: formatDate(mood.fullMood.date),
-          note: mood.fullMood.note,
-        });
+        dispatch(
+          setSelectedMood({
+            value: mood.value,
+            label: mood.label,
+            date: formatDate(mood.fullMood.date),
+            note: mood.fullMood.note,
+          })
+        );
       } else {
-        setSelectedMood({
-          value: null,
-          label: mood.label,
-          date: null,
-          note: null,
-        });
+        dispatch(
+          setSelectedMood({
+            value: null,
+            label: mood.label,
+            date: null,
+            note: null,
+          })
+        );
 
         return;
       }
@@ -141,6 +153,11 @@ export default function MoodGrafGifted({
     data[i].value = 0;
   }
   const trimmedData = data.slice(0, lastIndex + 1);
+  const clonedData = trimmedData.map((d) => ({
+    ...d,
+    fullMood: d.fullMood ? { ...d.fullMood } : null,
+  }));
+
   const chartWidth = 290;
   const spacing = chartWidth / (data.length - 1);
 
@@ -213,7 +230,7 @@ export default function MoodGrafGifted({
       </View>
       <View style={s.grafContainer}>
         <LineChart
-          data={trimmedData}
+          data={clonedData}
           height={220}
           width={chartWidth}
           spacing={spacing}
@@ -250,13 +267,12 @@ export default function MoodGrafGifted({
           dataPointLabelRadius={15}
           dataPointsColor={colors.dotColor}
           focusEnabled={true}
-          focusedDataPointColor={getColorFromMoodValue(selectedMood.value)} // couleur a changer
+          focusedDataPointColor={getColorFromMoodValue(selectedMoodValue)} // couleur a changer
           onFocus={(mood) => handleFocus(mood)}
         />
       </View>
       {displayMood && (
         <MoodCard
-          selectedMood={selectedMood}
           period={period}
           selectedDate={selectedDate}
           handleVoirMois={handleVoirMois}
