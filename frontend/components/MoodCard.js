@@ -4,6 +4,7 @@ import {
   getColorBackgroundFromMoodValue,
 } from "../utils/moodColors";
 import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
 import { setSelectedMood } from "../reducers/moods";
 import { X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
@@ -119,10 +120,6 @@ export default function MoodCard({
               style={s.addButton}
               onPress={() => {
                 setModalVisible(true);
-                // setDisplayMood(false);
-                // Ici tu ouvres ta modal d’ajout
-                // Exemple :
-                // openModal("calendar", "Ajouter un mood", "addMood", selectedMood.dateString);
               }}
             >
               <Text style={s.addButtonText}>Ajouter un mood</Text>

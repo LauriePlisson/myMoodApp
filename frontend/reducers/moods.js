@@ -22,6 +22,22 @@ export const moodsSlice = createSlice({
     resetMoodOfTheDay: (state) => {
       state.moodOfTheDay = null;
     },
+    updateMoodInYear: (state, action) => {
+      const { mood } = action.payload;
+      const year = new Date(mood.date).getFullYear();
+      if (!state.moodsByYear[year]) state.moodsByYear[year] = [];
+      const index = state.moodsByYear[year].findIndex(
+        (m) => m.date === mood.date
+      );
+      if (index !== -1) state.moodsByYear[year][index] = mood;
+      else state.moodsByYear[year].push(mood);
+    },
+    setMoodsByYear: (state, action) => {
+      state.moodsByYear = {
+        ...state.moodsByYear, // conserve les années déjà chargées
+        ...action.payload, // ajoute/écrase l'année courante
+      };
+    },
   },
 });
 
@@ -30,5 +46,7 @@ export const {
   setMoodOfTheDay,
   unSelectMood,
   resetMoodOfTheDay,
+  updateMoodInYear,
+  setMoodsByYear,
 } = moodsSlice.actions;
 export default moodsSlice.reducer;

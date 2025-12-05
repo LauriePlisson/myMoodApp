@@ -4,11 +4,11 @@ import { useFocusEffect } from "@react-navigation/native";
 import MoodModal from "../components/MoodModal";
 import MoodCalendar from "../components/MoodCalendar";
 import MoodGraf from "../components/MoodGraf";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useTheme } from "../context/ThemeContext";
+import { setMoodsByYear } from "../reducers/moods";
 
 export default function HistoryScreen() {
-  const [moodsByYear, setMoodsByYear] = useState({});
   const [displayMood, setDisplayMood] = useState(false);
   const [viewCalendar, setViewCalendar] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
@@ -16,8 +16,10 @@ export default function HistoryScreen() {
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const user = useSelector((state) => state.user.value);
+  const moodsByYear = useSelector((state) => state.moods.moodsByYear);
   const selectedMood = useSelector((state) => state.moods.selectedMood);
   const API_URL = process.env.EXPO_PUBLIC_API_URL;
+  const dispatch = useDispatch();
   const { colors } = useTheme();
   const s = styles(colors);
 
@@ -49,10 +51,12 @@ export default function HistoryScreen() {
 
     const data = await res.json();
     // ajout de l'année chargé et ses moods aux années déjà chargées
-    setMoodsByYear((prev) => ({
-      ...prev,
-      [year]: data.moods,
-    }));
+
+    dispatch(
+      setMoodsByYear({
+        [year]: data.moods,
+      })
+    );
   };
 
   useEffect(() => {

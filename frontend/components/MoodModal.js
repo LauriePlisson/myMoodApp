@@ -9,7 +9,11 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { setSelectedMood, setMoodOfTheDay } from "../reducers/moods";
+import {
+  setSelectedMood,
+  setMoodOfTheDay,
+  updateMoodInYear,
+} from "../reducers/moods";
 import { useState, useEffect } from "react";
 import { X, Check } from "lucide-react-native";
 import { saveMoodAPI } from "../utils/moodAPI";
@@ -87,15 +91,14 @@ export default function MoodModal({
     });
 
     if (success) {
+      const targetDate = selectedMood.dateString;
       setMoodsByYear((prev) => {
-        const year = new Date(date).getFullYear();
+        const year = targetDate.split("-")[0];
         const moodsForYear = prev[year] ? [...prev[year]] : [];
-        const index = moodsForYear.findIndex((m) => m.date === date);
 
-        const newMood = { ...mood }; // clone
-
-        if (index !== -1) moodsForYear[index] = newMood;
-        else moodsForYear.push(newMood);
+        const index = moodsForYear.findIndex((m) => m.date === targetDate);
+        if (index !== -1) moodsForYear[index] = mood;
+        else moodsForYear.push(mood);
 
         return { ...prev, [year]: moodsForYear };
       });
@@ -113,13 +116,10 @@ export default function MoodModal({
 
       const isToday = moodDate.getTime() === today.getTime();
       if (isToday) {
-        // console.log("SET MOOD OF THE DAY", {
-        //   value: mood.moodValue,
-        //   note: mood.note,
-        //   fullMood: mood,
-        // });
         dispatch(setMoodOfTheDay(mood));
       }
+      dispatch(updateMoodInYear({ mood }));
+
       dispatch(
         setSelectedMood({
           ...selectedMood,
@@ -128,6 +128,7 @@ export default function MoodModal({
           fullMood: mood,
         })
       );
+
       setModalVisible(false);
       reset();
     }

@@ -11,7 +11,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import Slider from "@react-native-community/slider";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setMoodOfTheDay } from "../reducers/moods";
+import { setMoodOfTheDay, updateMoodInYear } from "../reducers/moods";
 import { saveMoodAPI } from "../utils/moodAPI";
 import { Check, X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
@@ -102,6 +102,7 @@ export default function HomeScreen({ navigation }) {
 
   const updateMoodStates = (mood) => {
     dispatch(setMoodOfTheDay(mood));
+    dispatch(updateMoodInYear({ mood })); // <--- Ajouté ici
     setMoodValue(mood.moodValue.toString());
     setNote(mood.note || "");
     setEditingMood(false);
