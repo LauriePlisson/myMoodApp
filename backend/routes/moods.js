@@ -12,19 +12,28 @@ router.post("/", protect, async (req, res) => {
       return res.status(400).json({ error: "Tu dois donner une note" });
 
     const userId = req.user._id;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const moodDate = req.body.date ? new Date(req.body.date) : new Date();
+    moodDate.setHours(0, 0, 0, 0);
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+
+    if (moodDate > now) {
+      return res.status(400).json({
+        error: "Impossible d'enregistrer un mood dans le futur",
+      });
+    }
+    const nextDay = new Date(moodDate);
+    nextDay.setDate(nextDay.getDate() + 1);
 
     const existingMood = await Mood.findOne({
       userId,
-      date: { $gte: today, $lt: tomorrow },
+      date: { $gte: moodDate, $lt: nextDay },
     });
     if (existingMood) {
       return res.status(409).json({
         result: false,
-        error: "Tu as déjà enregistré ton mood pour aujourd'hui",
+        error: "Tu as déjà enregistré ton mood cette date",
       });
     }
 
@@ -32,6 +41,7 @@ router.post("/", protect, async (req, res) => {
       userId: req.user._id,
       moodValue: req.body.moodValue,
       note: req.body.note || "",
+      date: moodDate,
     });
 
     await newMood.save();
