@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  Dimensions,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import {
   getColorFromMoodValue,
   getColorBackgroundFromMoodValue,
@@ -18,6 +12,7 @@ export default function MoodCard({
   handleVoirMois,
   period,
   setSelectedDateString,
+  setModalVisible,
 }) {
   const { theme, colors } = useTheme();
   const s = styles(colors);
@@ -105,6 +100,7 @@ export default function MoodCard({
             <TouchableOpacity
               style={s.addButton}
               onPress={() => {
+                setModalVisible(true);
                 // setDisplayMood(false);
                 // Ici tu ouvres ta modal d’ajout
                 // Exemple :

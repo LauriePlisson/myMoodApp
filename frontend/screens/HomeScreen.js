@@ -11,6 +11,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import Slider from "@react-native-community/slider";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSelector } from "react-redux";
+import { saveMoodAPI } from "../utils/moodAPI";
 import { Check, X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
 
@@ -33,7 +34,7 @@ export default function HomeScreen({ navigation }) {
   const commentInputRef = useRef(null);
 
   useEffect(() => {
-    console.log(user.token);
+    // console.log(user.token);
     if (!user.isLoggedIn) {
       setMoodOfTheDay(null);
       setMoodValue("05");
@@ -87,27 +88,19 @@ export default function HomeScreen({ navigation }) {
   };
 
   const saveMood = async () => {
-    const body = { moodValue, note };
-    const url = moodOfTheDay
-      ? `${API_URL}/moods/${moodOfTheDay._id}`
-      : `${API_URL}/moods/`;
-    const method = moodOfTheDay ? "PUT" : "POST";
-
-    const res = await fetch(url, {
-      method: method,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user.token}`,
-      },
-      body: JSON.stringify(body),
+    const { mood, success, message } = await saveMoodAPI({
+      userToken: user.token,
+      existingMood: moodOfTheDay,
+      moodValue,
+      note,
     });
-    const data = await res.json();
-    if (data.result) {
+
+    if (success) {
       moodOfTheDay
-        ? setSuccesMessage("Mood modifié avec succès")
+        ? setSuccesMessage(message)
         : setSuccesMessage("Mood du jour enregistré");
       setTimeout(() => setSuccesMessage(""), 4000);
-      updateMoodStates(data.mood);
+      updateMoodStates(mood);
     }
   };
 

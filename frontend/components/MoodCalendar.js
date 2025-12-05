@@ -16,6 +16,7 @@ export default function MoodCalendar({
   selectedDate,
   setSelectedDate,
   loadYear,
+  setModalVisible,
 }) {
   const [displayMood, setDisplayMood] = useState(false);
   const [selectedMood, setSelectedMood] = useState({});
@@ -214,6 +215,7 @@ export default function MoodCalendar({
           setDisplayMood={setDisplayMood}
           period={"mois"}
           setSelectedDateString={setSelectedDateString}
+          setModalVisible={setModalVisible}
         />
       )}
     </>

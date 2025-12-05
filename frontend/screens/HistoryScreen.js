@@ -1,5 +1,7 @@
 import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import MoodModal from "../components/MoodModal";
 import MoodCalendar from "../components/MoodCalendar";
 import MoodGraf from "../components/MoodGraf";
 import { useSelector } from "react-redux";
@@ -9,12 +11,22 @@ export default function HistoryScreen() {
   const [moodsByYear, setMoodsByYear] = useState({});
   const [displayMood, setDisplayMood] = useState(false);
   const [viewCalendar, setViewCalendar] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
   const [period, setPeriod] = useState("mois");
+  const [selectedMood, setSelectedMood] = useState({});
   const [selectedDate, setSelectedDate] = useState(new Date());
   const user = useSelector((state) => state.user.value);
   const API_URL = process.env.EXPO_PUBLIC_API_URL;
   const { colors } = useTheme();
   const s = styles(colors);
+
+  useFocusEffect(
+    useCallback(() => {
+      //recharge l'année en cours au focus
+      const year = selectedDate.getFullYear();
+      loadYear(year);
+    }, [selectedDate])
+  );
 
   //fonction fetch moods année
   const loadYear = async (year) => {
@@ -116,6 +128,12 @@ export default function HistoryScreen() {
   return (
     <View style={s.container}>
       <Text style={s.title}>Tes Moods</Text>
+      <MoodModal
+        setModalVisible={setModalVisible}
+        visible={modalVisible}
+        date={selectedDate}
+        selectedMood={selectedMood}
+      />
       <View style={s.centre}>
         <View style={s.options}>
           <TouchableOpacity
@@ -173,6 +191,9 @@ export default function HistoryScreen() {
               loadYear={loadYear}
               selectedDate={selectedDate}
               setSelectedDate={setSelectedDate}
+              setModalVisible={setModalVisible}
+              setSelectedMood={setSelectedMood}
+              selectedMood={selectedMood}
             />
           ) : (
             <>
