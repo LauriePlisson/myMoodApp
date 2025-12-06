@@ -264,8 +264,6 @@ export default function HistoryScreen() {
                 moods={dataForChart}
                 loadYear={loadYear}
                 period={period}
-                displayMood={displayMood}
-                setDisplayMood={setDisplayMood}
                 setPeriod={setPeriod}
                 selectedDate={selectedDate}
                 setSelectedDate={setSelectedDate}

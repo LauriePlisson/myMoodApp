@@ -19,7 +19,6 @@ export default function MoodGraf({
   period,
   selectedDate,
   setSelectedDate,
-  setPeriod,
   loadYear,
   onMoodPress,
 }) {
@@ -104,42 +103,25 @@ export default function MoodGraf({
           date: `${month}`,
           note: "",
         });
-        dispatch(
-          setSelectedMood({
-            label: `${month}`,
-            value: mood.value,
-            month: mood.label,
-            date: `${month}`,
-            note: "",
-          })
-        );
       } else {
-        dispatch(
-          setSelectedMood({
-            value: null,
-          })
-        );
+        onMoodPress({ value: null });
       }
     }
     if (period === "mois") {
       if (mood.fullMood) {
-        dispatch(
-          setSelectedMood({
-            value: mood.value,
-            label: mood.label,
-            date: formatDate(mood.fullMood.date),
-            note: mood.fullMood.note,
-          })
-        );
+        onMoodPress({
+          value: mood.value,
+          label: mood.label,
+          date: formatDate(mood.fullMood.date),
+          note: mood.fullMood.note,
+        });
       } else {
-        dispatch(
-          setSelectedMood({
-            value: null,
-            label: mood.label,
-            date: null,
-            note: null,
-          })
-        );
+        onMoodPress({
+          value: null,
+          label: mood.label,
+          date: null,
+          note: null,
+        });
 
         return;
       }
@@ -174,7 +156,7 @@ export default function MoodGraf({
   }
 
   const handleChevronLeft = () => {
-    setDisplayMood(false);
+    // setDisplayMood(false);
     if (period === "mois") {
       const prevMonth = new Date(selectedDate);
       prevMonth.setMonth(prevMonth.getMonth() - 1);
