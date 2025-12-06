@@ -17,8 +17,6 @@ export default function MoodCalendar({
   moods,
   selectedDate,
   setSelectedDate,
-  selectedDateString,
-  setSelectedDateString,
   loadYear,
   onMoodPress,
 }) {
@@ -33,8 +31,7 @@ export default function MoodCalendar({
   useEffect(() => {
     if (!isFocused) {
       // l'écran n'est plus actif → on ferme la MoodCard
-
-      setSelectedDateString("");
+      dispatch(setSelectedMood(null));
     }
   }, [isFocused]);
 
@@ -73,20 +70,21 @@ export default function MoodCalendar({
     };
   });
 
-  if (selectedDateString) {
-    markedDates[selectedDateString] = {
-      ...(markedDates[selectedDateString] || {}), // si déjà un mood : on garde les styles
+  if (selectedMood) {
+    markedDates[selectedMood.dateString] = {
+      ...(markedDates[selectedMood.dateString] || {}), // si déjà un mood : on garde les styles
       customStyles: {
-        ...(markedDates[selectedDateString]?.customStyles || {}),
+        ...(markedDates[selectedMood.dateString]?.customStyles || {}),
         container: {
-          ...(markedDates[selectedDateString]?.customStyles?.container || {}),
+          ...(markedDates[selectedMood.dateString]?.customStyles?.container ||
+            {}),
           borderWidth: 2,
           borderColor: getColorFromMoodValue(selectedMood.value), // couleur d'entourage du jour sélectionné
           justifyContent: "center",
           alignItems: "center",
         },
         text: {
-          ...(markedDates[selectedDateString]?.customStyles?.text || {}),
+          ...(markedDates[selectedMood.dateString]?.customStyles?.text || {}),
           color: getColorFromMoodValue(selectedMood.value),
           fontWeight: "500",
         },
@@ -141,8 +139,8 @@ export default function MoodCalendar({
         };
 
     onMoodPress(newSelectedMood);
-    setSelectedDateString(dateString);
   };
+
   LocaleConfig.locales["fr"] = {
     monthNames: [
       "Janvier",
@@ -210,7 +208,6 @@ export default function MoodCalendar({
       markingType={"custom"}
       markedDates={markedDates}
       onDayPress={(day) => {
-        setSelectedDateString(day.dateString);
         handleDaySelect(day.dateString);
       }}
       onMonthChange={(month) => {

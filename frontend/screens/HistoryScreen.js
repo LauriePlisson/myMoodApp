@@ -15,7 +15,6 @@ export default function HistoryScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [period, setPeriod] = useState("mois");
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedDateString, setSelectedDateString] = useState(null);
 
   const user = useSelector((state) => state.user.value);
   const moodsByYear = useSelector((state) => state.moods.moodsByYear);
@@ -163,7 +162,7 @@ export default function HistoryScreen() {
                 : { backgroundColor: colors.whiteBlack },
             ]}
             onPress={() => {
-              setViewCalendar(true), setDisplayMood(false);
+              setViewCalendar(true), closeMoodCard();
             }}
           >
             <Text
@@ -185,10 +184,8 @@ export default function HistoryScreen() {
                 : { backgroundColor: colors.whiteBlack },
             ]}
             onPress={() => {
-              setViewCalendar(false),
-                setDisplayMood(false),
-                setPeriod("mois"),
-                setSelectedDate(new Date());
+              setViewCalendar(false), closeMoodCard();
+              setPeriod("mois"), setSelectedDate(new Date());
             }}
           >
             <Text
@@ -211,8 +208,6 @@ export default function HistoryScreen() {
               loadYear={loadYear}
               selectedDate={selectedDate}
               setSelectedDate={setSelectedDate}
-              selectedDateString={selectedDateString}
-              setSelectedDateString={setSelectedDateString}
               setModalVisible={setModalVisible}
               onMoodPress={openMoodCard}
             />
@@ -281,7 +276,6 @@ export default function HistoryScreen() {
           setModalVisible={setModalVisible}
           isCalendar={viewCalendar}
           period={period}
-          setSelectedDateString={setSelectedDateString}
           handleVoirMois={handleVoirMois}
           onCloseMood={closeMoodCard}
         />

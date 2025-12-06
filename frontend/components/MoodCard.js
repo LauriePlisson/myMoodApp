@@ -13,7 +13,6 @@ export default function MoodCard({
   setModalVisible,
   handleVoirMois,
   period,
-  setSelectedDateString,
   isCalendar,
   onCloseMood,
 }) {
@@ -47,7 +46,6 @@ export default function MoodCard({
         <TouchableOpacity
           onPress={() => {
             onCloseMood();
-            if (setSelectedDateString) setSelectedDateString("");
           }}
         >
           <X size={20} color={getColorFromMoodValue(selectedMood.value)} />
