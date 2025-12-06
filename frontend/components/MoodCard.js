@@ -4,8 +4,6 @@ import {
   getColorBackgroundFromMoodValue,
 } from "../utils/moodColors";
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
-import { setSelectedMood } from "../reducers/moods";
 import { X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
 

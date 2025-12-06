@@ -11,7 +11,6 @@ import {
 } from "../utils/moodColors";
 import { useTheme } from "../context/ThemeContext";
 import { useMemo } from "react";
-import MoodCard from "./MoodCard";
 
 export default function MoodCalendar({
   moods,
