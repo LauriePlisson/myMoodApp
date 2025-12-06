@@ -11,10 +11,10 @@ import { useTheme } from "../context/ThemeContext";
 
 export default function MoodCard({
   setDisplayMood,
+  setModalVisible,
   handleVoirMois,
   period,
   setSelectedDateString,
-  setModalVisible,
   isCalendar,
 }) {
   const { theme, colors } = useTheme();
@@ -28,9 +28,9 @@ export default function MoodCard({
       style={[
         s.card,
         {
-          backgroundColor: getColorBackgroundFromMoodValue(selectedMood.value),
+          // backgroundColor: getColorBackgroundFromMoodValue(selectedMood.value),
         },
-        { borderColor: getColorFromMoodValue(selectedMood.value) },
+        // { borderColor: getColorFromMoodValue(selectedMood.value) },
       ]}
     >
       <View style={s.sectionCard}>
@@ -47,11 +47,14 @@ export default function MoodCard({
         <TouchableOpacity
           onPress={() => {
             setDisplayMood(false);
-            dispatch(setSelectedMood({}));
+            // dispatch(setSelectedMood({}));
             if (setSelectedDateString) setSelectedDateString("");
           }}
         >
-          <X size={20} color={getColorFromMoodValue(selectedMood.value)} />
+          <X
+            size={20}
+            //  color={getColorFromMoodValue(selectedMood.value)}
+          />
         </TouchableOpacity>
       </View>
       {selectedMood.value !== null ? (
@@ -67,7 +70,7 @@ export default function MoodCard({
             <Text
               style={[
                 s.note,
-                { color: getColorFromMoodValue(selectedMood.value) },
+                // { color: getColorFromMoodValue(selectedMood.value) },
               ]}
             >
               {String(selectedMood.value).padStart(2, "0")}

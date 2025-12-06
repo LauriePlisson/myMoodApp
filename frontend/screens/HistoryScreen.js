@@ -4,9 +4,10 @@ import { useFocusEffect } from "@react-navigation/native";
 import MoodModal from "../components/MoodModal";
 import MoodCalendar from "../components/MoodCalendar";
 import MoodGraf from "../components/MoodGraf";
+import MoodCard from "../components/MoodCard";
 import { useSelector, useDispatch } from "react-redux";
 import { useTheme } from "../context/ThemeContext";
-import { setMoodsByYear, resetMoods } from "../reducers/moods";
+import { setMoodsByYear, resetMoods, setSelectedMood } from "../reducers/moods";
 
 export default function HistoryScreen() {
   const [displayMood, setDisplayMood] = useState(false);
@@ -31,6 +32,16 @@ export default function HistoryScreen() {
     }, [])
   );
 
+  //fonction openMoodCard
+  const openMoodCard = (mood) => {
+    dispatch(setSelectedMood(mood)); // mood global
+    setDisplayMood(true); // afficher la card
+  };
+  //fonction closeMoodCard
+  const closeMoodCard = () => {
+    setDisplayMood(false);
+    dispatch(setSelectedMood(null));
+  };
   //fonction fetch moods année
   const loadYear = async (year) => {
     const start = `${year}-01-01`;
@@ -123,6 +134,15 @@ export default function HistoryScreen() {
     }));
   }
 
+  const handleVoirMois = () => {
+    const year = selectedDate.getFullYear();
+    const month = selectedMood.month;
+    const newDate = new Date(year, month, 1);
+    setPeriod("mois");
+    setSelectedDate(newDate);
+    setDisplayMood(false);
+  };
+
   return (
     <View style={s.container}>
       <Text style={s.title}>Tes Moods</Text>
@@ -191,6 +211,7 @@ export default function HistoryScreen() {
               selectedDate={selectedDate}
               setSelectedDate={setSelectedDate}
               setModalVisible={setModalVisible}
+              onMoodPress={openMoodCard}
             />
           ) : (
             <>
@@ -248,11 +269,22 @@ export default function HistoryScreen() {
                 setPeriod={setPeriod}
                 selectedDate={selectedDate}
                 setSelectedDate={setSelectedDate}
+                onMoodPress={openMoodCard}
               />
             </>
           )}
         </View>
       </View>
+      {displayMood && (
+        <MoodCard
+          setDisplayMood={setDisplayMood}
+          setModalVisible={setModalVisible}
+          isCalendar={viewCalendar}
+          period={period}
+          // setSelectedDateString={setSelectedDateString}
+          handleVoirMois={handleVoirMois}
+        />
+      )}
     </View>
   );
 }
@@ -260,8 +292,6 @@ const styles = (colors) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      flexDirection: "column",
-      justifyContent: "flex-start",
       alignItems: "center",
       backgroundColor: colors.background,
     },
@@ -272,7 +302,6 @@ const styles = (colors) =>
     },
     centre: {
       width: "95%",
-      height: "70%",
       gap: 2,
       marginTop: 25,
     },
@@ -292,10 +321,6 @@ const styles = (colors) =>
     textOption: {
       fontSize: 17,
     },
-    display: {
-      justifyContent: "flex-start",
-      alignItems: "center",
-    },
     filtres: {
       borderTopWidth: 1,
       borderTopColor: colors.buttonBackground,
@@ -307,6 +332,10 @@ const styles = (colors) =>
       marginTop: 15,
       width: 80,
       justifyContent: "center",
+      alignItems: "center",
+    },
+    display: {
+      justifyContent: "flex-start",
       alignItems: "center",
     },
   });

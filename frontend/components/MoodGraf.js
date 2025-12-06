@@ -12,21 +12,16 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
 import { useSelector, useDispatch } from "react-redux";
 import { setSelectedMood } from "../reducers/moods";
-import {
-  getColorFromMoodValue,
-  getColorBackgroundFromMoodValue,
-} from "../utils/moodColors";
-import MoodCard from "./MoodCard";
+import { getColorFromMoodValue } from "../utils/moodColors";
 
-export default function MoodGrafGifted({
+export default function MoodGraf({
   moods,
   period,
   selectedDate,
   setSelectedDate,
   setPeriod,
-  displayMood,
-  setDisplayMood,
   loadYear,
+  onMoodPress,
 }) {
   const { colors } = useTheme();
   const s = styles(colors);
@@ -40,7 +35,7 @@ export default function MoodGrafGifted({
     if (!isFocused) {
       dispatch(setSelectedMood({}));
       // l'écran n'est plus actif → on ferme la MoodCard
-      setDisplayMood(false);
+      // setDisplayMood(false);
     }
   }, [isFocused]);
 
@@ -98,10 +93,17 @@ export default function MoodGrafGifted({
   });
 
   const handleFocus = (mood) => {
-    setDisplayMood(true);
+    // setDisplayMood(true);
     const month = moisEnLettre(mood.label);
     if (period === "annee") {
       if (mood.label) {
+        onMoodPress({
+          label: `${month}`,
+          value: mood.value,
+          month: mood.label,
+          date: `${month}`,
+          note: "",
+        });
         dispatch(
           setSelectedMood({
             label: `${month}`,
@@ -192,7 +194,6 @@ export default function MoodGrafGifted({
   };
 
   const handleChevronRight = () => {
-    setDisplayMood(false);
     if (period === "mois") {
       const nextMonth = new Date(selectedDate);
       nextMonth.setMonth(selectedDate.getMonth() + 1);
@@ -203,15 +204,6 @@ export default function MoodGrafGifted({
       nextYear.setFullYear(nextYear.getFullYear() + 1);
       setSelectedDate(nextYear);
     }
-  };
-
-  const handleVoirMois = () => {
-    const year = selectedDate.getFullYear();
-    const month = selectedMood.month;
-    const newDate = new Date(year, month, 1);
-    setPeriod("mois");
-    setSelectedDate(newDate);
-    setDisplayMood(false);
   };
 
   return (
@@ -271,14 +263,6 @@ export default function MoodGrafGifted({
           onFocus={(mood) => handleFocus(mood)}
         />
       </View>
-      {displayMood && (
-        <MoodCard
-          period={period}
-          selectedDate={selectedDate}
-          handleVoirMois={handleVoirMois}
-          setDisplayMood={setDisplayMood}
-        />
-      )}
     </>
   );
 }

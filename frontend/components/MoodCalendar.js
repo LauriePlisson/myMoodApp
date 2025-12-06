@@ -18,9 +18,8 @@ export default function MoodCalendar({
   selectedDate,
   setSelectedDate,
   loadYear,
-  setModalVisible,
+  onMoodPress,
 }) {
-  const [displayMood, setDisplayMood] = useState(false);
   const [selectedDateString, setSelectedDateString] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const { theme, colors } = useTheme();
@@ -33,7 +32,7 @@ export default function MoodCalendar({
   useEffect(() => {
     if (!isFocused) {
       // l'écran n'est plus actif → on ferme la MoodCard
-      setDisplayMood(false);
+
       setSelectedDateString("");
     }
   }, [isFocused]);
@@ -141,8 +140,9 @@ export default function MoodCalendar({
           fullMood: null,
         };
 
-    dispatch(setSelectedMood({ ...newSelectedMood, __force: Math.random() }));
-    setDisplayMood(true);
+    onMoodPress(newSelectedMood);
+    // dispatch(setSelectedMood({ ...newSelectedMood}));
+    // setDisplayMood(true);
     setSelectedDateString(dateString);
   };
   LocaleConfig.locales["fr"] = {
@@ -207,31 +207,20 @@ export default function MoodCalendar({
   );
 
   return (
-    <>
-      <Calendar
-        key={refreshKey}
-        markingType={"custom"}
-        markedDates={markedDates}
-        onDayPress={(day) => {
-          setSelectedDateString(day.dateString);
-          handleDaySelect(day.dateString);
-        }}
-        onMonthChange={(month) => {
-          handleChangeMonth(month);
-        }}
-        style={s.calendar}
-        theme={calendarTheme}
-      />
-      {displayMood && (
-        <MoodCard
-          setDisplayMood={setDisplayMood}
-          period={"mois"}
-          setSelectedDateString={setSelectedDateString}
-          setModalVisible={setModalVisible}
-          isCalendar={true}
-        />
-      )}
-    </>
+    <Calendar
+      key={refreshKey}
+      markingType={"custom"}
+      markedDates={markedDates}
+      onDayPress={(day) => {
+        setSelectedDateString(day.dateString);
+        handleDaySelect(day.dateString);
+      }}
+      onMonthChange={(month) => {
+        handleChangeMonth(month);
+      }}
+      style={s.calendar}
+      theme={calendarTheme}
+    />
   );
 }
 
