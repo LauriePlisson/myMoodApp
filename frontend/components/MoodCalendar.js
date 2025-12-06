@@ -17,10 +17,11 @@ export default function MoodCalendar({
   moods,
   selectedDate,
   setSelectedDate,
+  selectedDateString,
+  setSelectedDateString,
   loadYear,
   onMoodPress,
 }) {
-  const [selectedDateString, setSelectedDateString] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const { theme, colors } = useTheme();
   const s = styles(colors);
