@@ -120,7 +120,6 @@ export default function MoodCalendar({
       return moodLocal.getTime() === selectedLocal.getTime();
     });
 
-    // FORCER le dispatch même si c’est le même jour/même valeur
     const newSelectedMood = mood
       ? {
           value: mood.moodValue,
