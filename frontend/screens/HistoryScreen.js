@@ -275,12 +275,12 @@ export default function HistoryScreen() {
       </View>
       {displayMood && (
         <MoodCard
-          setDisplayMood={setDisplayMood}
           setModalVisible={setModalVisible}
           isCalendar={viewCalendar}
           period={period}
           // setSelectedDateString={setSelectedDateString}
           handleVoirMois={handleVoirMois}
+          onCloseMood={closeMoodCard}
         />
       )}
     </View>

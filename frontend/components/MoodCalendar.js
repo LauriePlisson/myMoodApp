@@ -141,8 +141,6 @@ export default function MoodCalendar({
         };
 
     onMoodPress(newSelectedMood);
-    // dispatch(setSelectedMood({ ...newSelectedMood}));
-    // setDisplayMood(true);
     setSelectedDateString(dateString);
   };
   LocaleConfig.locales["fr"] = {

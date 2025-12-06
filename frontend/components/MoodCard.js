@@ -16,6 +16,7 @@ export default function MoodCard({
   period,
   setSelectedDateString,
   isCalendar,
+  onCloseMood,
 }) {
   const { theme, colors } = useTheme();
   const s = styles(colors);
@@ -46,8 +47,7 @@ export default function MoodCard({
         </View>
         <TouchableOpacity
           onPress={() => {
-            setDisplayMood(false);
-            // dispatch(setSelectedMood({}));
+            onCloseMood();
             if (setSelectedDateString) setSelectedDateString("");
           }}
         >

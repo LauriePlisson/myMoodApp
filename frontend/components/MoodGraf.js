@@ -156,7 +156,6 @@ export default function MoodGraf({
   }
 
   const handleChevronLeft = () => {
-    // setDisplayMood(false);
     if (period === "mois") {
       const prevMonth = new Date(selectedDate);
       prevMonth.setMonth(prevMonth.getMonth() - 1);
