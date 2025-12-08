@@ -66,6 +66,7 @@ export default function MoodGraf({
   }
 
   const length = period === "mois" ? 31 : 12;
+
   const getIndex = (m) => {
     if (period === "mois") {
       return m.label - 1; // ⬅️ on passe de 1→31 à 0→30
@@ -73,33 +74,78 @@ export default function MoodGraf({
     return m.label; // année reste inchangé (0→11)
   };
 
-  const data = Array.from({ length }, (_, i) => ({
-    value: null,
-    label: "",
-    note: "",
-    date: null,
-    fullMood: null,
-  }));
+  // On crée le tableau initial avec toutes les dates
+  const data = Array.from({ length }, (_, i) => {
+    let date;
+    if (period === "mois") {
+      date = new Date(
+        selectedDate.getFullYear(),
+        selectedDate.getMonth(),
+        i + 1
+      );
+      return {
+        value: null,
+        label: i + 1, // pour les jours du mois, 1→31
+        note: "",
+        date: date.toISOString(),
+        fullMood: null,
+      };
+    } else {
+      date = new Date(selectedDate.getFullYear(), i, 1);
+      return {
+        value: null,
+        label: i, // <-- garder 0→11 pour Janvier→Décembre
+        note: "",
+        date: date.toISOString(),
+        fullMood: null,
+      };
+    }
+  });
 
+  // On remplit les moods existants
   moods.forEach((mood) => {
     const index = getIndex(mood);
     if (index >= 0 && index < length) {
       data[index] = {
         value: mood.value,
         label: mood.label,
-        fullMood: mood.fullMood,
+        date: mood.fullMood
+          ? new Date(mood.fullMood.date).toISOString()
+          : data[index].date,
+        note: mood.fullMood?.note || "",
+        fullMood: mood.fullMood || null,
       };
     }
   });
+
+  // On remplit les jours avant le premier mood avec value = 0
+  let firstDataIndex = data.findIndex((d) => d.value !== null);
+  if (firstDataIndex === -1) firstDataIndex = length; // aucun mood saisi
+  for (let i = 0; i < firstDataIndex; i++) {
+    data[i].value = 0;
+  }
+
+  // On coupe les jours après le dernier mood si besoin
+  let lastIndex = data.length - 1;
+  while (lastIndex >= 0 && data[lastIndex].value === null) {
+    lastIndex--;
+  }
+  const trimmedData = data.slice(0, lastIndex + 1);
+
+  // On clone pour le chart
+  const clonedData = trimmedData.map((d) => ({
+    ...d,
+    fullMood: d.fullMood ? { ...d.fullMood } : null,
+  }));
 
   const handleFocus = (mood) => {
     // setDisplayMood(true);
     const month = moisEnLettre(mood.label);
     if (period === "annee") {
-      if (mood.label) {
+      if (mood.label !== null) {
         onMoodPress({
           label: `${month}`,
-          value: mood.value,
+          value: mood.value || null,
           month: mood.label,
           date: `${month}`,
           note: "",
@@ -122,7 +168,7 @@ export default function MoodGraf({
         onMoodPress({
           value: null,
           label: mood.label,
-          date: null,
+          date: formatDate(mood.date),
           note: null,
         });
 
@@ -130,20 +176,6 @@ export default function MoodGraf({
       }
     }
   };
-
-  let lastIndex = data.length - 1;
-  while (lastIndex >= 0 && data[lastIndex].value === null) {
-    lastIndex--;
-  }
-  let firstDataIndex = data.findIndex((d) => d.value !== null);
-  for (let i = 0; i < firstDataIndex; i++) {
-    data[i].value = 0;
-  }
-  const trimmedData = data.slice(0, lastIndex + 1);
-  const clonedData = trimmedData.map((d) => ({
-    ...d,
-    fullMood: d.fullMood ? { ...d.fullMood } : null,
-  }));
 
   const chartWidth = 290;
   const spacing = chartWidth / (data.length - 1);
