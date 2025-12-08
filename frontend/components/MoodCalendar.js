@@ -26,14 +26,6 @@ export default function MoodCalendar({
   const dispatch = useDispatch();
   const selectedMood = useSelector((state) => state.moods.selectedMood);
 
-  const isFocused = useIsFocused();
-  useEffect(() => {
-    if (!isFocused) {
-      // l'écran n'est plus actif → on ferme la MoodCard
-      dispatch(setSelectedMood(null));
-    }
-  }, [isFocused]);
-
   useEffect(() => {
     setRefreshKey((prev) => prev + 1);
   }, [moods]);

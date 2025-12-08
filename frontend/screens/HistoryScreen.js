@@ -27,8 +27,8 @@ export default function HistoryScreen() {
   useFocusEffect(
     useCallback(() => {
       //recharge l'année en cours au focus
-      const year = selectedDate.getFullYear();
-      loadYear(year);
+      // const year = selectedDate.getFullYear();
+      // loadYear(year);
       return closeMoodCard();
     }, [])
   );

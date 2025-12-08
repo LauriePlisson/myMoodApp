@@ -31,19 +31,19 @@ export default function MoodCard({
     <View
       style={[
         s.card,
-        { borderColor: getColorFromMoodValue(selectedMood.value) },
+        { borderColor: getColorFromMoodValue(selectedMood?.value) },
       ]}
     >
       <View style={s.sectionCard}>
         <View style={[s.date]}>
-          <Text style={s.moodDate}>{selectedMood.date}</Text>
+          <Text style={s.moodDate}>{selectedMood?.date}</Text>
         </View>
         <TouchableOpacity
           onPress={() => {
             onCloseMood();
           }}
         >
-          <X size={20} color={getColorFromMoodValue(selectedMood.value)} />
+          <X size={20} color={getColorFromMoodValue(selectedMood?.value)} />
         </TouchableOpacity>
       </View>
       {selectedMood.value !== null ? (
@@ -62,17 +62,17 @@ export default function MoodCard({
             <Text
               style={[
                 s.note,
-                { color: getColorFromMoodValue(selectedMood.value) },
+                { color: getColorFromMoodValue(selectedMood?.value) },
               ]}
             >
-              {String(selectedMood.value).padStart(2, "0")}
+              {String(selectedMood?.value).padStart(2, "0")}
             </Text>
             <Text style={{ color: "transparent" }}>Moyenne:</Text>
           </View>
           {period === "mois" || isCalendar ? (
             <View>
               <View style={[s.comSection]}>
-                <Text style={s.com}>{selectedMood.note}</Text>
+                <Text style={s.com}>{selectedMood?.note}</Text>
               </View>
               {isCalendar && (
                 <View
@@ -87,7 +87,7 @@ export default function MoodCard({
                       s.button,
                       {
                         backgroundColor: getColorFromMoodValue(
-                          selectedMood.value
+                          selectedMood?.value
                         ),
                       },
                     ]}
@@ -116,7 +116,7 @@ export default function MoodCard({
                 style={[
                   s.button,
                   {
-                    backgroundColor: getColorFromMoodValue(selectedMood.value),
+                    backgroundColor: getColorFromMoodValue(selectedMood?.value),
                   },
                 ]}
                 onPress={() => {
@@ -151,7 +151,7 @@ export default function MoodCard({
                 style={[
                   s.button,
                   {
-                    backgroundColor: getColorFromMoodValue(selectedMood.value),
+                    backgroundColor: getColorFromMoodValue(selectedMood?.value),
                   },
                 ]}
                 onPress={() => {
