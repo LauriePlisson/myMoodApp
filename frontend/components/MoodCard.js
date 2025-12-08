@@ -4,7 +4,14 @@ import {
   getColorBackgroundFromMoodValue,
 } from "../utils/moodColors";
 import { useSelector, useDispatch } from "react-redux";
-import { X, Settings2, Pencil } from "lucide-react-native";
+import {
+  X,
+  Pencil,
+  ChartLine,
+  ChartNoAxesCombined,
+  ChartColumn,
+  Plus,
+} from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
 
 export default function MoodCard({
@@ -63,82 +70,103 @@ export default function MoodCard({
             <Text style={{ color: "transparent" }}>Moyenne:</Text>
           </View>
           {period === "mois" || isCalendar ? (
-            <View
-            // style={{
-            //   borderWidth: 1,
-            //   flexDirection: "row",
-            //   width: 320,
-            //   justifyContent: "space-around",
-            // }}
-            >
+            <View>
               <View style={[s.comSection]}>
                 <Text style={s.com}>{selectedMood.note}</Text>
               </View>
               {isCalendar && (
                 <View
                   style={{
-                    // borderWidth: 2,
                     width: 320,
                     justifyContent: "center",
                     alignItems: "flex-end",
                   }}
                 >
                   <TouchableOpacity
-                    style={{
-                      backgroundColor: getColorFromMoodValue(
-                        selectedMood.value
-                      ),
-                      width: 35,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderRadius: 50,
-                      height: 30,
-                    }}
+                    style={[
+                      s.button,
+                      {
+                        backgroundColor: getColorFromMoodValue(
+                          selectedMood.value
+                        ),
+                      },
+                    ]}
                     onPress={() => setModalVisible(true)}
                   >
                     <Pencil size={20} color={colors.whiteBlack} />
-                    {/* <Text style={s.addButtonText}>Modifier le Mood</Text> */}
                   </TouchableOpacity>
                 </View>
               )}
             </View>
           ) : (
-            <View style={[s.sectionCard, s.acces]}>
+            <View
+              style={[
+                // s.sectionCard,
+                // s.acces,
+                {
+                  // borderWidth: 2,
+                  marginTop: 21,
+                  width: 310,
+                  justifyContent: "center",
+                  alignItems: "flex-end",
+                },
+              ]}
+            >
               <TouchableOpacity
-                style={{
-                  borderBottomWidth: 1,
-                  borderColor: colors.textMyMood,
-                  width: 80,
-                  alignItems: "center",
-                }}
+                style={[
+                  s.button,
+                  {
+                    backgroundColor: getColorFromMoodValue(selectedMood.value),
+                  },
+                ]}
                 onPress={() => {
                   handleVoirMois();
                 }}
               >
-                <Text style={{ fontStyle: "italic", color: colors.textMyMood }}>
-                  Voir le mois
-                </Text>
+                <ChartNoAxesCombined size={20} color={colors.whiteBlack} />
               </TouchableOpacity>
             </View>
           )}
         </View>
       ) : (
-        <View style={[s.noData]}>
-          <Text style={{ color: colors.textGeneral }}>
-            Pas de donnée pour{" "}
-            {period === "mois" || isCalendar ? "ce jour" : "ce mois"}
-          </Text>
+        <>
+          <View style={[s.noData]}>
+            <Text style={{ color: colors.textGeneral }}>
+              Pas de donnée pour{" "}
+              {period === "mois" || isCalendar ? "ce jour" : "ce mois"}
+            </Text>
+          </View>
           {selectedMood.past && isCalendar && (
-            <TouchableOpacity
-              style={s.addButton}
-              onPress={() => {
-                setModalVisible(true);
-              }}
+            <View
+              style={[
+                {
+                  marginTop: 2,
+                  width: 320,
+                  justifyContent: "center",
+                  alignItems: "flex-end",
+                },
+              ]}
             >
-              <Text style={s.addButtonText}>Ajouter un mood</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  s.button,
+                  {
+                    backgroundColor: getColorFromMoodValue(selectedMood.value),
+                  },
+                ]}
+                onPress={() => {
+                  setModalVisible(true);
+                }}
+              >
+                <Plus
+                  size={20}
+                  color={colors.whiteBlack}
+                  style={{ fontWeight: "bold" }}
+                />
+              </TouchableOpacity>
+            </View>
           )}
-        </View>
+        </>
       )}
     </View>
   );
@@ -204,15 +232,11 @@ const styles = (colors) =>
       fontSize: 15,
       color: colors.textGeneral,
     },
-    addButton: {
-      marginTop: 5,
-      paddingVertical: 8,
-      paddingHorizontal: 20,
-      backgroundColor: colors.buttonBackground,
-      borderRadius: 8,
-    },
-    addButtonText: {
-      color: colors.background,
-      fontSize: 16,
+    button: {
+      width: 35,
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 50,
+      height: 30,
     },
   });

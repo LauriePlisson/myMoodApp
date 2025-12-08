@@ -29,6 +29,7 @@ export default function HistoryScreen() {
       //recharge l'année en cours au focus
       const year = selectedDate.getFullYear();
       loadYear(year);
+      return closeMoodCard();
     }, [])
   );
 
@@ -73,6 +74,7 @@ export default function HistoryScreen() {
     //fetch l'année en cours
     const currentYear = new Date().getFullYear();
     loadYear(currentYear);
+    return closeMoodCard();
   }, [viewCalendar, user]);
 
   const selectedYear = selectedDate.getFullYear();
