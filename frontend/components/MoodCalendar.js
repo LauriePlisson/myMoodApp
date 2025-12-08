@@ -114,8 +114,6 @@ export default function MoodCalendar({
           value: mood.moodValue,
           date: formatDate(mood.date),
           note: mood.note,
-          past: isPast,
-          future: isFuture,
           dateString,
           fullMood: mood,
         }
@@ -123,8 +121,6 @@ export default function MoodCalendar({
           value: null,
           date: formatDate(dateString),
           note: "",
-          past: isPast,
-          future: isFuture,
           dateString,
           fullMood: null,
         };

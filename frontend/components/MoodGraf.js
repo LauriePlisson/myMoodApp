@@ -76,6 +76,7 @@ export default function MoodGraf({
   const data = Array.from({ length }, (_, i) => ({
     value: null,
     label: "",
+    note: "",
     date: null,
     fullMood: null,
   }));
@@ -114,6 +115,8 @@ export default function MoodGraf({
           label: mood.label,
           date: formatDate(mood.fullMood.date),
           note: mood.fullMood.note,
+          fullMood: mood.fullMood,
+          dateString: mood.fullMood.date,
         });
       } else {
         onMoodPress({

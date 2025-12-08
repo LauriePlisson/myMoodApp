@@ -19,12 +19,7 @@ import { X, Check } from "lucide-react-native";
 import { saveMoodAPI } from "../utils/moodAPI";
 import { useTheme } from "../context/ThemeContext";
 
-export default function MoodModal({
-  visible,
-  setModalVisible,
-  date,
-  setMoodsByYear,
-}) {
+export default function MoodModal({ visible, setModalVisible, date }) {
   const [moodValue, setMoodValue] = useState("5".padStart(2, "0"));
   const [note, setNote] = useState("");
 

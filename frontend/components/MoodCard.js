@@ -13,6 +13,7 @@ import {
   Plus,
 } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
+import { useEffect } from "react";
 
 export default function MoodCard({
   setModalVisible,
@@ -27,6 +28,8 @@ export default function MoodCard({
   const selectedMood = useSelector((state) => state.moods.selectedMood);
   const dispatch = useDispatch();
 
+  const isFuture = new Date(selectedMood?.dateString) > new Date();
+
   return (
     <View
       style={[
@@ -34,10 +37,8 @@ export default function MoodCard({
         { borderColor: getColorFromMoodValue(selectedMood?.value) },
       ]}
     >
-      <View style={s.sectionCard}>
-        <View style={[s.date]}>
-          <Text style={s.moodDate}>{selectedMood?.date}</Text>
-        </View>
+      <View style={s.header}>
+        <Text style={s.moodDate}>{selectedMood?.date}</Text>
         <TouchableOpacity
           onPress={() => {
             onCloseMood();
@@ -46,9 +47,9 @@ export default function MoodCard({
           <X size={20} color={getColorFromMoodValue(selectedMood?.value)} />
         </TouchableOpacity>
       </View>
-      {selectedMood.value !== null ? (
-        <View style={s.midCard}>
-          <View style={[s.sectionCard, s.noteSection]}>
+      <View style={s.midCard}>
+        {selectedMood.value !== null ? (
+          <View style={s.noteSection}>
             <Text
               style={{
                 color:
@@ -69,105 +70,117 @@ export default function MoodCard({
             </Text>
             <Text style={{ color: "transparent" }}>Moyenne:</Text>
           </View>
-          {period === "mois" || isCalendar ? (
-            <View>
-              <View style={[s.comSection]}>
-                <Text style={s.com}>{selectedMood?.note}</Text>
-              </View>
-              {isCalendar && (
-                <View
-                  style={{
-                    width: 320,
-                    justifyContent: "center",
-                    alignItems: "flex-end",
-                  }}
-                >
-                  <TouchableOpacity
-                    style={[
-                      s.button,
-                      {
-                        backgroundColor: getColorFromMoodValue(
-                          selectedMood?.value
-                        ),
-                      },
-                    ]}
-                    onPress={() => setModalVisible(true)}
-                  >
-                    <Pencil size={20} color={colors.whiteBlack} />
-                  </TouchableOpacity>
-                </View>
-              )}
-            </View>
-          ) : (
-            <View
-              style={[
-                // s.sectionCard,
-                // s.acces,
-                {
-                  // borderWidth: 2,
-                  marginTop: 21,
-                  width: 310,
-                  justifyContent: "center",
-                  alignItems: "flex-end",
-                },
-              ]}
-            >
-              <TouchableOpacity
-                style={[
-                  s.button,
-                  {
-                    backgroundColor: getColorFromMoodValue(selectedMood?.value),
-                  },
-                ]}
-                onPress={() => {
-                  handleVoirMois();
-                }}
-              >
-                <ChartNoAxesCombined size={20} color={colors.whiteBlack} />
-              </TouchableOpacity>
-            </View>
-          )}
-        </View>
-      ) : (
-        <>
+        ) : (
           <View style={[s.noData]}>
             <Text style={{ color: colors.textGeneral }}>
               Pas de donnée pour{" "}
               {period === "mois" || isCalendar ? "ce jour" : "ce mois"}
             </Text>
           </View>
-          {selectedMood.past && isCalendar && (
-            <View
+        )}
+        {selectedMood.note && (
+          <View style={[s.comSection]}>
+            <Text style={s.com}>{selectedMood?.note}</Text>
+          </View>
+        )}
+      </View>
+
+      {!isFuture && (
+        <View style={s.buttonSection}>
+          {period === "mois" ? (
+            <TouchableOpacity
               style={[
+                s.button,
                 {
-                  marginTop: 2,
-                  width: 320,
-                  justifyContent: "center",
-                  alignItems: "flex-end",
+                  backgroundColor: getColorFromMoodValue(selectedMood?.value),
                 },
               ]}
+              onPress={() => setModalVisible(true)}
             >
-              <TouchableOpacity
-                style={[
-                  s.button,
-                  {
-                    backgroundColor: getColorFromMoodValue(selectedMood?.value),
-                  },
-                ]}
-                onPress={() => {
-                  setModalVisible(true);
-                }}
-              >
+              {selectedMood.value !== null ? (
+                <Pencil size={20} color={colors.whiteBlack} />
+              ) : (
                 <Plus
                   size={20}
                   color={colors.whiteBlack}
                   style={{ fontWeight: "bold" }}
                 />
-              </TouchableOpacity>
-            </View>
+              )}
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={[
+                s.button,
+                {
+                  backgroundColor: getColorFromMoodValue(selectedMood?.value),
+                },
+              ]}
+              onPress={() => {
+                handleVoirMois();
+              }}
+            >
+              <ChartNoAxesCombined size={20} color={colors.whiteBlack} />
+            </TouchableOpacity>
           )}
-        </>
+        </View>
       )}
+      {/* <View
+        style={[
+          // s.sectionCard,
+          
+          {
+            // borderWidth: 2,
+            marginTop: 21,
+            width: 310,
+            justifyContent: "center",
+            alignItems: "flex-end",
+          },
+        ]}
+      >
+        <TouchableOpacity
+          style={[
+            s.button,
+            {
+              backgroundColor: getColorFromMoodValue(selectedMood?.value),
+            },
+          ]}
+          onPress={() => {
+            handleVoirMois();
+          }}
+        >
+          <ChartNoAxesCombined size={20} color={colors.whiteBlack} />
+        </TouchableOpacity>
+      </View>  */}
+
+      {/* 
+          <View
+            style={[
+              {
+                marginTop: 2,
+                width: 320,
+                justifyContent: "center",
+                alignItems: "flex-end",
+              },
+            ]}
+          > */}
+      {/* <TouchableOpacity
+              style={[
+                s.button,
+                {
+                  backgroundColor: getColorFromMoodValue(selectedMood?.value),
+                },
+              ]}
+              onPress={() => {
+                setModalVisible(true);
+              }}
+            >
+              <Plus
+                size={20}
+                color={colors.whiteBlack}
+                style={{ fontWeight: "bold" }}
+              />
+            </TouchableOpacity>
+          </View> */}
     </View>
   );
 }
@@ -185,25 +198,23 @@ const styles = (colors) =>
       paddingTop: 5,
       paddingHorizontal: 10,
     },
-    sectionCard: {
+    header: {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
     },
     midCard: {
       alignItems: "center",
-      justifyContent: "flex-start",
-      marginTop: 5,
-      height: 70,
-    },
-    date: {
-      flexDirection: "row",
+      justifyContent: "center",
+      gap: 2,
+      marginTop: 2,
+      height: 50,
     },
     noteSection: {
-      paddingHorizontal: 30,
-      width: 350,
-      marginTop: 5,
-      marginBottom: 2,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-around",
+      width: 320,
     },
     comSection: {
       justifyContent: "center",
@@ -213,14 +224,8 @@ const styles = (colors) =>
       fontWeight: "500",
       color: colors.textGeneral,
     },
-    acces: {
-      justifyContent: "flex-end",
-      paddingHorizontal: 30,
-      marginTop: 10,
-      width: 350,
-    },
     noData: {
-      height: 50,
+      // height: 50,
       justifyContent: "center",
       alignItems: "center",
     },
@@ -231,6 +236,11 @@ const styles = (colors) =>
     com: {
       fontSize: 15,
       color: colors.textGeneral,
+    },
+    buttonSection: {
+      width: 320,
+      justifyContent: "center",
+      alignItems: "flex-end",
     },
     button: {
       width: 35,
