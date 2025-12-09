@@ -21,6 +21,7 @@ export default function MoodGraf({
   loadYear,
   onMoodPress,
 }) {
+  const [focusedIndex, setFocusedIndex] = useState(null);
   const { colors } = useTheme();
   const s = styles(colors);
 
@@ -223,6 +224,10 @@ export default function MoodGraf({
     }
   };
 
+  const dotColor = (item) => {
+    if (!selectedMood) return colors.dotColor;
+    // if (selectedMood && selectedMood.fullMood.date === item.date) return "blue";
+  };
   return (
     <>
       <View style={s.grafInfo}>
@@ -273,39 +278,10 @@ export default function MoodGraf({
           startOpacity={0.4}
           endOpacity={0.1}
           focusEnabled={true}
-          dataPointsHeight={12}
-          dataPointsWidth={12}
-          // customDataPoint={(item, index) => {
-          //   // let isSelected;
-          //   // if (period === "mois") {
-          //   //   isSelected =
-          //   //     selectedMood && selectedMood.fullMood.date === item.date;
-          //   // }
-          //   // if (period === "annee") {
-          //   //   if (selectedMood?.month != null) {
-          //   //     const itemMonth = new Date(item.date).getMonth(); // number ex: 8
-          //   //     const selectedMonth = Number(selectedMood.month); // string → number
-          //   //     isSelected = itemMonth === selectedMonth;
-          //   //   }
-          //   // }
-
-          //   return (
-          //     <View
-          //       style={{
-          //         width: 12,
-          //         height: 12,
-          //         borderRadius: 15,
-          //         backgroundColor: "blue",
-          //         // backgroundColor: isSelected
-          //         //   ? getColorFromMoodValue(selectedMood.value)
-          //         //   : colors.dotColor, // couleur par défaut
-          //         // borderWidth: isSelected ? 1 : 0,
-          //         // borderColor: isSelected ? "#fff" : null,
-          //       }}
-          //     />
-          //   );
-          // }}
-          // focusedDataPointColor={getColorFromMoodValue(selectedMoodValue)} // couleur a changer
+          dataPointsRadius={6}
+          dataPointsColor={colors.dotColor}
+          unFocusOnPressOut={false}
+          focusedDataPointColor={getColorFromMoodValue(selectedMoodValue)} // couleur a changer
           onFocus={(mood) => handleFocus(mood)}
         />
       </View>
