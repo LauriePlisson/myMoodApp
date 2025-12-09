@@ -24,14 +24,15 @@ export default function HistoryScreen() {
   const { colors } = useTheme();
   const s = styles(colors);
 
-  useFocusEffect(
-    useCallback(() => {
-      //recharge l'année en cours au focus
-      // const year = selectedDate.getFullYear();
-      // loadYear(year);
-      return closeMoodCard();
-    }, [])
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     // console.log(moodsByYear);
+  //     //recharge l'année en cours au focus
+  //     // const year = selectedDate.getFullYear();
+  //     // loadYear(year);
+  //     return closeMoodCard();
+  //   }, [])
+  // );
 
   //fonction openMoodCard
   const openMoodCard = (mood) => {
@@ -74,7 +75,7 @@ export default function HistoryScreen() {
     //fetch l'année en cours
     const currentYear = new Date().getFullYear();
     loadYear(currentYear);
-    return closeMoodCard();
+    // return closeMoodCard();
   }, [viewCalendar, user]);
 
   const selectedYear = selectedDate.getFullYear();
@@ -221,7 +222,7 @@ export default function HistoryScreen() {
                   onPress={() => {
                     setPeriod("mois"),
                       setSelectedDate(new Date()),
-                      setDisplayMood(false);
+                      closeMoodCard();
                   }}
                 >
                   <Text
@@ -243,7 +244,7 @@ export default function HistoryScreen() {
                   onPress={() => {
                     setPeriod("annee"),
                       setSelectedDate(new Date()),
-                      setDisplayMood(false);
+                      closeMoodCard();
                   }}
                 >
                   <Text

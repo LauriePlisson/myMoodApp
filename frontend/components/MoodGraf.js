@@ -11,7 +11,6 @@ import { LineChart } from "react-native-gifted-charts";
 import { ChevronLeft, ChevronRight, X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
 import { useSelector, useDispatch } from "react-redux";
-import { setSelectedMood } from "../reducers/moods";
 import { getColorFromMoodValue } from "../utils/moodColors";
 
 export default function MoodGraf({
@@ -31,12 +30,13 @@ export default function MoodGraf({
   const selectedMoodValue = selectedMood?.value ?? 0;
 
   // useEffect(() => {
-  //   if (!isFocused) {
-  //     dispatch(setSelectedMood({}));
-  //     // l'écran n'est plus actif → on ferme la MoodCard
-  //     // setDisplayMood(false);
-  //   }
-  // }, [isFocused]);
+  //   console.log(selectedMood);
+  //   // if (!isFocused) {
+  //   //   dispatch(setSelectedMood({}));
+  //   //   // l'écran n'est plus actif → on ferme la MoodCard
+  //   //   // setDisplayMood(false);
+  //   // }
+  // }, [selectedMood]);
 
   const mois = [
     "Janvier",
@@ -114,6 +114,7 @@ export default function MoodGraf({
           : data[index].date,
         note: mood.fullMood?.note || "",
         fullMood: mood.fullMood || null,
+        //  customDataPoint: {} ,
       };
     }
   });
@@ -139,7 +140,6 @@ export default function MoodGraf({
   }));
 
   const handleFocus = (mood) => {
-    // setDisplayMood(true);
     const month = moisEnLettre(mood.label);
     if (period === "annee") {
       if (mood.label !== null) {
@@ -272,11 +272,40 @@ export default function MoodGraf({
           endFillColor={colors.endFill}
           startOpacity={0.4}
           endOpacity={0.1}
-          dataPointsRadius={5}
-          dataPointLabelRadius={15}
-          dataPointsColor={colors.dotColor}
           focusEnabled={true}
-          focusedDataPointColor={getColorFromMoodValue(selectedMoodValue)} // couleur a changer
+          dataPointsHeight={12}
+          dataPointsWidth={12}
+          // customDataPoint={(item, index) => {
+          //   // let isSelected;
+          //   // if (period === "mois") {
+          //   //   isSelected =
+          //   //     selectedMood && selectedMood.fullMood.date === item.date;
+          //   // }
+          //   // if (period === "annee") {
+          //   //   if (selectedMood?.month != null) {
+          //   //     const itemMonth = new Date(item.date).getMonth(); // number ex: 8
+          //   //     const selectedMonth = Number(selectedMood.month); // string → number
+          //   //     isSelected = itemMonth === selectedMonth;
+          //   //   }
+          //   // }
+
+          //   return (
+          //     <View
+          //       style={{
+          //         width: 12,
+          //         height: 12,
+          //         borderRadius: 15,
+          //         backgroundColor: "blue",
+          //         // backgroundColor: isSelected
+          //         //   ? getColorFromMoodValue(selectedMood.value)
+          //         //   : colors.dotColor, // couleur par défaut
+          //         // borderWidth: isSelected ? 1 : 0,
+          //         // borderColor: isSelected ? "#fff" : null,
+          //       }}
+          //     />
+          //   );
+          // }}
+          // focusedDataPointColor={getColorFromMoodValue(selectedMoodValue)} // couleur a changer
           onFocus={(mood) => handleFocus(mood)}
         />
       </View>
