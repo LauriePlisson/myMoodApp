@@ -21,7 +21,6 @@ export default function MoodGraf({
   loadYear,
   onMoodPress,
 }) {
-  const [focusedIndex, setFocusedIndex] = useState(null);
   const { colors } = useTheme();
   const s = styles(colors);
 
@@ -224,10 +223,6 @@ export default function MoodGraf({
     }
   };
 
-  const dotColor = (item) => {
-    if (!selectedMood) return colors.dotColor;
-    // if (selectedMood && selectedMood.fullMood.date === item.date) return "blue";
-  };
   return (
     <>
       <View style={s.grafInfo}>
@@ -281,8 +276,14 @@ export default function MoodGraf({
           dataPointsRadius={6}
           dataPointsColor={colors.dotColor}
           unFocusOnPressOut={false}
-          focusedDataPointColor={getColorFromMoodValue(selectedMoodValue)} // couleur a changer
-          onFocus={(mood) => handleFocus(mood)}
+          focusedDataPointColor={
+            selectedMood
+              ? getColorFromMoodValue(selectedMood.value)
+              : colors.dotColor
+          }
+          onFocus={(mood) => {
+            handleFocus(mood);
+          }}
         />
       </View>
     </>
