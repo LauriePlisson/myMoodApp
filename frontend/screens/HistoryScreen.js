@@ -119,16 +119,25 @@ export default function HistoryScreen() {
     filtrage.forEach((mood) => {
       const date = new Date(mood.label);
       const month = date.getMonth();
-      if (!groupedByMonth[month]) groupedByMonth[month] = [];
-      groupedByMonth[month].push(mood.value);
+      const year = date.getFullYear(); // récupère l'année
+      if (!groupedByMonth[month]) groupedByMonth[month] = { values: [], year };
+      groupedByMonth[month].values.push(mood.value);
     });
 
-    dataForChart = Object.entries(groupedByMonth).map(([month, values]) => {
-      const moyenne = Math.round(
-        values.reduce((acc, val) => acc + val, 0) / values.length
-      );
-      return { label: month, value: moyenne };
-    });
+    dataForChart = Object.entries(groupedByMonth).map(
+      ([month, { values, year }]) => {
+        const moyenne = Math.round(
+          values.reduce((acc, val) => acc + val, 0) / values.length
+        );
+        return {
+          label: month,
+          value: moyenne,
+          month: month,
+          date: `${parseInt(month) + 1}/${year}`, // mois/année
+          note: "",
+        };
+      }
+    );
   } else {
     dataForChart = filtrage.map((m) => ({
       label: new Date(m.label).getDate().toString(),
@@ -269,6 +278,7 @@ export default function HistoryScreen() {
                 selectedDate={selectedDate}
                 setSelectedDate={setSelectedDate}
                 onMoodPress={openMoodCard}
+                closeMoodCard={closeMoodCard}
               />
             </>
           )}

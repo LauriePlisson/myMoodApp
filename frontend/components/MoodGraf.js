@@ -12,6 +12,7 @@ export default function MoodGraf({
   setSelectedDate,
   loadYear,
   onMoodPress,
+  closeMoodCard,
 }) {
   const { colors } = useTheme();
   const s = styles(colors);
@@ -91,7 +92,7 @@ export default function MoodGraf({
         label: mood.label,
         date: mood.fullMood
           ? new Date(mood.fullMood.date).toISOString()
-          : data[index].date,
+          : mood.date ?? data[index].date,
         note: mood.fullMood?.note || "",
         fullMood: mood.fullMood || null,
         //  customDataPoint: {} ,
@@ -121,13 +122,16 @@ export default function MoodGraf({
 
   const handleFocus = (mood) => {
     const month = moisEnLettre(mood.label);
+    const dateAffichee = `${moisEnLettre(
+      mood.label
+    )} ${selectedDate.getFullYear()}`;
     if (period === "annee") {
       if (mood.label !== null) {
         onMoodPress({
           label: `${month}`,
           value: mood.value || null,
           month: mood.label,
-          date: `${month}`,
+          date: dateAffichee,
           note: "",
         });
       } else {
@@ -172,6 +176,7 @@ export default function MoodGraf({
   }
 
   const handleChevronLeft = () => {
+    closeMoodCard();
     if (period === "mois") {
       const prevMonth = new Date(selectedDate);
       prevMonth.setMonth(prevMonth.getMonth() - 1);
@@ -191,6 +196,7 @@ export default function MoodGraf({
   };
 
   const handleChevronRight = () => {
+    closeMoodCard();
     if (period === "mois") {
       const nextMonth = new Date(selectedDate);
       nextMonth.setMonth(selectedDate.getMonth() + 1);
