@@ -87,7 +87,7 @@ export default function MoodCard({
 
       {!isFuture && (
         <View style={s.buttonSection}>
-          {period === "mois" ? (
+          {period === "mois" || isCalendar ? (
             <TouchableOpacity
               style={[
                 s.button,
@@ -124,63 +124,6 @@ export default function MoodCard({
           )}
         </View>
       )}
-      {/* <View
-        style={[
-          // s.sectionCard,
-          
-          {
-            // borderWidth: 2,
-            marginTop: 21,
-            width: 310,
-            justifyContent: "center",
-            alignItems: "flex-end",
-          },
-        ]}
-      >
-        <TouchableOpacity
-          style={[
-            s.button,
-            {
-              backgroundColor: getColorFromMoodValue(selectedMood?.value),
-            },
-          ]}
-          onPress={() => {
-            handleVoirMois();
-          }}
-        >
-          <ChartNoAxesCombined size={20} color={colors.whiteBlack} />
-        </TouchableOpacity>
-      </View>  */}
-
-      {/* 
-          <View
-            style={[
-              {
-                marginTop: 2,
-                width: 320,
-                justifyContent: "center",
-                alignItems: "flex-end",
-              },
-            ]}
-          > */}
-      {/* <TouchableOpacity
-              style={[
-                s.button,
-                {
-                  backgroundColor: getColorFromMoodValue(selectedMood?.value),
-                },
-              ]}
-              onPress={() => {
-                setModalVisible(true);
-              }}
-            >
-              <Plus
-                size={20}
-                color={colors.whiteBlack}
-                style={{ fontWeight: "bold" }}
-              />
-            </TouchableOpacity>
-          </View> */}
     </View>
   );
 }
