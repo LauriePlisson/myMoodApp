@@ -30,13 +30,13 @@ export default function MoodGraf({
   const selectedMood = useSelector((state) => state.moods.selectedMood);
   const selectedMoodValue = selectedMood?.value ?? 0;
 
-  useEffect(() => {
-    if (!isFocused) {
-      dispatch(setSelectedMood({}));
-      // l'écran n'est plus actif → on ferme la MoodCard
-      // setDisplayMood(false);
-    }
-  }, [isFocused]);
+  // useEffect(() => {
+  //   if (!isFocused) {
+  //     dispatch(setSelectedMood({}));
+  //     // l'écran n'est plus actif → on ferme la MoodCard
+  //     // setDisplayMood(false);
+  //   }
+  // }, [isFocused]);
 
   const mois = [
     "Janvier",
@@ -170,6 +170,7 @@ export default function MoodGraf({
           label: mood.label,
           date: formatDate(mood.date),
           note: null,
+          dateString: mood.date,
         });
 
         return;
