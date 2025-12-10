@@ -15,12 +15,14 @@ import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { logIn } from "../reducers/user";
 import { useTheme } from "../context/ThemeContext";
+import PasswordModal from "../components/PasswordModal";
 
 export default function WelcomeScreen({ navigation }) {
   const [isLogIn, setIsLogIn] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
   const [error, setError] = useState("");
   const { colors } = useTheme();
   const s = styles(colors);
@@ -92,6 +94,7 @@ export default function WelcomeScreen({ navigation }) {
 
   return (
     <SafeAreaView style={[s.container]}>
+      {modalVisible && <PasswordModal setModalVisible={setModalVisible} />}
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={s.container}>
           <KeyboardAvoidingView
@@ -124,28 +127,42 @@ export default function WelcomeScreen({ navigation }) {
                   <TextInput
                     style={[s.input]}
                     placeholder="username"
-                    placeholderTextColor={colors.textGeneral}
+                    placeholderTextColor={colors.textPlaceHolder}
                     value={username}
                     onChangeText={(value) => setUsername(value)}
+                    selectionColor={colors.textAccent}
                   />
                 )}
                 <TextInput
                   style={[s.input]}
                   placeholder="email"
-                  placeholderTextColor={colors.textGeneral}
+                  placeholderTextColor={colors.textPlaceHolder}
                   value={email}
                   onChangeText={(value) => setEmail(value)}
                   keyboardType="email-address"
+                  selectionColor={colors.textAccent}
                 />
 
                 <TextInput
                   style={[s.input]}
                   placeholder="password"
-                  placeholderTextColor={colors.textGeneral}
+                  placeholderTextColor={colors.textPlaceHolder}
                   value={password}
                   onChangeText={(value) => setPassword(value)}
                   secureTextEntry={true}
+                  selectionColor={colors.textAccent}
                 />
+                {isLogIn && (
+                  <TouchableOpacity onPress={() => setModalVisible(true)}>
+                    <Text
+                      style={{
+                        color: colors.textPlaceHolder,
+                      }}
+                    >
+                      Mot de passe oublié?
+                    </Text>
+                  </TouchableOpacity>
+                )}
                 <Text style={{ color: colors.textAccent }}>{error}</Text>
               </View>
               <TouchableOpacity
@@ -241,8 +258,7 @@ const styles = (colors) =>
       marginTop: 10,
       width: "100%",
       alignItems: "center",
-      gap: 5,
-      marginBottom: 15,
+      marginBottom: 5,
     },
     input: {
       width: "70%",
