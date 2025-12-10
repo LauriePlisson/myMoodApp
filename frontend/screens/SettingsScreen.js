@@ -16,6 +16,7 @@ import { logOut, changeUsername } from "../reducers/user";
 import { useTheme } from "../context/ThemeContext";
 import { useNotification } from "../context/NotificationContext";
 import { Check, X } from "lucide-react-native";
+import SettingsModal from "../components/SettingsModal";
 
 export default function SettingsScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -118,6 +119,7 @@ export default function SettingsScreen({ navigation }) {
   };
 
   const handlePressOui = () => {
+    console.log("handlePressOui");
     setModalVisible(false);
     if (openFrom === "LogOut") {
       handleLogOut();
@@ -131,6 +133,7 @@ export default function SettingsScreen({ navigation }) {
   };
 
   const handlePressNon = () => {
+    console.log("handlePressNon");
     setModalVisible(false);
     if (openFrom === "Edit")
       setSuccesMessage("Modification annulée"),
@@ -148,7 +151,14 @@ export default function SettingsScreen({ navigation }) {
 
   return (
     <SafeAreaView style={s.container}>
-      <Modal
+      <SettingsModal
+        setModalVisible={setModalVisible}
+        modalMsg={modalMsg}
+        visible={modalVisible}
+        handlePressNon={handlePressNon}
+        handlePressOui={handlePressOui}
+      />
+      {/* <Modal
         animationType="fade"
         transparent={true}
         visible={modalVisible}
@@ -180,7 +190,7 @@ export default function SettingsScreen({ navigation }) {
             </View>
           </View>
         </View>
-      </Modal>
+      </Modal> */}
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={{ flex: 1, width: "100%", alignItems: "center" }}>
           <View style={s.topPage}>

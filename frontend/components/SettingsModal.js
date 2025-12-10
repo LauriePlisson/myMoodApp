@@ -12,9 +12,13 @@ import { useState, useEffect } from "react";
 import { X, Check } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
 
-export default function PasswordModal({ visible, setModalVisible }) {
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
+export default function SettingsModal({
+  visible,
+  setModalVisible,
+  modalMsg,
+  handlePressNon,
+  handlePressOui,
+}) {
   const { colors } = useTheme();
   const s = styles(colors);
 
@@ -25,25 +29,21 @@ export default function PasswordModal({ visible, setModalVisible }) {
           <View style={s.modalContent}>
             <TouchableOpacity
               onPress={() => {
-                setModalVisible(false);
+                handlePressNon();
               }}
               style={s.closeBtn}
             >
               <X size={20} color={colors.textAccent} />
             </TouchableOpacity>
-            <Text style={s.title}>Mot de passe oublié?</Text>
-            <TextInput
-              style={[s.input]}
-              placeholder="email"
-              placeholderTextColor={colors.textPlaceHolder}
-              value={email}
-              onChangeText={(value) => setEmail(value)}
-              keyboardType="email-address"
-              selectionColor={colors.textAccent}
-            />
-            <Text>{error}</Text>
-            <TouchableOpacity style={s.addBtn}>
-              <Text style={s.addText}>Envoyer</Text>
+            <Text style={s.title}>Es-tu sûr de vouloir </Text>
+            <Text
+              style={[s.title, { color: colors.textAccent, marginBottom: 10 }]}
+            >
+              {modalMsg}
+            </Text>
+            <TouchableOpacity onPress={() => handlePressOui()} style={s.addBtn}>
+              <Text style={s.addText}>Valider</Text>
+              {/* <Check size={20} color={colors.whiteBlack} /> */}
             </TouchableOpacity>
           </View>
         </View>
@@ -74,16 +74,7 @@ const styles = (colors) =>
       fontSize: 18,
       color: colors.textGeneral,
       textAlign: "center",
-      marginBottom: 15,
-    },
-    input: {
-      width: 200,
-      height: 40,
-      textAlign: "center",
-      color: colors.textGeneral,
-      backgroundColor: colors.inputBackground,
-      margin: 5,
-      borderRadius: 8,
+      //   marginBottom: 15,
     },
     addBtn: {
       marginTop: 10,
