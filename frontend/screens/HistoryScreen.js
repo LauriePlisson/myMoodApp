@@ -12,6 +12,8 @@ import { setMoodsByYear, resetMoods, setSelectedMood } from "../reducers/moods";
 export default function HistoryScreen() {
   const [displayMood, setDisplayMood] = useState(false);
   const [viewCalendar, setViewCalendar] = useState(true);
+  const [viewGraf, setViewGraf] = useState(false);
+  const [viewStats, setViewStat] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [period, setPeriod] = useState("mois");
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -152,7 +154,7 @@ export default function HistoryScreen() {
     const newDate = new Date(year, month, 1);
     setPeriod("mois");
     setSelectedDate(newDate);
-    setDisplayMood(false);
+    closeMoodCard();
   };
 
   return (
@@ -169,11 +171,37 @@ export default function HistoryScreen() {
           <TouchableOpacity
             style={[
               s.option,
+              viewGraf
+                ? { backgroundColor: colors.buttonBackground }
+                : { backgroundColor: colors.whiteBlack },
+            ]}
+            onPress={() => {
+              setViewGraf(true);
+              setViewStat(false);
+              setViewCalendar(false), closeMoodCard();
+              setPeriod("mois"), setSelectedDate(new Date());
+            }}
+          >
+            <Text
+              style={[
+                s.textOption,
+                viewGraf
+                  ? { color: colors.whiteBlack, fontWeight: "500" }
+                  : { color: colors.textGeneral },
+              ]}
+            >
+              Graphique
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              s.option,
               viewCalendar
                 ? { backgroundColor: colors.buttonBackground }
                 : { backgroundColor: colors.whiteBlack },
             ]}
             onPress={() => {
+              setViewGraf(false), setViewStat(false);
               setViewCalendar(true), closeMoodCard();
             }}
           >
@@ -188,32 +216,32 @@ export default function HistoryScreen() {
               Calendrier
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={[
               s.option,
-              !viewCalendar
+              viewStats
                 ? { backgroundColor: colors.buttonBackground }
                 : { backgroundColor: colors.whiteBlack },
             ]}
             onPress={() => {
+              setViewGraf(false), setViewStat(true);
               setViewCalendar(false), closeMoodCard();
-              setPeriod("mois"), setSelectedDate(new Date());
             }}
           >
             <Text
               style={[
                 s.textOption,
-                !viewCalendar
+                viewStats
                   ? { color: colors.whiteBlack, fontWeight: "500" }
                   : { color: colors.textGeneral },
               ]}
             >
-              Graphique
+              Statistiques
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         <View style={[s.display, viewCalendar ? { marginTop: 10 } : null]}>
-          {viewCalendar ? (
+          {viewCalendar && (
             <MoodCalendar
               key={moodsByYear.refreshKey || "calendar-default"}
               moods={moodsByYear}
@@ -223,7 +251,8 @@ export default function HistoryScreen() {
               setModalVisible={setModalVisible}
               onMoodPress={openMoodCard}
             />
-          ) : (
+          )}
+          {viewGraf && (
             <>
               <View style={s.filtres}>
                 <TouchableOpacity

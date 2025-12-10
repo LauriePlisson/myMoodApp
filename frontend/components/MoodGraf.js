@@ -211,17 +211,43 @@ export default function MoodGraf({
 
   return (
     <>
-      <View style={s.grafInfo}>
-        <TouchableOpacity style={s.chevron} onPress={() => handleChevronLeft()}>
-          <ChevronLeft color={colors.whiteWhite} />
-        </TouchableOpacity>
-        <Text style={s.grafText}>{displayPeriod}</Text>
-        <TouchableOpacity
-          style={s.chevron}
-          onPress={() => handleChevronRight()}
+      <View style={s.grafHeader}>
+        <View style={s.grafInfo}>
+          <TouchableOpacity
+            style={s.chevron}
+            onPress={() => handleChevronLeft()}
+          >
+            <ChevronLeft color={colors.whiteWhite} />
+          </TouchableOpacity>
+          <Text style={s.grafText}>{displayPeriod}</Text>
+          <TouchableOpacity
+            style={s.chevron}
+            onPress={() => handleChevronRight()}
+          >
+            <ChevronRight color={colors.whiteWhite} />
+          </TouchableOpacity>
+        </View>
+        {/* <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "flex-end",
+            width: 300,
+          }}
         >
-          <ChevronRight color={colors.whiteWhite} />
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              borderWidth: 1,
+              borderRadius: 15,
+              width: 80,
+              padding: 5,
+              justifyContent: "center",
+              alignItems: "center",
+              borderColor: colors.buttonBackground,
+            }}
+          >
+            <Text style={{ color: colors.buttonBackground }}>Comparer</Text>
+          </TouchableOpacity>
+        </View> */}
       </View>
       <View style={s.grafContainer}>
         <LineChart
@@ -278,16 +304,19 @@ export default function MoodGraf({
 
 const styles = (colors) =>
   StyleSheet.create({
+    grafHeader: {
+      justifyContent: "center",
+      marginTop: 20,
+      width: 350,
+      height: 60,
+      borderTopEndRadius: 8,
+      borderStartStartRadius: 8,
+      backgroundColor: colors.cardBackground,
+    },
     grafInfo: {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-around",
-      marginTop: 20,
-      width: 350,
-      height: 40,
-      borderTopEndRadius: 8,
-      borderStartStartRadius: 8,
-      backgroundColor: colors.cardBackground,
     },
     chevron: {
       alignItems: "center",
