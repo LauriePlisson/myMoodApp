@@ -33,7 +33,7 @@ export default function SettingsModal({
               }}
               style={s.closeBtn}
             >
-              <X size={20} color={colors.textAccent} />
+              <X size={20} color={colors.buttonBackground} />
             </TouchableOpacity>
             <Text style={s.title}>Es-tu sûr de vouloir </Text>
             <Text
@@ -41,10 +41,31 @@ export default function SettingsModal({
             >
               {modalMsg}
             </Text>
-            <TouchableOpacity onPress={() => handlePressOui()} style={s.addBtn}>
-              <Text style={s.addText}>Valider</Text>
+            <View style={{ flexDirection: "row", gap: 10 }}>
+              <TouchableOpacity
+                onPress={() => handlePressNon()}
+                style={[
+                  s.addBtn,
+                  {
+                    borderWidth: 1,
+                    borderColor: colors.inputBackground,
+                    backgroundColor: colors.background,
+                  },
+                ]}
+              >
+                <Text style={[s.addText, { color: colors.textGeneral }]}>
+                  Annuler
+                </Text>
+                {/* <Check size={20} color={colors.whiteBlack} /> */}
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handlePressOui()}
+                style={s.addBtn}
+              >
+                <Text style={s.addText}>Valider</Text>
+              </TouchableOpacity>
               {/* <Check size={20} color={colors.whiteBlack} /> */}
-            </TouchableOpacity>
+            </View>
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -61,7 +82,7 @@ const styles = (colors) =>
       alignItems: "center",
     },
     modalContent: {
-      width: 300,
+      width: 250,
       padding: 20,
       backgroundColor: colors.background,
       borderRadius: 12,

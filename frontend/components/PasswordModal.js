@@ -61,7 +61,7 @@ const styles = (colors) =>
       alignItems: "center",
     },
     modalContent: {
-      width: 300,
+      width: 250,
       padding: 20,
       backgroundColor: colors.background,
       borderRadius: 12,

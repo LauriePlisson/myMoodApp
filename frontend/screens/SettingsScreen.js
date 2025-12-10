@@ -119,7 +119,7 @@ export default function SettingsScreen({ navigation }) {
   };
 
   const handlePressOui = () => {
-    console.log("handlePressOui");
+    // console.log("handlePressOui");
     setModalVisible(false);
     if (openFrom === "LogOut") {
       handleLogOut();
@@ -133,7 +133,7 @@ export default function SettingsScreen({ navigation }) {
   };
 
   const handlePressNon = () => {
-    console.log("handlePressNon");
+    // console.log("handlePressNon");
     setModalVisible(false);
     if (openFrom === "Edit")
       setSuccesMessage("Modification annulée"),
@@ -192,7 +192,7 @@ export default function SettingsScreen({ navigation }) {
         </View>
       </Modal> */}
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <View style={{ flex: 1, width: "100%", alignItems: "center" }}>
+        <View style={{ flex: 1, alignItems: "center" }}>
           <View style={s.topPage}>
             <Text style={s.settings}>Réglages</Text>
             <Text style={s.message}>{succesMessage}</Text>
@@ -292,7 +292,7 @@ export default function SettingsScreen({ navigation }) {
                       />
                       <View
                         style={{
-                          width: 310,
+                          width: 300,
                           flexDirection: "row",
                           justifyContent: "space-around",
                           alignItems: "center",
@@ -475,7 +475,7 @@ const styles = (colors) =>
       fontSize: 15,
     },
     editUsername: {
-      width: 310,
+      width: 300,
       flexDirection: "row",
       justifyContent: "space-around",
       alignItems: "center",
@@ -502,13 +502,12 @@ const styles = (colors) =>
       color: colors.textMyMood,
     },
     reglages: {
-      width: "100%",
       justifyContent: "center",
       alignItems: "center",
       gap: 20,
     },
     infoUser: {
-      width: "80%",
+      width: 310,
       justifyContent: "center",
       alignItems: "center",
       backgroundColor: colors.cardBackground,
@@ -516,7 +515,7 @@ const styles = (colors) =>
       height: "auto",
     },
     mode: {
-      width: "80%",
+      width: 310,
       justifyContent: "center",
       alignItems: "center",
       backgroundColor: colors.cardBackground,
@@ -524,7 +523,7 @@ const styles = (colors) =>
       height: 110,
     },
     quitte: {
-      width: "80%",
+      width: 310,
       justifyContent: "center",
       alignItems: "center",
       backgroundColor: colors.cardBackground,
@@ -532,7 +531,7 @@ const styles = (colors) =>
       height: 110,
     },
     bouton: {
-      width: "100%",
+      width: 310,
       height: 50,
       backgroundColor: "transparent",
       justifyContent: "center",
@@ -560,25 +559,25 @@ const styles = (colors) =>
       borderRadius: 12,
       alignItems: "center",
     },
-    textModal: {
-      color: colors.textGeneral,
-      fontWeight: 500,
-      fontSize: 15,
-      letterSpacing: 0.2,
-      textAlign: "center",
-    },
-    boutonsModale: {
-      marginTop: 15,
-      flexDirection: "row",
-      gap: 12,
-    },
-    boutonModale: {
-      width: 50,
-      height: 30,
-      borderRadius: 8,
-      alignItems: "center",
-      justifyContent: "center",
-    },
+    // textModal: {
+    //   color: colors.textGeneral,
+    //   fontWeight: 500,
+    //   fontSize: 15,
+    //   letterSpacing: 0.2,
+    //   textAlign: "center",
+    // },
+    // boutonsModale: {
+    //   marginTop: 15,
+    //   flexDirection: "row",
+    //   gap: 12,
+    // },
+    // boutonModale: {
+    //   width: 50,
+    //   height: 30,
+    //   borderRadius: 8,
+    //   alignItems: "center",
+    //   justifyContent: "center",
+    // },
     textStyle: {
       color: "black",
       fontWeight: "500",
