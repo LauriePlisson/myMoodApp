@@ -1,10 +1,9 @@
 import { Calendar, LocaleConfig } from "react-native-calendars";
-import { View, Text, StyleSheet } from "react-native";
-import { useIsFocused } from "@react-navigation/native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { useState, useCallback, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { setSelectedMood } from "../reducers/moods";
+import { useSelector } from "react-redux";
+import MoodRing from "./MoodRing";
 import {
   getColorFromMoodValue,
   getColorBackgroundFromMoodValue,
@@ -23,7 +22,6 @@ export default function MoodCalendar({
   const { theme, colors } = useTheme();
   const s = styles(colors);
 
-  const dispatch = useDispatch();
   const selectedMood = useSelector((state) => state.moods.selectedMood);
 
   useEffect(() => {
@@ -38,49 +36,6 @@ export default function MoodCalendar({
     return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
       .toISOString()
       .split("T")[0];
-  }
-
-  const markedDates = {};
-
-  moodsForCalendar.forEach((mood) => {
-    const localDate = formatLocalDate(mood.date);
-    markedDates[localDate] = {
-      customStyles: {
-        container: {
-          backgroundColor: getColorBackgroundFromMoodValue(mood.moodValue),
-          borderRadius: 50,
-          // borderWidth: 1,
-          borderColor: getColorFromMoodValue(mood.moodValue),
-          justifyContent: "center",
-          alignItems: "center",
-        },
-        text: {
-          color: getColorFromMoodValue(mood.moodValue),
-        },
-      },
-    };
-  });
-
-  if (selectedMood) {
-    markedDates[selectedMood.dateString] = {
-      ...(markedDates[selectedMood.dateString] || {}), // si déjà un mood : on garde les styles
-      customStyles: {
-        ...(markedDates[selectedMood.dateString]?.customStyles || {}),
-        container: {
-          ...(markedDates[selectedMood.dateString]?.customStyles?.container ||
-            {}),
-          borderWidth: 2,
-          borderColor: getColorFromMoodValue(selectedMood.value), // couleur d'entourage du jour sélectionné
-          justifyContent: "center",
-          alignItems: "center",
-        },
-        text: {
-          ...(markedDates[selectedMood.dateString]?.customStyles?.text || {}),
-          color: getColorFromMoodValue(selectedMood.value),
-          fontWeight: "500",
-        },
-      },
-    };
   }
 
   function formatDate(dateString) {
@@ -192,16 +147,56 @@ export default function MoodCalendar({
   return (
     <Calendar
       key={refreshKey}
-      markingType={"custom"}
-      markedDates={markedDates}
-      onDayPress={(day) => {
-        handleDaySelect(day.dateString);
-      }}
       onMonthChange={(month) => {
         handleChangeMonth(month);
       }}
       style={s.calendar}
       theme={calendarTheme}
+      dayComponent={({ date, state }) => {
+        const dateString = date.dateString;
+        const mood = moodsForCalendar.find(
+          (m) => formatLocalDate(m.date) === dateString
+        );
+        const moodValue = mood ? mood.moodValue : null;
+        const isSelected = selectedMood?.dateString === dateString;
+
+        return (
+          <TouchableOpacity
+            onPress={() => handleDaySelect(dateString)}
+            style={{
+              width: 30,
+              height: 30,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: getColorBackgroundFromMoodValue(moodValue),
+              borderRadius: 50,
+              margin: 0,
+              padding: 0,
+            }}
+          >
+            {moodValue !== null && (
+              <MoodRing
+                value={moodValue}
+                size={30}
+                strokeWidth={isSelected ? 3.5 : 3}
+                color={getColorFromMoodValue(moodValue)}
+              />
+            )}
+            <Text
+              style={{
+                fontSize: 15,
+                color:
+                  state === "disabled"
+                    ? "#ccc"
+                    : getColorFromMoodValue(moodValue),
+                fontWeight: isSelected ? "bold" : "400",
+              }}
+            >
+              {date.day}
+            </Text>
+          </TouchableOpacity>
+        );
+      }}
     />
   );
 }
