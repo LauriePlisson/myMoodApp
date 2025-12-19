@@ -3,7 +3,7 @@ import { LineChart } from "react-native-gifted-charts";
 import { ChevronLeft, ChevronRight, X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
 import { useSelector, useDispatch } from "react-redux";
-import { getColorFromMoodValue } from "../utils/moodColors";
+import { getMoodColor } from "../utils/moodColors";
 
 export default function MoodGraf({
   moods,
@@ -289,9 +289,7 @@ export default function MoodGraf({
           dataPointsColor={colors.dotColor}
           unFocusOnPressOut={false}
           focusedDataPointColor={
-            selectedMood
-              ? getColorFromMoodValue(selectedMood.value)
-              : colors.dotColor
+            selectedMood ? getMoodColor(selectedMood.value) : colors.dotColor
           }
           onFocus={(mood) => {
             handleFocus(mood);

@@ -1,8 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import {
-  getColorFromMoodValue,
-  getColorBackgroundFromMoodValue,
-} from "../utils/moodColors";
+import { getMoodBackgroundColor, getMoodColor } from "../utils/moodColors";
 import { useSelector, useDispatch } from "react-redux";
 import {
   X,
@@ -31,12 +28,7 @@ export default function MoodCard({
   const isFuture = new Date(selectedMood?.dateString) > new Date();
 
   return (
-    <View
-      style={[
-        s.card,
-        { borderColor: getColorFromMoodValue(selectedMood?.value) },
-      ]}
-    >
+    <View style={[s.card, { borderColor: getMoodColor(selectedMood?.value) }]}>
       <View style={s.header}>
         <Text style={s.moodDate}>{selectedMood?.date}</Text>
         <TouchableOpacity
@@ -44,7 +36,7 @@ export default function MoodCard({
             onCloseMood();
           }}
         >
-          <X size={20} color={getColorFromMoodValue(selectedMood?.value)} />
+          <X size={20} color={getMoodColor(selectedMood?.value)} />
         </TouchableOpacity>
       </View>
       <View style={s.midCard}>
@@ -61,10 +53,7 @@ export default function MoodCard({
               Moyenne:
             </Text>
             <Text
-              style={[
-                s.note,
-                { color: getColorFromMoodValue(selectedMood?.value) },
-              ]}
+              style={[s.note, { color: getMoodColor(selectedMood?.value) }]}
             >
               {String(selectedMood?.value).padStart(2, "0")}
             </Text>
@@ -92,7 +81,7 @@ export default function MoodCard({
               style={[
                 s.button,
                 {
-                  backgroundColor: getColorFromMoodValue(selectedMood?.value),
+                  backgroundColor: getMoodColor(selectedMood?.value),
                 },
               ]}
               onPress={() => setModalVisible(true)}
@@ -112,7 +101,7 @@ export default function MoodCard({
               style={[
                 s.button,
                 {
-                  backgroundColor: getColorFromMoodValue(selectedMood?.value),
+                  backgroundColor: getMoodBackgroundColor(selectedMood?.value),
                 },
               ]}
               onPress={() => {

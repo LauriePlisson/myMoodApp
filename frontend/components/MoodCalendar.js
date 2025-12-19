@@ -4,10 +4,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useState, useCallback, useEffect } from "react";
 import { useSelector } from "react-redux";
 import MoodRing from "./MoodRing";
-import {
-  getColorFromMoodValue,
-  getColorBackgroundFromMoodValue,
-} from "../utils/moodColors";
+import { getMoodColor, getMoodBackgroundColor } from "../utils/moodColors";
 import { useTheme } from "../context/ThemeContext";
 import { useMemo } from "react";
 
@@ -160,6 +157,13 @@ export default function MoodCalendar({
         const moodValue = mood ? mood.moodValue : null;
         const isSelected = selectedMood?.dateString === dateString;
 
+        // Déterminer si le jour est du mois courant
+        const isCurrentMonth = state !== "disabled";
+
+        // Alpha différent pour mois courant vs autres mois
+        const backgroundAlpha = isCurrentMonth ? 0.25 : 0.12;
+        const accentOpacity = isCurrentMonth ? 1 : 0.45;
+
         return (
           <TouchableOpacity
             onPress={() => handleDaySelect(dateString)}
@@ -168,8 +172,11 @@ export default function MoodCalendar({
               height: 30,
               justifyContent: "center",
               alignItems: "center",
-              backgroundColor: getColorBackgroundFromMoodValue(moodValue),
+              backgroundColor:
+                moodValue !== null &&
+                getMoodBackgroundColor(moodValue, backgroundAlpha),
               borderRadius: 50,
+              // borderColor: getMoodColor(moodValue),
               margin: 0,
               padding: 0,
             }}
@@ -179,16 +186,15 @@ export default function MoodCalendar({
                 value={moodValue}
                 size={30}
                 strokeWidth={isSelected ? 3.5 : 3}
-                color={getColorFromMoodValue(moodValue)}
+                color={getMoodColor(moodValue)}
+                opacity={accentOpacity}
               />
             )}
             <Text
               style={{
                 fontSize: 15,
-                color:
-                  state === "disabled"
-                    ? "#ccc"
-                    : getColorFromMoodValue(moodValue),
+                color: getMoodColor(moodValue),
+                opacity: accentOpacity,
                 fontWeight: isSelected ? "bold" : "400",
               }}
             >
