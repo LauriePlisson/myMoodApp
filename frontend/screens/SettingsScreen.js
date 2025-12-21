@@ -3,7 +3,6 @@ import {
   View,
   TouchableOpacity,
   StyleSheet,
-  Modal,
   TextInput,
   Switch,
   TouchableWithoutFeedback,
@@ -15,7 +14,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { logOut, changeUsername } from "../reducers/user";
 import { useTheme } from "../context/ThemeContext";
 import { useNotification } from "../context/NotificationContext";
-import { Check, X } from "lucide-react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import {
+  Check,
+  X,
+  CirclePlus,
+  CircleMinus,
+  Plus,
+  Minus,
+  Pencil,
+  Cog,
+  Settings2,
+  ClockPlus,
+} from "lucide-react-native";
 import SettingsModal from "../components/SettingsModal";
 
 export default function SettingsScreen({ navigation }) {
@@ -32,8 +43,15 @@ export default function SettingsScreen({ navigation }) {
   const [editType, setEditType] = useState("");
   const [errorEditPassword, setErrorEditPassword] = useState("");
   const [errorEditUsername, setErrorEditUsername] = useState("");
+  const [showTimePicker, setShowTimePicker] = useState(false);
 
-  const { notificationsEnabled, toggleNotifications } = useNotification();
+  const {
+    notificationsEnabled,
+    toggleNotifications,
+    notificationTime,
+    updateNotificationTime,
+  } = useNotification();
+
   const { theme, toggleTheme } = useTheme();
   const dispatch = useDispatch();
   const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -149,6 +167,16 @@ export default function SettingsScreen({ navigation }) {
     if (type) setEditType(type);
   };
 
+  const onChangeTime = (event, selectedDate) => {
+    if (event.type === "dismissed") {
+      setShowTimePicker(false);
+      return;
+    }
+
+    setShowTimePicker(false);
+    updateNotificationTime(selectedDate);
+  };
+
   return (
     <SafeAreaView style={s.container}>
       <SettingsModal
@@ -158,39 +186,6 @@ export default function SettingsScreen({ navigation }) {
         handlePressNon={handlePressNon}
         handlePressOui={handlePressOui}
       />
-      {/* <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={s.modalOverlay}>
-          <View style={s.modalContent}>
-            <Text style={s.textModal}>Es-tu sure de vouloir </Text>
-            <Text style={[s.textModal, { color: colors.textAccent }]}>
-              {modalMsg}
-            </Text>
-            <View style={s.boutonsModale}>
-              <TouchableOpacity
-                style={[s.boutonModale, { backgroundColor: "#c890b5ff" }]} //"#d8becbff"
-                onPress={() => {
-                  handlePressNon();
-                }}
-              >
-                <Text style={s.textStyle}>Non</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[s.boutonModale, { backgroundColor: "#e9d5e3ff" }]} //"#fceaf0ff"
-                onPress={() => handlePressOui()}
-              >
-                <Text style={s.textStyle}>Oui</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal> */}
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={{ flex: 1, alignItems: "center" }}>
           <View style={s.topPage}>
@@ -362,33 +357,161 @@ export default function SettingsScreen({ navigation }) {
                 </TouchableOpacity>
               )}
             </View>
-            <View style={s.mode}>
+            <View style={[s.mode]}>
               <View
                 style={[
                   s.bouton,
                   {
                     borderBottomColor: colors.textMyMood,
                     borderBottomWidth: 0.5,
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    paddingRight: 15,
                   },
                 ]}
               >
-                <Text style={s.subtext}>Notifications</Text>
-                <Switch
-                  style={{ marginTop: 10 }}
-                  value={notificationsEnabled}
-                  trackColor={
-                    theme === "dark"
-                      ? { false: "#767577", true: "#2e3034ff" }
-                      : { false: "#767577", true: "#A48A97" }
-                  }
-                  thumbColor={theme === "dark" ? "#A48A97" : "#f4f3f4"}
-                  onValueChange={toggleNotifications}
-                ></Switch>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={s.subtext}>Notifications</Text>
+
+                  {!showTimePicker ? (
+                    <TouchableOpacity
+                      onPress={() => setShowTimePicker(true)}
+                      disabled={!notificationsEnabled}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          gap: 5,
+                          alignItems: "center",
+                        }}
+                      >
+                        <Text style={{ color: colors.textPlaceHolder }}>
+                          {`${notificationTime.hour
+                            .toString()
+                            .padStart(2, "0")}:${notificationTime.minute
+                            .toString()
+                            .padStart(2, "0")}`}
+                        </Text>
+                        <ClockPlus size={15} color={colors.textPlaceHolder} />
+                      </View>
+                    </TouchableOpacity>
+                  ) : (
+                    <DateTimePicker
+                      value={
+                        new Date(
+                          0,
+                          0,
+                          0,
+                          notificationTime.hour,
+                          notificationTime.minute
+                        )
+                      }
+                      mode="time"
+                      is24Hour={true}
+                      onChange={onChangeTime}
+                      // display="inline"
+                      timeZoneName={"Europe/Prague"}
+                    />
+                  )}
+
+                  <Switch
+                    value={notificationsEnabled}
+                    onValueChange={toggleNotifications}
+                    trackColor={
+                      theme === "dark"
+                        ? { false: "#767577", true: "#2e3034ff" }
+                        : { false: "#767577", true: "#A48A97" }
+                    }
+                    thumbColor={theme === "dark" ? "#A48A97" : "#f4f3f4"}
+                  />
+                </View>
+
+                {/* {showTimePicker && (
+                  <View style={s.pickerOverlay}>
+                    <View style={s.pickerContainer}>
+                      <DateTimePicker
+                        value={
+                          new Date(
+                            0,
+                            0,
+                            0,
+                            notificationTime.hour,
+                            notificationTime.minute
+                          )
+                        }
+                        mode="time"
+                        is24Hour={true}
+                        display="spinner"
+                        onChange={onChangeTime}
+                      />
+                    </View>
+                  </View>
+                )} */}
               </View>
+
+              {/* <View
+                style={[
+                  s.bouton,
+                  {
+                    borderBottomColor: colors.textMyMood,
+                    borderBottomWidth: 0.5,
+                  },
+                ]}
+              >
+                <View
+                  style={[
+                    {
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    },
+                  ]}
+                >
+                  <Text style={s.subtext}>Notifications</Text>
+                  {/* <TouchableOpacity>
+                    <View style={{ flexDirection: "row", gap: 2 }}>
+                      <Text style={{ color: colors.textPlaceHolder }}>
+                        20:00
+                      </Text>
+                      <ClockPlus size={15} color={colors.textPlaceHolder} />
+                    </View>
+                  </TouchableOpacity> 
+                  <DateTimePicker
+                    testID="dateTimePicker"
+                    value={date}
+                    mode={"time"}
+                    is24Hour={true}
+                    // onChange={onChange}
+                  />
+
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      // width: 70,
+                      // borderWidth: 1,
+                      // borderColor: "white",
+                      marginRight: 30,
+                      gap: 5,
+                    }}
+                  >
+                    <Switch
+                      value={notificationsEnabled}
+                      trackColor={
+                        theme === "dark"
+                          ? { false: "#767577", true: "#2e3034ff" }
+                          : { false: "#767577", true: "#A48A97" }
+                      }
+                      thumbColor={theme === "dark" ? "#A48A97" : "#f4f3f4"}
+                      onValueChange={toggleNotifications}
+                    ></Switch>
+                  </View>
+                </View>
+              </View> */}
+
               <View
                 style={[
                   s.bouton,
@@ -396,7 +519,7 @@ export default function SettingsScreen({ navigation }) {
                     flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    paddingRight: 15,
+                    paddingRight: 30,
                   },
                 ]}
               >
@@ -533,7 +656,6 @@ const styles = (colors) =>
     bouton: {
       width: 310,
       height: 50,
-      backgroundColor: "transparent",
       justifyContent: "center",
       paddingLeft: 15,
     },
@@ -546,41 +668,26 @@ const styles = (colors) =>
       margin: 5,
       borderRadius: 8,
     },
-    modalOverlay: {
-      flex: 1,
-      backgroundColor: "rgba(0,0,0,0.5)",
-      justifyContent: "center",
-      alignItems: "center",
-    },
-    modalContent: {
-      width: 300,
-      padding: 20,
-      backgroundColor: colors.background,
-      borderRadius: 12,
-      alignItems: "center",
-    },
-    // textModal: {
-    //   color: colors.textGeneral,
-    //   fontWeight: 500,
-    //   fontSize: 15,
-    //   letterSpacing: 0.2,
-    //   textAlign: "center",
-    // },
-    // boutonsModale: {
-    //   marginTop: 15,
-    //   flexDirection: "row",
-    //   gap: 12,
-    // },
-    // boutonModale: {
-    //   width: 50,
-    //   height: 30,
-    //   borderRadius: 8,
-    //   alignItems: "center",
-    //   justifyContent: "center",
-    // },
     textStyle: {
       color: "black",
       fontWeight: "500",
       letterSpacing: 0.2,
+    },
+    pickerOverlay: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: "rgba(0,0,0,0.4)",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+
+    pickerContainer: {
+      backgroundColor: colors.background,
+      borderRadius: 12,
+      padding: 10,
+      width: 300,
     },
   });

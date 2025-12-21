@@ -1,8 +1,8 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import * as Notifications from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// Handler global pour Expo (même si app ouverte au premier plan)
+/* 🔔 Handler global */
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -13,67 +13,61 @@ Notifications.setNotificationHandler({
 
 const NotificationContext = createContext();
 
+const ENABLED_KEY = "notificationsEnabled";
+const TIME_KEY = "notificationTime";
+
+/* ⏰ Heure par défaut : 20:00 */
+const DEFAULT_TIME = { hour: 20, minute: 0 };
+
 export const NotificationProvider = ({ children }) => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-  const STORAGE_KEY = "notificationsEnabled";
+  const [notificationTime, setNotificationTime] = useState(DEFAULT_TIME);
 
-  // Charger l'état au lancement
+  /* 🔄 Init au lancement */
   useEffect(() => {
     const init = async () => {
-      try {
-        // 1️⃣ Lire le choix utilisateur
-        const saved = await AsyncStorage.getItem(STORAGE_KEY);
-        if (saved !== null) {
-          setNotificationsEnabled(saved === "true");
-        }
+      const savedEnabled = await AsyncStorage.getItem(ENABLED_KEY);
+      const savedTime = await AsyncStorage.getItem(TIME_KEY);
 
-        // 2️⃣ Vérifier la permission système
-        const system = await Notifications.getPermissionsAsync();
-        const granted = system.status === "granted";
+      if (savedEnabled !== null) {
+        setNotificationsEnabled(savedEnabled === "true");
+      }
 
-        // Si refus iOS → toggle OFF
-        if (!granted) {
-          setNotificationsEnabled(false);
-          await AsyncStorage.setItem(STORAGE_KEY, "false");
-        }
-      } catch (e) {
-        console.error("Erreur init notifications", e);
+      if (savedTime) {
+        setNotificationTime(JSON.parse(savedTime));
       }
     };
 
     init();
   }, []);
 
-  // Sauvegarde automatique du choix utilisateur
+  /* 💾 Sauvegarde ON/OFF */
   useEffect(() => {
-    AsyncStorage.setItem(STORAGE_KEY, notificationsEnabled.toString());
+    AsyncStorage.setItem(ENABLED_KEY, notificationsEnabled.toString());
   }, [notificationsEnabled]);
 
-  // Programmer / annuler selon l'état
+  /* 🔔 Programmer / annuler */
   useEffect(() => {
-    const updateNotifications = async () => {
+    const sync = async () => {
+      await Notifications.cancelAllScheduledNotificationsAsync();
+
       if (notificationsEnabled) {
-        await scheduleDailyNotification();
-      } else {
-        await Notifications.cancelAllScheduledNotificationsAsync();
+        await scheduleDailyNotification(notificationTime);
       }
     };
 
-    updateNotifications();
-  }, [notificationsEnabled]);
+    sync();
+  }, [notificationsEnabled, notificationTime]);
 
-  const requestPermission = async () => {
-    const { status } = await Notifications.requestPermissionsAsync();
-    return status === "granted";
-  };
-
-  const scheduleDailyNotification = async () => {
+  /* 📅 Programmer la notification */
+  const scheduleDailyNotification = async (time) => {
     const now = new Date();
-    let trigger = new Date();
-    trigger.setHours(20, 0, 0, 0); // 20h aujourd'hui
+    const trigger = new Date();
+
+    trigger.setHours(time.hour, time.minute, 0, 0);
 
     if (trigger <= now) {
-      trigger.setDate(trigger.getDate() + 1); // demain si l'heure est passée
+      trigger.setDate(trigger.getDate() + 1);
     }
 
     await Notifications.scheduleNotificationAsync({
@@ -88,18 +82,31 @@ export const NotificationProvider = ({ children }) => {
     });
   };
 
+  /* 🔐 Permission */
+  const requestPermission = async () => {
+    const { status } = await Notifications.requestPermissionsAsync();
+    return status === "granted";
+  };
+
+  /* 🔁 Toggle ON/OFF */
   const toggleNotifications = async () => {
-    // Si on active → vérifier permission
     if (!notificationsEnabled) {
       const granted = await requestPermission();
-      if (!granted) {
-        setNotificationsEnabled(false);
-        return;
-      }
+      if (!granted) return;
     }
 
-    // Bascule ON/OFF
     setNotificationsEnabled((prev) => !prev);
+  };
+
+  /* ⏰ Modifier l'heure */
+  const updateNotificationTime = async (date) => {
+    const newTime = {
+      hour: date.getHours(),
+      minute: date.getMinutes(),
+    };
+
+    setNotificationTime(newTime);
+    await AsyncStorage.setItem(TIME_KEY, JSON.stringify(newTime));
   };
 
   return (
@@ -107,6 +114,8 @@ export const NotificationProvider = ({ children }) => {
       value={{
         notificationsEnabled,
         toggleNotifications,
+        notificationTime,
+        updateNotificationTime,
       }}
     >
       {children}
