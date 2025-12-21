@@ -1,4 +1,5 @@
 import Svg, { Circle } from "react-native-svg";
+import { getMoodLevel } from "../utils/moodColors";
 
 export default function MoodRing({
   value,
@@ -11,10 +12,27 @@ export default function MoodRing({
 
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
-  const minStrokeLength = 1; // longueur du petit trait visible
+  const minStrokeLength = 1;
 
-  // 0 → 10
-  const percentage = Math.max(value, 0) / 10;
+  // const percentage = Math.max(value, 0) / 10;
+  const level = getMoodLevel(value);
+  function getMoodPercentageFromLevel(level) {
+    switch (level) {
+      case "veryLow":
+        return 0.05;
+      case "low":
+        return 0.25;
+      case "neutral":
+        return 0.5;
+      case "good":
+        return 0.75;
+      case "veryGood":
+        return 1;
+      default:
+        return 0;
+    }
+  }
+  const percentage = getMoodPercentageFromLevel(level);
 
   let dashOffset;
   let dashArray;
