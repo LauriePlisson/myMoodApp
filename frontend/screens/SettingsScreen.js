@@ -14,19 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logOut, changeUsername } from "../reducers/user";
 import { useTheme } from "../context/ThemeContext";
 import { useNotification } from "../context/NotificationContext";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import {
-  Check,
-  X,
-  CirclePlus,
-  CircleMinus,
-  Plus,
-  Minus,
-  Pencil,
-  Cog,
-  Settings2,
-  ClockPlus,
-} from "lucide-react-native";
+import { Check, X, ClockPlus } from "lucide-react-native";
 import SettingsModal from "../components/SettingsModal";
 
 export default function SettingsScreen({ navigation }) {
@@ -43,7 +31,6 @@ export default function SettingsScreen({ navigation }) {
   const [editType, setEditType] = useState("");
   const [errorEditPassword, setErrorEditPassword] = useState("");
   const [errorEditUsername, setErrorEditUsername] = useState("");
-  const [showTimePicker, setShowTimePicker] = useState(false);
 
   const {
     notificationsEnabled,
@@ -136,7 +123,7 @@ export default function SettingsScreen({ navigation }) {
     }
   };
 
-  const handlePressOui = () => {
+  const handlePressOui = (date) => {
     // console.log("handlePressOui");
     setModalVisible(false);
     if (openFrom === "LogOut") {
@@ -148,6 +135,10 @@ export default function SettingsScreen({ navigation }) {
     if (openFrom === "Edit") {
       handleEdit(editType);
     }
+    if (openFrom === "Notif" && date) {
+      updateNotificationTime(date);
+      return;
+    }
   };
 
   const handlePressNon = () => {
@@ -156,7 +147,7 @@ export default function SettingsScreen({ navigation }) {
     if (openFrom === "Edit")
       setSuccesMessage("Modification annulée"),
         setTimeout(() => setSuccesMessage(""), 3000);
-    if (openFrom === "LogOut" || openFrom === "Delete")
+    if (openFrom === "LogOut" || openFrom === "Delete" || openFrom === "Notif")
       setSuccesMessage("Annulé"), setTimeout(() => setSuccesMessage(""), 3000);
   };
 
@@ -167,24 +158,16 @@ export default function SettingsScreen({ navigation }) {
     if (type) setEditType(type);
   };
 
-  const onChangeTime = (event, selectedDate) => {
-    if (event.type === "dismissed") {
-      setShowTimePicker(false);
-      return;
-    }
-
-    setShowTimePicker(false);
-    updateNotificationTime(selectedDate);
-  };
-
   return (
     <SafeAreaView style={s.container}>
       <SettingsModal
+        openFrom={openFrom}
         setModalVisible={setModalVisible}
         modalMsg={modalMsg}
         visible={modalVisible}
         handlePressNon={handlePressNon}
         handlePressOui={handlePressOui}
+        notificationTime={notificationTime}
       />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={{ flex: 1, alignItems: "center" }}>
@@ -372,51 +355,32 @@ export default function SettingsScreen({ navigation }) {
                     flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: "center",
+                    paddingRight: 30,
                   }}
                 >
                   <Text style={s.subtext}>Notifications</Text>
-
-                  {!showTimePicker ? (
-                    <TouchableOpacity
-                      onPress={() => setShowTimePicker(true)}
-                      disabled={!notificationsEnabled}
+                  <TouchableOpacity
+                    onPress={() => {
+                      openModal("Notif", "Choisis l'heure de ta notification");
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        gap: 5,
+                        alignItems: "center",
+                      }}
                     >
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          gap: 5,
-                          alignItems: "center",
-                        }}
-                      >
-                        <Text style={{ color: colors.textPlaceHolder }}>
-                          {`${notificationTime.hour
-                            .toString()
-                            .padStart(2, "0")}:${notificationTime.minute
-                            .toString()
-                            .padStart(2, "0")}`}
-                        </Text>
-                        <ClockPlus size={15} color={colors.textPlaceHolder} />
-                      </View>
-                    </TouchableOpacity>
-                  ) : (
-                    <DateTimePicker
-                      value={
-                        new Date(
-                          0,
-                          0,
-                          0,
-                          notificationTime.hour,
-                          notificationTime.minute
-                        )
-                      }
-                      mode="time"
-                      is24Hour={true}
-                      onChange={onChangeTime}
-                      // display="inline"
-                      timeZoneName={"Europe/Prague"}
-                    />
-                  )}
-
+                      <Text style={{ color: colors.textPlaceHolder }}>
+                        {`${notificationTime.hour
+                          .toString()
+                          .padStart(2, "0")}:${notificationTime.minute
+                          .toString()
+                          .padStart(2, "0")}`}
+                      </Text>
+                      <ClockPlus size={15} color={colors.textPlaceHolder} />
+                    </View>
+                  </TouchableOpacity>
                   <Switch
                     value={notificationsEnabled}
                     onValueChange={toggleNotifications}
@@ -426,91 +390,9 @@ export default function SettingsScreen({ navigation }) {
                         : { false: "#767577", true: "#A48A97" }
                     }
                     thumbColor={theme === "dark" ? "#A48A97" : "#f4f3f4"}
-                  />
+                  ></Switch>
                 </View>
-
-                {/* {showTimePicker && (
-                  <View style={s.pickerOverlay}>
-                    <View style={s.pickerContainer}>
-                      <DateTimePicker
-                        value={
-                          new Date(
-                            0,
-                            0,
-                            0,
-                            notificationTime.hour,
-                            notificationTime.minute
-                          )
-                        }
-                        mode="time"
-                        is24Hour={true}
-                        display="spinner"
-                        onChange={onChangeTime}
-                      />
-                    </View>
-                  </View>
-                )} */}
               </View>
-
-              {/* <View
-                style={[
-                  s.bouton,
-                  {
-                    borderBottomColor: colors.textMyMood,
-                    borderBottomWidth: 0.5,
-                  },
-                ]}
-              >
-                <View
-                  style={[
-                    {
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    },
-                  ]}
-                >
-                  <Text style={s.subtext}>Notifications</Text>
-                  {/* <TouchableOpacity>
-                    <View style={{ flexDirection: "row", gap: 2 }}>
-                      <Text style={{ color: colors.textPlaceHolder }}>
-                        20:00
-                      </Text>
-                      <ClockPlus size={15} color={colors.textPlaceHolder} />
-                    </View>
-                  </TouchableOpacity> 
-                  <DateTimePicker
-                    testID="dateTimePicker"
-                    value={date}
-                    mode={"time"}
-                    is24Hour={true}
-                    // onChange={onChange}
-                  />
-
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      // width: 70,
-                      // borderWidth: 1,
-                      // borderColor: "white",
-                      marginRight: 30,
-                      gap: 5,
-                    }}
-                  >
-                    <Switch
-                      value={notificationsEnabled}
-                      trackColor={
-                        theme === "dark"
-                          ? { false: "#767577", true: "#2e3034ff" }
-                          : { false: "#767577", true: "#A48A97" }
-                      }
-                      thumbColor={theme === "dark" ? "#A48A97" : "#f4f3f4"}
-                      onValueChange={toggleNotifications}
-                    ></Switch>
-                  </View>
-                </View>
-              </View> */}
 
               <View
                 style={[
@@ -627,7 +509,7 @@ const styles = (colors) =>
     reglages: {
       justifyContent: "center",
       alignItems: "center",
-      gap: 20,
+      gap: 25,
     },
     infoUser: {
       width: 310,

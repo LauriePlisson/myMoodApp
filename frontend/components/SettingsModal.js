@@ -11,6 +11,7 @@ import {
 import { useState, useEffect } from "react";
 import { X, Check } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 export default function SettingsModal({
   visible,
@@ -18,29 +19,85 @@ export default function SettingsModal({
   modalMsg,
   handlePressNon,
   handlePressOui,
+  openFrom,
+  notificationTime,
 }) {
   const { colors } = useTheme();
   const s = styles(colors);
+  const [tempDate, setTempDate] = useState(
+    new Date(0, 0, 0, notificationTime.hour, notificationTime.minute)
+  );
+
+  useEffect(() => {
+    if (openFrom === "Notif") {
+      setTempDate(
+        new Date(0, 0, 0, notificationTime.hour, notificationTime.minute)
+      );
+    }
+  }, [openFrom, notificationTime]);
 
   return (
     <Modal animationType="fade" transparent={true} visible={visible}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={s.modalOverlay}>
-          <View style={s.modalContent}>
+          <View
+            style={[
+              s.modalContent,
+              {
+                height: openFrom === "Notif" ? 260 : "auto",
+                width: openFrom === "Notif" ? 290 : 280,
+                justifyContent: "center",
+              },
+            ]}
+          >
             <TouchableOpacity
               onPress={() => {
                 handlePressNon();
               }}
-              style={s.closeBtn}
+              style={[s.closeBtn, { marginBottom: 10 }]}
             >
-              <X size={20} color={colors.buttonBackground} />
+              <X
+                size={20}
+                color={colors.buttonBackground}
+                style={{ fontWeight: "bold" }}
+              />
             </TouchableOpacity>
-            <Text style={s.title}>Es-tu sûr de vouloir </Text>
+
             <Text
-              style={[s.title, { color: colors.textAccent, marginBottom: 10 }]}
+              style={[s.title, { fontWeight: openFrom === "Notif" && "500" }]}
             >
-              {modalMsg}
+              {openFrom !== "Notif" ? "Es-tu sûr de vouloir" : modalMsg}
             </Text>
+
+            {openFrom !== "Notif" && (
+              <Text
+                style={[
+                  s.title,
+                  { color: colors.textAccent, marginBottom: 15 },
+                ]}
+              >
+                {modalMsg}
+              </Text>
+            )}
+            {openFrom === "Notif" && (
+              <DateTimePicker
+                value={tempDate}
+                mode="time"
+                is24Hour={true}
+                display="spinner"
+                timeZoneName={"Europe/Prague"}
+                style={{
+                  maxWidth: 250,
+                  maxHeight: 120,
+                  // textAccent: colors.textAccent,
+                }}
+                textColor={colors.textAccent}
+                onChange={(event, date) => {
+                  if (date) setTempDate(date);
+                }}
+              />
+            )}
+
             <View style={{ flexDirection: "row", gap: 10 }}>
               <TouchableOpacity
                 onPress={() => handlePressNon()}
@@ -59,7 +116,7 @@ export default function SettingsModal({
                 {/* <Check size={20} color={colors.whiteBlack} /> */}
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => handlePressOui()}
+                onPress={() => handlePressOui(tempDate)}
                 style={s.addBtn}
               >
                 <Text style={s.addText}>Valider</Text>
@@ -80,9 +137,10 @@ const styles = (colors) =>
       backgroundColor: "rgba(0,0,0,0.5)",
       justifyContent: "center",
       alignItems: "center",
+      paddingBottom: 40,
     },
     modalContent: {
-      width: 250,
+      // width: 270,
       padding: 20,
       backgroundColor: colors.background,
       borderRadius: 12,
