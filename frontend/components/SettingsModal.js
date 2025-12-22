@@ -88,7 +88,7 @@ export default function SettingsModal({
                 timeZoneName={"Europe/Prague"}
                 style={{
                   maxWidth: 250,
-                  maxHeight: 120,
+                  maxHeight: 125,
                   // textAccent: colors.textAccent,
                 }}
                 textColor={colors.textAccent}

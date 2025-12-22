@@ -359,28 +359,33 @@ export default function SettingsScreen({ navigation }) {
                   }}
                 >
                   <Text style={s.subtext}>Notifications</Text>
-                  <TouchableOpacity
-                    onPress={() => {
-                      openModal("Notif", "Choisis l'heure de ta notification");
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        gap: 5,
-                        alignItems: "center",
+                  {notificationsEnabled && (
+                    <TouchableOpacity
+                      onPress={() => {
+                        openModal(
+                          "Notif",
+                          "Choisis l'heure de ta notification"
+                        );
                       }}
                     >
-                      <Text style={{ color: colors.textPlaceHolder }}>
-                        {`${notificationTime.hour
-                          .toString()
-                          .padStart(2, "0")}:${notificationTime.minute
-                          .toString()
-                          .padStart(2, "0")}`}
-                      </Text>
-                      <ClockPlus size={15} color={colors.textPlaceHolder} />
-                    </View>
-                  </TouchableOpacity>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          gap: 5,
+                          alignItems: "center",
+                        }}
+                      >
+                        <Text style={{ color: colors.textPlaceHolder }}>
+                          {`${notificationTime.hour
+                            .toString()
+                            .padStart(2, "0")}:${notificationTime.minute
+                            .toString()
+                            .padStart(2, "0")}`}
+                        </Text>
+                        <ClockPlus size={15} color={colors.textPlaceHolder} />
+                      </View>
+                    </TouchableOpacity>
+                  )}
                   <Switch
                     value={notificationsEnabled}
                     onValueChange={toggleNotifications}
