@@ -101,7 +101,7 @@ export default function MoodCard({
               style={[
                 s.button,
                 {
-                  backgroundColor: getMoodBackgroundColor(selectedMood?.value),
+                  backgroundColor: getMoodColor(selectedMood?.value),
                 },
               ]}
               onPress={() => {
