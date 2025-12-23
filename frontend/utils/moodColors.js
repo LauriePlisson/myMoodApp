@@ -1,5 +1,3 @@
-import { useTheme } from "../context/ThemeContext";
-
 const MOOD_COLORS = {
   veryLow: "#ccbfc8ff",
   low: "#dbb1cfff",
@@ -18,9 +16,8 @@ export function getMoodLevel(value) {
 }
 
 export function getMoodColor(value) {
-  const { colors } = useTheme();
   const level = getMoodLevel(value);
-  if (level === null) return colors.axesColor; // fallback neutre
+  if (level === null) return "#D8BECB"; // fallback neutre
   return MOOD_COLORS[level];
 }
 

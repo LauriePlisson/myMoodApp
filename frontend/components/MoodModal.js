@@ -140,32 +140,44 @@ export default function MoodModal({ visible, setModalVisible, date }) {
               />
             </View>
             <View style={s.commentSection}>
-              <TextInput
-                style={[
-                  s.input,
-                  {
-                    borderBottomWidth: 0.2,
-                    borderColor: colors.textGeneral,
-                  },
-                ]}
-                placeholder="Ajoute un commentaire..."
-                placeholderTextColor={colors.textPlaceHolder}
-                value={note}
-                selectionColor={colors.textAccent}
-                onChangeText={setNote}
-              />
-              <TouchableOpacity onPress={Keyboard.dismiss}>
-                <Check color={colors.textAccent} size={20} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  setNote(""), Keyboard.dismiss();
-                }}
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 2 }}
               >
-                <X color={colors.textGeneral} size={20} />
-              </TouchableOpacity>
+                <TextInput
+                  style={[
+                    s.input,
+                    {
+                      width: 150,
+                      borderBottomWidth: 0.2,
+                      borderColor: colors.textGeneral,
+                    },
+                  ]}
+                  placeholder="Ajoute un commentaire..."
+                  placeholderTextColor={colors.textPlaceHolder}
+                  value={note}
+                  selectionColor={colors.textAccent}
+                  onChangeText={setNote}
+                  maxLength={25}
+                />
+                {note.length > 0 && (
+                  <Text style={{ fontWeight: 300, color: colors.textGeneral }}>
+                    {note.length}/25
+                  </Text>
+                )}
+              </View>
+              <View style={{ flexDirection: "row", gap: 2 }}>
+                <TouchableOpacity onPress={Keyboard.dismiss}>
+                  <Check color={colors.textAccent} size={20} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setNote(""), Keyboard.dismiss();
+                  }}
+                >
+                  <X color={colors.textGeneral} size={20} />
+                </TouchableOpacity>
+              </View>
             </View>
-
             <TouchableOpacity onPress={handleAddMood} style={s.addBtn}>
               <Text style={s.addText}>Ajouter</Text>
             </TouchableOpacity>
@@ -220,6 +232,7 @@ const styles = (colors) =>
       justifyContent: "center",
       alignItems: "center",
       marginBottom: 20,
+      gap: 15,
     },
     input: {
       width: 200,

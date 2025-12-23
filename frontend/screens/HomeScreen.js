@@ -193,39 +193,51 @@ export default function HomeScreen({ navigation }) {
                 style={{
                   flexDirection: "row",
                   justifyContent: "center",
+                  alignItems: "center",
                   width: "100%",
                   gap: 15,
                 }}
               >
-                <TextInput
-                  style={[
-                    s.input,
-                    {
-                      borderBottomWidth: 0.2,
-                      width: 250,
-                      borderColor: colors.textGeneral,
-                    },
-                  ]}
-                  placeholder="Ajoute un commentaire..."
-                  placeholderTextColor={colors.textPlaceHolder}
-                  value={note}
-                  selectionColor={colors.textAccent}
-                  onChangeText={(value) => setNote(value)}
-                  ref={commentInputRef}
-                  returnKeyType="done"
-                  onSubmitEditing={handleCommentCheck}
-                />
-                <TouchableOpacity onPress={() => handleCommentCheck()}>
-                  <Check style={{ color: colors.textAccent }} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    setAjoutCom(false);
-                    setNote(backupNote);
-                  }}
-                >
-                  <X style={{ color: colors.textGeneral }} />
-                </TouchableOpacity>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <TextInput
+                    style={[
+                      s.input,
+                      {
+                        borderBottomWidth: 0.2,
+                        width: 200,
+                        borderColor: colors.textGeneral,
+                        fontSize: 20,
+                      },
+                    ]}
+                    placeholder="Ajoute un commentaire..."
+                    placeholderTextColor={colors.textPlaceHolder}
+                    value={note}
+                    selectionColor={colors.textAccent}
+                    onChangeText={(value) => setNote(value)}
+                    ref={commentInputRef}
+                    returnKeyType="done"
+                    onSubmitEditing={handleCommentCheck}
+                    maxLength={25}
+                  />
+                  {note.length > 0 && (
+                    <Text style={[s.input, { fontSize: 15 }]}>
+                      {note.length}/25
+                    </Text>
+                  )}
+                </View>
+                <View style={{ flexDirection: "row", gap: 5 }}>
+                  <TouchableOpacity onPress={() => handleCommentCheck()}>
+                    <Check style={{ color: colors.textAccent }} />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setAjoutCom(false);
+                      setNote(backupNote);
+                    }}
+                  >
+                    <X style={{ color: colors.textGeneral }} />
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           )}
