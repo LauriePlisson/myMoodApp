@@ -80,7 +80,7 @@ export default function WelcomeScreen({ navigation }) {
         dispatch(
           logIn({ username: data.user.username, token: data.user.token })
         );
-        navigation.navigate("TabNavigator", { screen: "home" });
+        navigation.navigate("TabNavigator", { screen: "Home" });
         resetField();
       }
     }
