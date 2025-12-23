@@ -17,17 +17,23 @@ export default function ThemedSettingsStack({ navigation }) {
         component={SettingsScreen}
         options={{
           headerShown: true,
-          headerBackVisible: true,
+          headerBackVisible: false,
           headerTintColor: "#B4A6AB",
+          headerShadowVisible: false,
           headerStyle: {
+            height: 110,
             backgroundColor: isDark ? "#211f22ff" : "#edeaefff",
+            elevation: 0,
+            shadowColor: "transparent",
+            borderBottomWidth: 0,
           },
           headerBackTitleVisible: false,
-          title: "MyMOOD",
+          title: "MyMood",
           headerTitleStyle: {
-            fontSize: 25,
-            marginBottom: 15,
+            fontSize: 30,
+            fontWeight: "600",
             color: "#B4A6AB",
+            paddingBottom: 10,
           },
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>

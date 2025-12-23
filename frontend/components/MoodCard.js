@@ -62,8 +62,8 @@ export default function MoodCard({
         ) : (
           <View style={[s.noData]}>
             <Text style={{ color: colors.textGeneral }}>
-              Pas de donnée pour{" "}
-              {period === "mois" || isCalendar ? "ce jour" : "ce mois"}
+              Aucun Mood enregistré pour{" "}
+              {period === "mois" || isCalendar ? "ce jour-là" : "ce mois-ci"}
             </Text>
           </View>
         )}

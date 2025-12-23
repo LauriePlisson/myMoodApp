@@ -60,6 +60,7 @@ const TabNavigator = ({ navigation }) => {
           shadowColor: "transparent",
           elevation: 0,
           borderBottomWidth: 0,
+          height: 110,
         },
         headerTitle: "MyMood",
         headerTitleStyle: { fontSize: 35, paddingBottom: 10, color: "#B4A6AB" },
@@ -67,7 +68,7 @@ const TabNavigator = ({ navigation }) => {
         headerRight: () => {
           return (
             <TouchableOpacity
-              style={{ marginRight: 30, marginBottom: 30 }}
+              style={{ marginRight: 30, paddingBottom: 30 }}
               onPress={() => navigation.navigate("Settings")}
             >
               <Settings size={24} color={"#A48A97"} />
