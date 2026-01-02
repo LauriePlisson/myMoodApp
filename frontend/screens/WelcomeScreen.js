@@ -152,7 +152,7 @@ export default function WelcomeScreen({ navigation }) {
                   secureTextEntry={true}
                   selectionColor={colors.textAccent}
                 />
-                {isLogIn && (
+                {/* {isLogIn && (
                   <TouchableOpacity onPress={() => setModalVisible(true)}>
                     <Text
                       style={{
@@ -162,7 +162,7 @@ export default function WelcomeScreen({ navigation }) {
                       Mot de passe oublié?
                     </Text>
                   </TouchableOpacity>
-                )}
+                )} */}
                 <Text style={{ color: colors.textAccent }}>{error}</Text>
               </View>
               <TouchableOpacity
