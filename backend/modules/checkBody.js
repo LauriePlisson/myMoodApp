@@ -1,4 +1,4 @@
-// Function to validate that required fields exist and are not empty in request body
+//verifie si champs vides
 function checkBody(body, keys) {
   let isValid = true;
 

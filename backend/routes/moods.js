@@ -5,6 +5,7 @@ const Mood = require("../models/moods");
 const { protect } = require("../middleware/protect");
 const { checkBody } = require("../modules/checkBody");
 
+//creation un mood par jour
 router.post("/", protect, async (req, res) => {
   try {
     const verif = checkBody(req.body, ["moodValue"]);
@@ -55,21 +56,23 @@ router.post("/", protect, async (req, res) => {
   }
 });
 
-router.get("/", protect, async (req, res) => {
-  try {
-    const moods = await Mood.find({ userId: req.user._id }).sort({ date: -1 });
-    if (!moods || moods.length === 0)
-      return res.status(404).json({
-        result: false,
-        error: "Aucun mood trouvé pour cet utilisateur.",
-      });
-    return res.status(200).json({ result: true, moods: moods });
-  } catch (error) {
-    console.error("erreur", error);
-    return res.status(500).json({ error: "Erreur serveur" });
-  }
-});
+//get moods de user
+// router.get("/", protect, async (req, res) => {
+//   try {
+//     const moods = await Mood.find({ userId: req.user._id }).sort({ date: -1 });
+//     if (!moods || moods.length === 0)
+//       return res.status(404).json({
+//         result: false,
+//         error: "Aucun mood trouvé pour cet utilisateur.",
+//       });
+//     return res.status(200).json({ result: true, moods: moods });
+//   } catch (error) {
+//     console.error("erreur", error);
+//     return res.status(500).json({ error: "Erreur serveur" });
+//   }
+// });
 
+//get mood du jour
 router.get("/today", protect, async (req, res) => {
   try {
     const userId = req.user._id;
@@ -101,6 +104,7 @@ router.get("/today", protect, async (req, res) => {
   }
 });
 
+//modification mood
 router.put("/:id", protect, async (req, res) => {
   try {
     const { moodValue, note } = req.body;
@@ -125,29 +129,31 @@ router.put("/:id", protect, async (req, res) => {
   }
 });
 
-router.delete("/:id", protect, async (req, res) => {
-  try {
-    const moodId = req.params.id;
-    const mood = await Mood.findOne({ _id: moodId, userId: req.user._id });
-    if (!mood)
-      return res.status(404).json({ result: false, error: "Mood introuvable" });
+//supression mood
+// router.delete("/:id", protect, async (req, res) => {
+//   try {
+//     const moodId = req.params.id;
+//     const mood = await Mood.findOne({ _id: moodId, userId: req.user._id });
+//     if (!mood)
+//       return res.status(404).json({ result: false, error: "Mood introuvable" });
 
-    await Mood.deleteOne({
-      _id: moodId,
-      userId: req.user._id,
-    });
-    const moods = await Mood.find({ userId: req.user._id });
-    return res.status(200).json({
-      result: true,
-      message: "Mood supprimé",
-      moods: moods,
-    });
-  } catch (error) {
-    console.error("erreur", error);
-    return res.status(500).json({ error: "Erreur serveur" });
-  }
-});
+//     await Mood.deleteOne({
+//       _id: moodId,
+//       userId: req.user._id,
+//     });
+//     const moods = await Mood.find({ userId: req.user._id });
+//     return res.status(200).json({
+//       result: true,
+//       message: "Mood supprimé",
+//       moods: moods,
+//     });
+//   } catch (error) {
+//     console.error("erreur", error);
+//     return res.status(500).json({ error: "Erreur serveur" });
+//   }
+// });
 
+//get moods pour une periode donnée
 router.get("/period", protect, async (req, res) => {
   try {
     const { start, end } = req.query;

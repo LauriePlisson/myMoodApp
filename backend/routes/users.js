@@ -7,6 +7,7 @@ const { checkBody } = require("../modules/checkBody");
 const { generateToken } = require("../utils/jwt");
 const bcrypt = require("bcrypt");
 
+//creation compte
 router.post("/auth/register", async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -43,6 +44,7 @@ router.post("/auth/register", async (req, res) => {
   }
 });
 
+//connection
 router.post("/auth/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -75,6 +77,7 @@ router.post("/auth/login", async (req, res) => {
   }
 });
 
+//suppression de compte
 router.delete("/delete", protect, async (req, res) => {
   try {
     const userId = req.user._id;
@@ -88,6 +91,7 @@ router.delete("/delete", protect, async (req, res) => {
   }
 });
 
+//mise a jour compte
 router.put("/update", protect, async (req, res) => {
   try {
     const { username, password, newPassword } = req.body;
