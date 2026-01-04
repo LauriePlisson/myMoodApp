@@ -8,12 +8,13 @@ import MoodCard from "../components/MoodCard";
 import { useSelector, useDispatch } from "react-redux";
 import { useTheme } from "../context/ThemeContext";
 import { setMoodsByYear, resetMoods, setSelectedMood } from "../reducers/moods";
+import { getMoodsByPeriodAPI } from "../utils/moodAPI";
 
 export default function HistoryScreen() {
   const [displayMood, setDisplayMood] = useState(false);
   const [viewCalendar, setViewCalendar] = useState(true);
   const [viewGraf, setViewGraf] = useState(false);
-  const [viewStats, setViewStat] = useState(false);
+  // const [viewStats, setViewStat] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [period, setPeriod] = useState("mois");
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -21,7 +22,6 @@ export default function HistoryScreen() {
   const user = useSelector((state) => state.user.value);
   const moodsByYear = useSelector((state) => state.moods.moodsByYear);
   const selectedMood = useSelector((state) => state.moods.selectedMood);
-  const API_URL = process.env.EXPO_PUBLIC_API_URL;
   const dispatch = useDispatch();
   const { colors } = useTheme();
   const s = styles(colors);
@@ -51,18 +51,11 @@ export default function HistoryScreen() {
     const start = `${year}-01-01`;
     const end = `${year}-12-31`;
 
-    const res = await fetch(
-      `${API_URL}/moods/period?start=${start}&end=${end}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
-      }
-    );
-
-    const data = await res.json();
+    const data = await getMoodsByPeriodAPI({
+      userToken: user.token,
+      start,
+      end,
+    });
 
     dispatch(setMoodsByYear({ [year]: data.moods }));
   };

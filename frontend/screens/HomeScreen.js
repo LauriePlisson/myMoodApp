@@ -12,9 +12,10 @@ import Slider from "@react-native-community/slider";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setMoodOfTheDay, updateMoodInYear } from "../reducers/moods";
-import { saveMoodAPI } from "../utils/moodAPI";
+import { saveMoodAPI, getMoodTodayAPI } from "../utils/moodAPI";
 import { Check, X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
+import { logOut } from "../reducers/user";
 
 export default function HomeScreen({ navigation }) {
   const [editingMood, setEditingMood] = useState(false);
@@ -31,28 +32,27 @@ export default function HomeScreen({ navigation }) {
 
   const moodOfTheDay = useSelector((state) => state.moods.moodOfTheDay);
   const user = useSelector((state) => state.user.value);
-  const API_URL = process.env.EXPO_PUBLIC_API_URL;
   const dispatch = useDispatch();
 
   const commentInputRef = useRef(null);
 
   useEffect(() => {
+    //si token expiré retourn a welcome
     if (!user.isLoggedIn) {
-      setMoodValue("05");
-      setNote("");
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Welcome" }],
+      });
       return;
     }
+
+    //cherche si mood enregistré pour aujourd'hui
     const fetchToday = async () => {
       try {
-        const res = await fetch(`${API_URL}/moods/today`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
-        const data = await res.json();
-
+        const data = await getMoodTodayAPI(user.token, () =>
+          dispatch(logOut())
+        );
+        if (!data) return;
         if (data.result && data.mood) {
           dispatch(setMoodOfTheDay(data.mood));
           setMoodValue(data.mood.moodValue.toString());
