@@ -12,6 +12,8 @@ import { useState, useEffect } from "react";
 import { X, Check } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
 
+//pas encore implémenté, servira pour mot de passe oublié
+
 export default function PasswordModal({ visible, setModalVisible }) {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");

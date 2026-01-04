@@ -2,7 +2,6 @@ import { createContext, useContext, useEffect, useState } from "react";
 import * as Notifications from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-/* 🔔 Handler global */
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -16,14 +15,13 @@ const NotificationContext = createContext();
 const ENABLED_KEY = "notificationsEnabled";
 const TIME_KEY = "notificationTime";
 
-/* ⏰ Heure par défaut : 20:00 */
+//heure par defaut
 const DEFAULT_TIME = { hour: 20, minute: 0 };
 
 export const NotificationProvider = ({ children }) => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [notificationTime, setNotificationTime] = useState(DEFAULT_TIME);
 
-  /* 🔄 Init au lancement */
   useEffect(() => {
     const init = async () => {
       const savedEnabled = await AsyncStorage.getItem(ENABLED_KEY);
@@ -41,12 +39,12 @@ export const NotificationProvider = ({ children }) => {
     init();
   }, []);
 
-  /* 💾 Sauvegarde ON/OFF */
+  // Sauvegarde ON/OFF
   useEffect(() => {
     AsyncStorage.setItem(ENABLED_KEY, notificationsEnabled.toString());
   }, [notificationsEnabled]);
 
-  /* 🔔 Programmer / annuler */
+  //Programmer / annuler
   useEffect(() => {
     const sync = async () => {
       await Notifications.cancelAllScheduledNotificationsAsync();
@@ -59,7 +57,7 @@ export const NotificationProvider = ({ children }) => {
     sync();
   }, [notificationsEnabled, notificationTime]);
 
-  /* 📅 Programmer la notification */
+  // Programmer la notification
   const scheduleDailyNotification = async (time) => {
     const now = new Date();
     const trigger = new Date();
@@ -82,13 +80,13 @@ export const NotificationProvider = ({ children }) => {
     });
   };
 
-  /* 🔐 Permission */
+  //Permission
   const requestPermission = async () => {
     const { status } = await Notifications.requestPermissionsAsync();
     return status === "granted";
   };
 
-  /* 🔁 Toggle ON/OFF */
+  // Toggle ON/OFF
   const toggleNotifications = async () => {
     if (!notificationsEnabled) {
       const granted = await requestPermission();
@@ -98,7 +96,7 @@ export const NotificationProvider = ({ children }) => {
     setNotificationsEnabled((prev) => !prev);
   };
 
-  /* ⏰ Modifier l'heure */
+  //Modifier l'heure
   const updateNotificationTime = async (date) => {
     const newTime = {
       hour: date.getHours(),

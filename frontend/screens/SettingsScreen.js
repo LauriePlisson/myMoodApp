@@ -81,7 +81,6 @@ export default function SettingsScreen({ navigation }) {
       body: JSON.stringify(body),
     });
     const data = await res.json();
-    console.log(data);
     if (data.error) {
       setErrorEditPassword(data.error);
       setTimeout(() => setErrorEditPassword(""), 5000);
@@ -124,7 +123,6 @@ export default function SettingsScreen({ navigation }) {
   };
 
   const handlePressOui = (date) => {
-    // console.log("handlePressOui");
     setModalVisible(false);
     if (openFrom === "LogOut") {
       handleLogOut();
@@ -142,7 +140,6 @@ export default function SettingsScreen({ navigation }) {
   };
 
   const handlePressNon = () => {
-    // console.log("handlePressNon");
     setModalVisible(false);
     if (openFrom === "Edit")
       setSuccesMessage("Modification annulée"),

@@ -1,16 +1,8 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { getMoodBackgroundColor, getMoodColor } from "../utils/moodColors";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  X,
-  Pencil,
-  ChartLine,
-  ChartNoAxesCombined,
-  ChartColumn,
-  Plus,
-} from "lucide-react-native";
+import { getMoodColor } from "../utils/moodColors";
+import { useSelector } from "react-redux";
+import { X, Pencil, ChartNoAxesCombined, Plus } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
-import { useEffect } from "react";
 
 export default function MoodCard({
   setModalVisible,
@@ -19,14 +11,13 @@ export default function MoodCard({
   isCalendar,
   onCloseMood,
 }) {
-  const { theme, colors } = useTheme();
+  const { colors } = useTheme();
   const s = styles(colors);
 
   const selectedMood = useSelector((state) => state.moods.selectedMood);
-  const dispatch = useDispatch();
 
   const isFuture = new Date(selectedMood?.dateString) > new Date();
-
+  if (!selectedMood) return null;
   return (
     <View style={[s.card, { borderColor: getMoodColor(selectedMood?.value) }]}>
       <View style={s.header}>

@@ -1,7 +1,6 @@
 import { Calendar, LocaleConfig } from "react-native-calendars";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
-import { useState, useCallback, useEffect } from "react";
+import { Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import MoodRing from "./MoodRing";
 import { getMoodColor, getMoodBackgroundColor } from "../utils/moodColors";
@@ -107,12 +106,6 @@ export default function MoodCalendar({
     dayNamesShort: ["Dim.", "Lun.", "Mar.", "Mer.", "Jeu.", "Ven.", "Sam."],
   };
   LocaleConfig.defaultLocale = "fr";
-
-  useFocusEffect(
-    useCallback(() => {
-      setRefreshKey((prev) => prev + 1);
-    }, [])
-  );
 
   const handleChangeMonth = (month) => {
     const newDate = new Date(month.year, month.month - 1, 1);

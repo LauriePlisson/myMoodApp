@@ -126,7 +126,7 @@ export default function WelcomeScreen({ navigation }) {
                 {!isLogIn && (
                   <TextInput
                     style={[s.input]}
-                    placeholder="username"
+                    placeholder="nom d'utilisateur"
                     placeholderTextColor={colors.textPlaceHolder}
                     value={username}
                     onChangeText={(value) => setUsername(value)}
@@ -145,7 +145,7 @@ export default function WelcomeScreen({ navigation }) {
 
                 <TextInput
                   style={[s.input]}
-                  placeholder="password"
+                  placeholder="mot de passe"
                   placeholderTextColor={colors.textPlaceHolder}
                   value={password}
                   onChangeText={(value) => setPassword(value)}

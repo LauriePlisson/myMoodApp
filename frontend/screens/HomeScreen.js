@@ -59,7 +59,7 @@ export default function HomeScreen({ navigation }) {
           setNote(data.mood.note || "");
         }
       } catch (err) {
-        console.error(err);
+        // console.error(err);
       }
     };
     fetchToday();
@@ -102,7 +102,7 @@ export default function HomeScreen({ navigation }) {
 
   const updateMoodStates = (mood) => {
     dispatch(setMoodOfTheDay(mood));
-    dispatch(updateMoodInYear({ mood })); // <--- Ajouté ici
+    dispatch(updateMoodInYear({ mood })); // mise à jour globale de l'année
     setMoodValue(mood.moodValue.toString());
     setNote(mood.note || "");
     setEditingMood(false);

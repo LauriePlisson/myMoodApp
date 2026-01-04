@@ -45,7 +45,7 @@ export default function MoodModal({ visible, setModalVisible, date }) {
     setMoodValue("5".padStart(2, "0"));
   };
 
-  // --- Normalisation finale quand on quitte l'input ---
+  // Normalisation  quand on quitte l'input
   const formatFinalValue = () => {
     if (moodValue === "" || isNaN(parseInt(moodValue))) {
       setMoodValue("00");
@@ -56,7 +56,6 @@ export default function MoodModal({ visible, setModalVisible, date }) {
     setMoodValue(n.toString().padStart(2, "0"));
   };
 
-  // --- Gestion propre de la saisie ---
   const handleChangeMood = (text) => {
     let cleaned = text.replace(/[^0-9]/g, "");
 
@@ -86,7 +85,7 @@ export default function MoodModal({ visible, setModalVisible, date }) {
     });
 
     if (success) {
-      // ⚡ Met à jour le store Redux correctement
+      // Met à jour  Redux
       dispatch(updateMoodInYear({ mood }));
 
       // si c'est le mood du jour
@@ -111,7 +110,7 @@ export default function MoodModal({ visible, setModalVisible, date }) {
       reset();
     }
   };
-
+  if (!selectedMood) return null;
   return (
     <Modal animationType="fade" transparent={true} visible={visible}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

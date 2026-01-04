@@ -10,6 +10,12 @@ import { useTheme } from "../context/ThemeContext";
 import { setMoodsByYear, resetMoods, setSelectedMood } from "../reducers/moods";
 import { getMoodsByPeriodAPI } from "../utils/moodAPI";
 
+// Écran d’historique des moods :
+// - affichage calendrier ou graphique
+// - récupération des moods par période
+// - navigation entre mois / année
+// - ouverture d’une MoodCard au clic
+
 export default function HistoryScreen() {
   const [displayMood, setDisplayMood] = useState(false);
   const [viewCalendar, setViewCalendar] = useState(true);
@@ -26,26 +32,26 @@ export default function HistoryScreen() {
   const { colors } = useTheme();
   const s = styles(colors);
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     // console.log(moodsByYear);
-  //     //recharge l'année en cours au focus
-  //     // const year = selectedDate.getFullYear();
-  //     // loadYear(year);
-  //     return closeMoodCard();
-  //   }, [])
-  // );
+  //ferme moodCard/clear selectedMood quand pas focus
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        closeMoodCard();
+      };
+    }, [])
+  );
 
   //fonction openMoodCard
   const openMoodCard = (mood) => {
-    dispatch(setSelectedMood(mood)); // mood global
-    setDisplayMood(true); // afficher la card
+    dispatch(setSelectedMood(mood));
+    setDisplayMood(true);
   };
   //fonction closeMoodCard
   const closeMoodCard = () => {
     setDisplayMood(false);
     dispatch(setSelectedMood(null));
   };
+
   //fonction fetch moods année
   const loadYear = async (year) => {
     const start = `${year}-01-01`;
@@ -69,13 +75,13 @@ export default function HistoryScreen() {
     }
     //fetch l'année en cours
     const currentYear = new Date().getFullYear();
-    loadYear(currentYear);
-    // return closeMoodCard();
-  }, [viewCalendar, user]);
+    if (!moodsByYear[currentYear]) loadYear(currentYear); // fetch uniquement si nécessaire
+  }, [user]);
 
   const selectedYear = selectedDate.getFullYear();
   const moodsForSelectedYear = moodsByYear[selectedYear] || [];
 
+  // Filtrage des moods selon la période sélectionnée (mois / année)
   const filtrage = moodsForSelectedYear
     .filter((mood) => {
       const selectedYear = selectedDate.getFullYear();
@@ -106,11 +112,11 @@ export default function HistoryScreen() {
       fullMood: mood,
     }));
 
+  //données pour l'affichage du graphique
   let dataForChart = [];
 
   if (period === "annee") {
     const groupedByMonth = {};
-
     filtrage.forEach((mood) => {
       const date = new Date(mood.label);
       const month = date.getMonth();
@@ -141,6 +147,7 @@ export default function HistoryScreen() {
     }));
   }
 
+  // Navigation depuis une MoodCard du graphique année (année → mois correspondant)
   const handleVoirMois = () => {
     const year = selectedDate.getFullYear();
     const month = selectedMood.month;
@@ -170,7 +177,7 @@ export default function HistoryScreen() {
             ]}
             onPress={() => {
               setViewGraf(true);
-              setViewStat(false);
+              // setViewStat(false);
               setViewCalendar(false), closeMoodCard();
               setPeriod("mois"), setSelectedDate(new Date());
             }}
@@ -194,8 +201,10 @@ export default function HistoryScreen() {
                 : { backgroundColor: colors.whiteBlack },
             ]}
             onPress={() => {
-              setViewGraf(false), setViewStat(false);
-              setViewCalendar(true), closeMoodCard();
+              setViewGraf(false),
+                //  setViewStat(false);
+                setViewCalendar(true),
+                closeMoodCard();
             }}
           >
             <Text

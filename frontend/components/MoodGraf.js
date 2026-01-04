@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
 import { ChevronLeft, ChevronRight, X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { getMoodColor } from "../utils/moodColors";
 
 export default function MoodGraf({
@@ -46,16 +46,27 @@ export default function MoodGraf({
     return `${day}/${month}/${year}`;
   }
 
-  const length = period === "mois" ? 31 : 12;
+  //nombre de "point"
+  let length;
+  if (period === "mois") {
+    // nombre de jours exact du mois sélectionné
+    length = new Date(
+      selectedDate.getFullYear(),
+      selectedDate.getMonth() + 1,
+      0
+    ).getDate();
+  } else {
+    length = 12; // 12 mois
+  }
 
   const getIndex = (m) => {
     if (period === "mois") {
-      return m.label - 1; // ⬅️ on passe de 1→31 à 0→30
+      return m.label - 1; //  on passe de 1→31 à 0→30
     }
-    return m.label; // année reste inchangé (0→11)
+    return m.label; // année (0→11)
   };
 
-  // On crée le tableau initial avec toutes les dates
+  //  tableau initial avec toutes les dates
   const data = Array.from({ length }, (_, i) => {
     let date;
     if (period === "mois") {
@@ -66,7 +77,7 @@ export default function MoodGraf({
       );
       return {
         value: null,
-        label: i + 1, // pour les jours du mois, 1→31
+        label: i + 1, // pour les jours du mois, 1-31
         note: "",
         date: date.toISOString(),
         fullMood: null,
@@ -75,7 +86,7 @@ export default function MoodGraf({
       date = new Date(selectedDate.getFullYear(), i, 1);
       return {
         value: null,
-        label: i, // <-- garder 0→11 pour Janvier→Décembre
+        label: i, // 0→11 pour Janvier-Décembre
         note: "",
         date: date.toISOString(),
         fullMood: null,
@@ -83,7 +94,7 @@ export default function MoodGraf({
     }
   });
 
-  // On remplit les moods existants
+  // remplit les moods existants
   moods.forEach((mood) => {
     const index = getIndex(mood);
     if (index >= 0 && index < length) {
@@ -95,26 +106,25 @@ export default function MoodGraf({
           : mood.date ?? data[index].date,
         note: mood.fullMood?.note || "",
         fullMood: mood.fullMood || null,
-        //  customDataPoint: {} ,
       };
     }
   });
 
-  // On remplit les jours avant le premier mood avec value = 0
+  // jours avant le premier mood value = 0
   let firstDataIndex = data.findIndex((d) => d.value !== null);
   if (firstDataIndex === -1) firstDataIndex = length; // aucun mood saisi
   for (let i = 0; i < firstDataIndex; i++) {
     data[i].value = 0;
   }
 
-  // On coupe les jours après le dernier mood si besoin
+  // pas de point apres le dernier mood enregistre
   let lastIndex = data.length - 1;
   while (lastIndex >= 0 && data[lastIndex].value === null) {
     lastIndex--;
   }
   const trimmedData = data.slice(0, lastIndex + 1);
 
-  // On clone pour le chart
+  // clone pour le graf
   const clonedData = trimmedData.map((d) => ({
     ...d,
     fullMood: d.fullMood ? { ...d.fullMood } : null,
@@ -163,7 +173,7 @@ export default function MoodGraf({
   };
 
   const chartWidth = 290;
-  const spacing = chartWidth / (data.length - 1);
+  const spacing = chartWidth / (clonedData.length - 1 || 1);
 
   let displayPeriod = "";
   if (period === "annee") {
@@ -189,7 +199,6 @@ export default function MoodGraf({
     if (period === "annee") {
       const prevYearDate = new Date(selectedDate);
       const prevYear = prevYearDate.getFullYear() - 1;
-
       setSelectedDate(new Date(prevYear, 0, 1));
       loadYear(prevYear);
     }

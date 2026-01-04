@@ -13,6 +13,7 @@ import { X, Check } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
+// SettingsModal : confirmations modification profil user ou notifications
 export default function SettingsModal({
   visible,
   setModalVisible,
@@ -89,7 +90,6 @@ export default function SettingsModal({
                 style={{
                   maxWidth: 250,
                   maxHeight: 125,
-                  // textAccent: colors.textAccent,
                 }}
                 textColor={colors.textAccent}
                 onChange={(event, date) => {
@@ -113,7 +113,6 @@ export default function SettingsModal({
                 <Text style={[s.addText, { color: colors.textGeneral }]}>
                   Annuler
                 </Text>
-                {/* <Check size={20} color={colors.whiteBlack} /> */}
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => handlePressOui(tempDate)}
@@ -121,7 +120,6 @@ export default function SettingsModal({
               >
                 <Text style={s.addText}>Valider</Text>
               </TouchableOpacity>
-              {/* <Check size={20} color={colors.whiteBlack} /> */}
             </View>
           </View>
         </View>
