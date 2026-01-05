@@ -4,7 +4,7 @@
   "main": "index.js",
   "expo": {
     "name": "MyMood",
-    "slug": "mymood",
+    "slug": "MyMood",
     "version": "1.0.0",
     "sdkVersion": "54.0.0"
   },
