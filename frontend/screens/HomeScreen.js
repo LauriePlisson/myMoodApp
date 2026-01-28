@@ -89,17 +89,19 @@ export default function HomeScreen({ navigation }) {
     //Mood Saved pour hier?
     const fetchyesterday = async () => {
       try {
-        const start = formatDate(yesterday);
-        const end = formatDate(yesterday);
+        const start = new Date(yesterday);
+        start.setHours(0, 0, 0, 0);
+
+        const end = new Date(yesterday);
+        end.setHours(23, 59, 59, 999);
 
         const data = await getMoodsByPeriodAPI({
           userToken: user.token,
-          start,
-          end,
+          start: start.toISOString(),
+          end: end.toISOString(),
         });
 
-        if (!data.count) setYesterdayMood(false);
-        if (data.count) setYesterdayMood(true);
+        setYesterdayMood(data?.count > 0);
       } catch (err) {
         // console.log(err);
       }
