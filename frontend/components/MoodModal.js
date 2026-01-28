@@ -19,7 +19,12 @@ import { X, Check } from "lucide-react-native";
 import { saveMoodAPI } from "../utils/moodAPI";
 import { useTheme } from "../context/ThemeContext";
 
-export default function MoodModal({ visible, setModalVisible, date }) {
+export default function MoodModal({
+  visible,
+  setModalVisible,
+  date,
+  onMoodSaved,
+}) {
   const [moodValue, setMoodValue] = useState("5".padStart(2, "0"));
   const [note, setNote] = useState("");
 
@@ -34,7 +39,7 @@ export default function MoodModal({ visible, setModalVisible, date }) {
       setMoodValue(
         selectedMood.value !== null
           ? String(selectedMood.value).padStart(2, "0")
-          : "05"
+          : "05",
       );
       setNote(selectedMood.note || "");
     }
@@ -103,11 +108,12 @@ export default function MoodModal({ visible, setModalVisible, date }) {
           value: mood.moodValue,
           note: mood.note,
           fullMood: mood,
-        })
+        }),
       );
-
       setModalVisible(false);
       reset();
+
+      onMoodSaved?.(mood);
     }
   };
   if (!selectedMood) return null;
@@ -170,7 +176,7 @@ export default function MoodModal({ visible, setModalVisible, date }) {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
-                    setNote(""), Keyboard.dismiss();
+                    (setNote(""), Keyboard.dismiss());
                   }}
                 >
                   <X color={colors.textGeneral} size={20} />

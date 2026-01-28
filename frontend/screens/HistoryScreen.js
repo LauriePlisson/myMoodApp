@@ -38,7 +38,7 @@ export default function HistoryScreen() {
       return () => {
         closeMoodCard();
       };
-    }, [])
+    }, []),
   );
 
   //fonction openMoodCard
@@ -128,7 +128,7 @@ export default function HistoryScreen() {
     dataForChart = Object.entries(groupedByMonth).map(
       ([month, { values, year }]) => {
         const moyenne = Math.round(
-          values.reduce((acc, val) => acc + val, 0) / values.length
+          values.reduce((acc, val) => acc + val, 0) / values.length,
         );
         return {
           label: month,
@@ -137,7 +137,7 @@ export default function HistoryScreen() {
           date: `${parseInt(month) + 1}/${year}`, // mois/année
           note: "",
         };
-      }
+      },
     );
   } else {
     dataForChart = filtrage.map((m) => ({
@@ -164,7 +164,6 @@ export default function HistoryScreen() {
         setModalVisible={setModalVisible}
         visible={modalVisible}
         date={selectedMood ? selectedMood.dateString : selectedDate}
-        setMoodsByYear={setMoodsByYear}
       />
       <View style={s.centre}>
         <View style={s.options}>
@@ -178,8 +177,8 @@ export default function HistoryScreen() {
             onPress={() => {
               setViewGraf(true);
               // setViewStat(false);
-              setViewCalendar(false), closeMoodCard();
-              setPeriod("mois"), setSelectedDate(new Date());
+              (setViewCalendar(false), closeMoodCard());
+              (setPeriod("mois"), setSelectedDate(new Date()));
             }}
           >
             <Text
@@ -201,10 +200,10 @@ export default function HistoryScreen() {
                 : { backgroundColor: colors.whiteBlack },
             ]}
             onPress={() => {
-              setViewGraf(false),
+              (setViewGraf(false),
                 //  setViewStat(false);
                 setViewCalendar(true),
-                closeMoodCard();
+                closeMoodCard());
             }}
           >
             <Text
@@ -260,9 +259,9 @@ export default function HistoryScreen() {
                 <TouchableOpacity
                   style={[s.filtre]}
                   onPress={() => {
-                    setPeriod("mois"),
+                    (setPeriod("mois"),
                       setSelectedDate(new Date()),
-                      closeMoodCard();
+                      closeMoodCard());
                   }}
                 >
                   <Text
@@ -282,9 +281,9 @@ export default function HistoryScreen() {
                 <TouchableOpacity
                   style={[s.filtre]}
                   onPress={() => {
-                    setPeriod("annee"),
+                    (setPeriod("annee"),
                       setSelectedDate(new Date()),
-                      closeMoodCard();
+                      closeMoodCard());
                   }}
                 >
                   <Text

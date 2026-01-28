@@ -11,30 +11,53 @@ import { useFocusEffect } from "@react-navigation/native";
 import Slider from "@react-native-community/slider";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setMoodOfTheDay, updateMoodInYear } from "../reducers/moods";
-import { saveMoodAPI, getMoodTodayAPI } from "../utils/moodAPI";
+import {
+  setMoodOfTheDay,
+  updateMoodInYear,
+  setSelectedMood,
+} from "../reducers/moods";
+import {
+  saveMoodAPI,
+  getMoodTodayAPI,
+  getMoodsByPeriodAPI,
+} from "../utils/moodAPI";
 import { Check, X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
 import { logOut } from "../reducers/user";
+import MoodModal from "../components/MoodModal";
 
 export default function HomeScreen({ navigation }) {
   const [editingMood, setEditingMood] = useState(false);
   const [moodValue, setMoodValue] = useState("05");
-
   const [backupMoodValue, setBackupMoodValue] = useState(null);
   const [backupNote, setBackupNote] = useState(null);
   const [succesMessage, setSuccesMessage] = useState("");
   const [note, setNote] = useState("");
   const [ajoutCom, setAjoutCom] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [yesterdayMood, setYesterdayMood] = useState(false);
 
   const { colors } = useTheme();
   const s = styles(colors);
 
   const moodOfTheDay = useSelector((state) => state.moods.moodOfTheDay);
+  const selectedMood = useSelector((state) => state.moods.selectedMood);
   const user = useSelector((state) => state.user.value);
   const dispatch = useDispatch();
 
   const commentInputRef = useRef(null);
+  const today = new Date();
+  const yesterday = new Date();
+  yesterday.setDate(today.getDate() - 1);
+
+  function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  const yesterdayStr = formatDate(yesterday);
 
   useEffect(() => {
     //si token expiré retourn a welcome
@@ -50,7 +73,7 @@ export default function HomeScreen({ navigation }) {
     const fetchToday = async () => {
       try {
         const data = await getMoodTodayAPI(user.token, () =>
-          dispatch(logOut())
+          dispatch(logOut()),
         );
         if (!data) return;
         if (data.result && data.mood) {
@@ -62,7 +85,28 @@ export default function HomeScreen({ navigation }) {
         // console.error(err);
       }
     };
+
+    //Mood Saved pour hier?
+    const fetchyesterday = async () => {
+      try {
+        const start = formatDate(yesterday);
+        const end = formatDate(yesterday);
+
+        const data = await getMoodsByPeriodAPI({
+          userToken: user.token,
+          start,
+          end,
+        });
+
+        if (!data.count) setYesterdayMood(false);
+        if (data.count) setYesterdayMood(true);
+      } catch (err) {
+        // console.log(err);
+      }
+    };
+
     fetchToday();
+    fetchyesterday();
   }, [user]);
 
   useFocusEffect(
@@ -75,7 +119,7 @@ export default function HomeScreen({ navigation }) {
         setNote("");
       }
       setAjoutCom(false);
-    }, [moodOfTheDay])
+    }, [moodOfTheDay]),
   );
 
   const handleValider = () => {
@@ -132,12 +176,33 @@ export default function HomeScreen({ navigation }) {
     setAjoutCom(false);
   };
 
+  const handleHier = () => {
+    dispatch(
+      setSelectedMood({
+        dateString: yesterdayStr,
+        value: null,
+        note: "",
+        fullMood: null,
+      }),
+    );
+    setOpenModal(true);
+  };
+
   return (
     <TouchableWithoutFeedback
       onPress={Keyboard.dismiss}
       style={{ backgroundColor: colors.background }}
     >
       <View style={s.container}>
+        <MoodModal
+          setModalVisible={setOpenModal}
+          visible={openModal}
+          date={selectedMood?.dateString}
+          onMoodSaved={(mood) => {
+            // console.log("Mood hier sauvegardé:", mood);
+            setYesterdayMood(true);
+          }}
+        />
         <View style={s.containerText}>
           <Text style={s.bienvenue}>Bienvenue {user.username}</Text>
 
@@ -265,6 +330,17 @@ export default function HomeScreen({ navigation }) {
               {!editingMood ? "Modifier ton Mood?" : "Annuler la modification"}
             </Text>
           </TouchableOpacity>
+        )}
+
+        {!yesterdayMood && (
+          <>
+            <Text style={{ color: colors.textGeneral }}>
+              Tu n'as pas enregistré ton Mood pour hier
+            </Text>
+            <TouchableOpacity onPress={() => handleHier()}>
+              <Text style={{ color: colors.textAccent }}>Note ta journée</Text>
+            </TouchableOpacity>
+          </>
         )}
       </View>
     </TouchableWithoutFeedback>

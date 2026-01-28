@@ -16,16 +16,16 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.2.0",
-    "@react-native-community/datetimepicker": "^8.5.1",
+    "@react-native-community/datetimepicker": "8.4.4",
     "@react-native-community/slider": "^5.0.1",
     "@react-navigation/bottom-tabs": "6",
     "@react-navigation/native": "6",
     "@react-navigation/native-stack": "6",
     "@reduxjs/toolkit": "^2.9.0",
     "d3-shape": "^3.2.0",
-    "expo": "~54.0.27",
+    "expo": "~54.0.32",
     "expo-linear-gradient": "~15.0.8",
-    "expo-notifications": "~0.32.14",
+    "expo-notifications": "~0.32.16",
     "expo-status-bar": "~3.0.9",
     "lucide-react-native": "^0.545.0",
     "react": "19.1.0",
@@ -41,6 +41,6 @@
   },
   "private": true,
   "devDependencies": {
-    "babel-preset-expo": "^54.0.4"
+    "babel-preset-expo": "~54.0.10"
   }
 }
