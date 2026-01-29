@@ -1,6 +1,7 @@
 import { Calendar, LocaleConfig } from "react-native-calendars";
 import { Text, StyleSheet, TouchableOpacity } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import MoodRing from "./MoodRing";
 import { getMoodColor, getMoodBackgroundColor } from "../utils/moodColors";

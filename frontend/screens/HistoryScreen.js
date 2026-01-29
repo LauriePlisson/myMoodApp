@@ -55,7 +55,7 @@ export default function HistoryScreen() {
 
   //fonction fetch moods année
   const loadYear = async (year) => {
-    if (moodsByYear[year]) return;
+    if (moodsByYear[year]?.length > 0) return;
 
     const data = await fetchYearMoods({
       year,
@@ -200,6 +200,7 @@ export default function HistoryScreen() {
                 //  setViewStat(false);
                 setViewCalendar(true),
                 closeMoodCard());
+              setSelectedDate(new Date());
             }}
           >
             <Text
