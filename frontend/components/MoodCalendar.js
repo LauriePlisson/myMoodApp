@@ -14,15 +14,15 @@ export default function MoodCalendar({
   loadYear,
   onMoodPress,
 }) {
-  const [refreshKey, setRefreshKey] = useState(0);
+  // const [refreshKey, setRefreshKey] = useState(0);
   const { theme, colors } = useTheme();
   const s = styles(colors);
 
   const selectedMood = useSelector((state) => state.moods.selectedMood);
 
-  useEffect(() => {
-    setRefreshKey((prev) => prev + 1);
-  }, [moods]);
+  // useEffect(() => {
+  //   setRefreshKey((prev) => prev + 1);
+  // }, [moods]);
 
   const year = selectedDate.getFullYear();
   const moodsForCalendar = moods[year] || [];
@@ -131,12 +131,11 @@ export default function MoodCalendar({
       // todayBackgroundColor: colors.inputBackground,
       textDisabledColor: colors.textGeneral,
     }),
-    [theme]
+    [theme],
   );
 
   return (
     <Calendar
-      key={refreshKey}
       onMonthChange={(month) => {
         handleChangeMonth(month);
       }}
@@ -145,7 +144,7 @@ export default function MoodCalendar({
       dayComponent={({ date, state }) => {
         const dateString = date.dateString;
         const mood = moodsForCalendar.find(
-          (m) => formatLocalDate(m.date) === dateString
+          (m) => formatLocalDate(m.date) === dateString,
         );
         const moodValue = mood ? mood.moodValue : null;
         const isSelected = selectedMood?.dateString === dateString;

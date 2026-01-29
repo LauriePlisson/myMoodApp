@@ -15,12 +15,15 @@ import {
   setMoodOfTheDay,
   updateMoodInYear,
   setSelectedMood,
+  setMoodsByYear,
 } from "../reducers/moods";
 import {
   saveMoodAPI,
   getMoodTodayAPI,
   getMoodsByPeriodAPI,
 } from "../utils/moodAPI";
+import { fetchYearMoods } from "../utils/moodByYear";
+import { toLocalDateString } from "../utils/date";
 import { Check, X } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
 import { logOut } from "../reducers/user";
@@ -42,6 +45,7 @@ export default function HomeScreen({ navigation }) {
 
   const moodOfTheDay = useSelector((state) => state.moods.moodOfTheDay);
   const selectedMood = useSelector((state) => state.moods.selectedMood);
+  const moodsByYear = useSelector((state) => state.moods.moodsByYear);
   const user = useSelector((state) => state.user.value);
   const dispatch = useDispatch();
 
@@ -49,15 +53,7 @@ export default function HomeScreen({ navigation }) {
   const today = new Date();
   const yesterday = new Date();
   yesterday.setDate(today.getDate() - 1);
-
-  function formatDate(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
-
-  const yesterdayStr = formatDate(yesterday);
+  const yesterdayStr = toLocalDateString(yesterday);
 
   useEffect(() => {
     //si token expiré retourn a welcome
@@ -69,47 +65,45 @@ export default function HomeScreen({ navigation }) {
       return;
     }
 
-    //cherche si mood enregistré pour aujourd'hui
-    const fetchToday = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getMoodTodayAPI(user.token, () =>
+        // fetch mood d'aujourd'hui
+        const todayData = await getMoodTodayAPI(user.token, () =>
           dispatch(logOut()),
         );
-        if (!data) return;
-        if (data.result && data.mood) {
-          dispatch(setMoodOfTheDay(data.mood));
-          setMoodValue(data.mood.moodValue.toString());
-          setNote(data.mood.note || "");
+        if (todayData?.result && todayData.mood) {
+          dispatch(setMoodOfTheDay(todayData.mood));
+          setMoodValue(todayData.mood.moodValue.toString());
+          setNote(todayData.mood.note || "");
         }
-      } catch (err) {
-        // console.error(err);
-      }
-    };
 
-    //Mood Saved pour hier?
-    const fetchyesterday = async () => {
-      try {
-        const start = new Date(yesterday);
-        start.setHours(0, 0, 0, 0);
-
-        const end = new Date(yesterday);
-        end.setHours(23, 59, 59, 999);
-
-        const data = await getMoodsByPeriodAPI({
-          userToken: user.token,
-          start: start.toISOString(),
-          end: end.toISOString(),
+        // fetch moods de l'année
+        const currentYear = new Date().getFullYear();
+        const yearData = await fetchYearMoods({
+          year: currentYear,
+          token: user.token,
         });
-
-        setYesterdayMood(data?.count > 0);
+        dispatch(setMoodsByYear({ [currentYear]: yearData.moods }));
       } catch (err) {
-        // console.log(err);
+        console.error(err);
       }
     };
 
-    fetchToday();
-    fetchyesterday();
+    fetchData();
   }, [user]);
+
+  useEffect(() => {
+    const year = yesterday.getFullYear();
+    const yearMoods = moodsByYear?.[year];
+
+    if (!yearMoods) return;
+
+    const hasMoodYesterday = yearMoods.some(
+      (mood) => toLocalDateString(mood.date) === yesterdayStr,
+    );
+
+    setYesterdayMood(hasMoodYesterday);
+  }, [moodsByYear]);
 
   useFocusEffect(
     useCallback(() => {
@@ -335,14 +329,14 @@ export default function HomeScreen({ navigation }) {
         )}
 
         {!yesterdayMood && (
-          <>
+          <View style={s.hier}>
             <Text style={{ color: colors.textGeneral }}>
               Tu n'as pas enregistré ton Mood pour hier
             </Text>
             <TouchableOpacity onPress={() => handleHier()}>
               <Text style={{ color: colors.textAccent }}>Note ta journée</Text>
             </TouchableOpacity>
-          </>
+          </View>
         )}
       </View>
     </TouchableWithoutFeedback>
@@ -425,5 +419,9 @@ const styles = (colors) =>
       color: colors.textAccent,
       fontSize: 16,
       fontWeight: 400,
+    },
+    hier: {
+      alignItems: "center",
+      marginTop: 15,
     },
   });

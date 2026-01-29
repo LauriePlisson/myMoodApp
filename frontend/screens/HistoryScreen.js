@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useTheme } from "../context/ThemeContext";
 import { setMoodsByYear, resetMoods, setSelectedMood } from "../reducers/moods";
 import { getMoodsByPeriodAPI } from "../utils/moodAPI";
+import { fetchYearMoods } from "../utils/moodByYear";
 
 // Écran d’historique des moods :
 // - affichage calendrier ou graphique
@@ -54,13 +55,11 @@ export default function HistoryScreen() {
 
   //fonction fetch moods année
   const loadYear = async (year) => {
-    const start = `${year}-01-01`;
-    const end = `${year}-12-31`;
+    if (moodsByYear[year]) return;
 
-    const data = await getMoodsByPeriodAPI({
-      userToken: user.token,
-      start,
-      end,
+    const data = await fetchYearMoods({
+      year,
+      token: user.token,
     });
 
     dispatch(setMoodsByYear({ [year]: data.moods }));
@@ -73,9 +72,6 @@ export default function HistoryScreen() {
       setDisplayMood(false);
       return;
     }
-    //fetch l'année en cours
-    const currentYear = new Date().getFullYear();
-    if (!moodsByYear[currentYear]) loadYear(currentYear); // fetch uniquement si nécessaire
   }, [user]);
 
   const selectedYear = selectedDate.getFullYear();
@@ -302,6 +298,7 @@ export default function HistoryScreen() {
               </View>
               <MoodGraf
                 moods={dataForChart}
+                moodsByYear={moodsByYear}
                 loadYear={loadYear}
                 period={period}
                 setPeriod={setPeriod}

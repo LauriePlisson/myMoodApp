@@ -7,6 +7,7 @@ import { getMoodColor } from "../utils/moodColors";
 
 export default function MoodGraf({
   moods,
+  moodsByYear,
   period,
   selectedDate,
   setSelectedDate,
@@ -53,7 +54,7 @@ export default function MoodGraf({
     length = new Date(
       selectedDate.getFullYear(),
       selectedDate.getMonth() + 1,
-      0
+      0,
     ).getDate();
   } else {
     length = 12; // 12 mois
@@ -73,7 +74,7 @@ export default function MoodGraf({
       date = new Date(
         selectedDate.getFullYear(),
         selectedDate.getMonth(),
-        i + 1
+        i + 1,
       );
       return {
         value: null,
@@ -103,7 +104,7 @@ export default function MoodGraf({
         label: mood.label,
         date: mood.fullMood
           ? new Date(mood.fullMood.date).toISOString()
-          : mood.date ?? data[index].date,
+          : (mood.date ?? data[index].date),
         note: mood.fullMood?.note || "",
         fullMood: mood.fullMood || null,
       };
@@ -133,7 +134,7 @@ export default function MoodGraf({
   const handleFocus = (mood) => {
     const month = moisEnLettre(mood.label);
     const dateAffichee = `${moisEnLettre(
-      mood.label
+      mood.label,
     )} ${selectedDate.getFullYear()}`;
     if (period === "annee") {
       if (mood.label !== null) {
@@ -192,7 +193,7 @@ export default function MoodGraf({
       prevMonth.setMonth(prevMonth.getMonth() - 1);
       const prevYear = prevMonth.getFullYear();
       setSelectedDate(prevMonth);
-      if (!moods[prevYear]) {
+      if (!moodsByYear[prevYear]) {
         loadYear(prevYear);
       }
     }
